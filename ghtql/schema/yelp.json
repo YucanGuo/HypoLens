@@ -1,0 +1,4168 @@
+{
+  "dataset": "yelp",
+  "graph_type": "undirected",
+  "node_count": 2136118,
+  "edge_count": 6743879,
+  "node_types": {
+    "business": {
+      "count": 150069,
+      "attributes": {
+        "city": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "Affton",
+            "Tucson",
+            "Philadelphia",
+            "Green Lane",
+            "Ashland City"
+          ]
+        },
+        "name": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "The UPS Store",
+            "Target",
+            "St Honore Pastries",
+            "Perkiomen Valley Brewery",
+            "Sonic Drive-In"
+          ]
+        },
+        "popularity": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "low",
+            "high",
+            "medium"
+          ]
+        },
+        "review_count": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            15,
+            22,
+            80,
+            13,
+            6
+          ]
+        },
+        "stars": {
+          "dtype": "float",
+          "coverage": 1.0,
+          "samples": [
+            3.0,
+            3.5,
+            4.0,
+            4.5,
+            2.0
+          ]
+        },
+        "state": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "MO",
+            "AZ",
+            "PA",
+            "TN",
+            "FL"
+          ]
+        }
+      },
+      "binary_flags": {
+        "& Probates": {
+          "coverage": 0.0002
+        },
+        "3D Printing": {
+          "coverage": 0.0
+        },
+        "ATV Rentals/Tours": {
+          "coverage": 0.0001
+        },
+        "Acai Bowls": {
+          "coverage": 0.0018
+        },
+        "Accessories": {
+          "coverage": 0.0109
+        },
+        "Accountants": {
+          "coverage": 0.0008
+        },
+        "Acne Treatment": {
+          "coverage": 0.0003
+        },
+        "Active Life": {
+          "coverage": 0.0511
+        },
+        "Acupuncture": {
+          "coverage": 0.0028
+        },
+        "Addiction Medicine": {
+          "coverage": 0.0001
+        },
+        "Adoption Services": {
+          "coverage": 0.0
+        },
+        "Adult": {
+          "coverage": 0.0008
+        },
+        "Adult Education": {
+          "coverage": 0.0006
+        },
+        "Adult Entertainment": {
+          "coverage": 0.0015
+        },
+        "Advertising": {
+          "coverage": 0.0006
+        },
+        "Aerial Fitness": {
+          "coverage": 0.0001
+        },
+        "Aerial Tours": {
+          "coverage": 0.0001
+        },
+        "Aestheticians": {
+          "coverage": 0.0003
+        },
+        "Afghan": {
+          "coverage": 0.0003
+        },
+        "African": {
+          "coverage": 0.0008
+        },
+        "Air Duct Cleaning": {
+          "coverage": 0.0018
+        },
+        "Aircraft Dealers": {
+          "coverage": 0.0
+        },
+        "Aircraft Repairs": {
+          "coverage": 0.0
+        },
+        "Airlines": {
+          "coverage": 0.0008
+        },
+        "Airport Lounges": {
+          "coverage": 0.0002
+        },
+        "Airport Shuttles": {
+          "coverage": 0.0022
+        },
+        "Airport Terminals": {
+          "coverage": 0.0001
+        },
+        "Airports": {
+          "coverage": 0.0008
+        },
+        "Airsoft": {
+          "coverage": 0.0001
+        },
+        "Allergists": {
+          "coverage": 0.0004
+        },
+        "Alternative Medicine": {
+          "coverage": 0.0004
+        },
+        "Amateur Sports Teams": {
+          "coverage": 0.0008
+        },
+        "American (New)": {
+          "coverage": 0.0406
+        },
+        "American (Traditional)": {
+          "coverage": 0.0542
+        },
+        "Amusement Parks": {
+          "coverage": 0.0019
+        },
+        "Anesthesiologists": {
+          "coverage": 0.0001
+        },
+        "Animal Assisted Therapy": {
+          "coverage": 0.0
+        },
+        "Animal Physical Therapy": {
+          "coverage": 0.0001
+        },
+        "Animal Shelters": {
+          "coverage": 0.001
+        },
+        "Antiques": {
+          "coverage": 0.0042
+        },
+        "Apartment Agents": {
+          "coverage": 0.0
+        },
+        "Apartments": {
+          "coverage": 0.0128
+        },
+        "Appliances": {
+          "coverage": 0.0058
+        },
+        "Appliances & Repair": {
+          "coverage": 0.0053
+        },
+        "Appraisal Services": {
+          "coverage": 0.0005
+        },
+        "Aquarium Services": {
+          "coverage": 0.0003
+        },
+        "Aquariums": {
+          "coverage": 0.0005
+        },
+        "Arabic": {
+          "coverage": 0.0002
+        },
+        "Arcades": {
+          "coverage": 0.0025
+        },
+        "Archery": {
+          "coverage": 0.0002
+        },
+        "Architects": {
+          "coverage": 0.0002
+        },
+        "Architectural Tours": {
+          "coverage": 0.0001
+        },
+        "Argentine": {
+          "coverage": 0.0002
+        },
+        "Armenian": {
+          "coverage": 0.0001
+        },
+        "Art Classes": {
+          "coverage": 0.0016
+        },
+        "Art Consultants": {
+          "coverage": 0.0
+        },
+        "Art Galleries": {
+          "coverage": 0.0052
+        },
+        "Art Installation": {
+          "coverage": 0.0
+        },
+        "Art Museums": {
+          "coverage": 0.0003
+        },
+        "Art Restoration": {
+          "coverage": 0.0001
+        },
+        "Art Schools": {
+          "coverage": 0.0006
+        },
+        "Art Space Rentals": {
+          "coverage": 0.0001
+        },
+        "Art Supplies": {
+          "coverage": 0.0021
+        },
+        "Art Tours": {
+          "coverage": 0.0001
+        },
+        "Artificial Turf": {
+          "coverage": 0.0002
+        },
+        "Arts & Crafts": {
+          "coverage": 0.0096
+        },
+        "Arts & Entertainment": {
+          "coverage": 0.0362
+        },
+        "Asian Fusion": {
+          "coverage": 0.0103
+        },
+        "Assisted Living Facilities": {
+          "coverage": 0.0004
+        },
+        "Astrologers": {
+          "coverage": 0.0001
+        },
+        "Attraction Farms": {
+          "coverage": 0.0002
+        },
+        "Auction Houses": {
+          "coverage": 0.0004
+        },
+        "Audio/Visual Equipment Rental": {
+          "coverage": 0.0001
+        },
+        "Audiologist": {
+          "coverage": 0.0002
+        },
+        "Australian": {
+          "coverage": 0.0001
+        },
+        "Austrian": {
+          "coverage": 0.0
+        },
+        "Auto Customization": {
+          "coverage": 0.0021
+        },
+        "Auto Detailing": {
+          "coverage": 0.006
+        },
+        "Auto Glass Services": {
+          "coverage": 0.0048
+        },
+        "Auto Insurance": {
+          "coverage": 0.0013
+        },
+        "Auto Loan Providers": {
+          "coverage": 0.0012
+        },
+        "Auto Parts & Supplies": {
+          "coverage": 0.0128
+        },
+        "Auto Repair": {
+          "coverage": 0.0362
+        },
+        "Auto Security": {
+          "coverage": 0.0003
+        },
+        "Auto Upholstery": {
+          "coverage": 0.0005
+        },
+        "Automotive": {
+          "coverage": 0.0716
+        },
+        "Awnings": {
+          "coverage": 0.0002
+        },
+        "Axe Throwing": {
+          "coverage": 0.0004
+        },
+        "Ayurveda": {
+          "coverage": 0.0001
+        },
+        "Baby Gear & Furniture": {
+          "coverage": 0.0016
+        },
+        "Backflow Services": {
+          "coverage": 0.0
+        },
+        "Badminton": {
+          "coverage": 0.0
+        },
+        "Bagels": {
+          "coverage": 0.0049
+        },
+        "Bail Bondsmen": {
+          "coverage": 0.0001
+        },
+        "Bakeries": {
+          "coverage": 0.021
+        },
+        "Balloon Services": {
+          "coverage": 0.0002
+        },
+        "Bangladeshi": {
+          "coverage": 0.0001
+        },
+        "Bankruptcy Law": {
+          "coverage": 0.0003
+        },
+        "Banks & Credit Unions": {
+          "coverage": 0.005
+        },
+        "Bar Crawl": {
+          "coverage": 0.0002
+        },
+        "Barbeque": {
+          "coverage": 0.0113
+        },
+        "Barbers": {
+          "coverage": 0.0111
+        },
+        "Barre Classes": {
+          "coverage": 0.0011
+        },
+        "Bars": {
+          "coverage": 0.0737
+        },
+        "Bartenders": {
+          "coverage": 0.0003
+        },
+        "Bartending Schools": {
+          "coverage": 0.0001
+        },
+        "Baseball Fields": {
+          "coverage": 0.0001
+        },
+        "Basketball Courts": {
+          "coverage": 0.0001
+        },
+        "Basque": {
+          "coverage": 0.0003
+        },
+        "Battery Stores": {
+          "coverage": 0.0006
+        },
+        "Batting Cages": {
+          "coverage": 0.0002
+        },
+        "Beach Bars": {
+          "coverage": 0.0
+        },
+        "Beach Equipment Rentals": {
+          "coverage": 0.0001
+        },
+        "Beaches": {
+          "coverage": 0.0008
+        },
+        "Beauty & Spas": {
+          "coverage": 0.0951
+        },
+        "Bed & Breakfast": {
+          "coverage": 0.0022
+        },
+        "Beer": {
+          "coverage": 0.0161
+        },
+        "Beer Bar": {
+          "coverage": 0.0058
+        },
+        "Beer Gardens": {
+          "coverage": 0.0012
+        },
+        "Beer Hall": {
+          "coverage": 0.0
+        },
+        "Beer Tours": {
+          "coverage": 0.0003
+        },
+        "Behavior Analysts": {
+          "coverage": 0.0
+        },
+        "Belgian": {
+          "coverage": 0.0002
+        },
+        "Bespoke Clothing": {
+          "coverage": 0.0007
+        },
+        "Beverage Store": {
+          "coverage": 0.0003
+        },
+        "Bicycle Paths": {
+          "coverage": 0.0
+        },
+        "Bicycles": {
+          "coverage": 0.0
+        },
+        "Bike Parking": {
+          "coverage": 0.0
+        },
+        "Bike Rentals": {
+          "coverage": 0.002
+        },
+        "Bike Repair": {
+          "coverage": 0.0
+        },
+        "Bike Repair/Maintenance": {
+          "coverage": 0.0018
+        },
+        "Bike Sharing": {
+          "coverage": 0.0
+        },
+        "Bike Shop": {
+          "coverage": 0.0
+        },
+        "Bike tours": {
+          "coverage": 0.0002
+        },
+        "Bikes": {
+          "coverage": 0.0031
+        },
+        "Billing Services": {
+          "coverage": 0.0
+        },
+        "Bingo Halls": {
+          "coverage": 0.0
+        },
+        "Biohazard Cleanup": {
+          "coverage": 0.0
+        },
+        "Bird Shops": {
+          "coverage": 0.0002
+        },
+        "Bistros": {
+          "coverage": 0.0002
+        },
+        "Blood & Plasma Donation Centers": {
+          "coverage": 0.0003
+        },
+        "Blow Dry/Out Services": {
+          "coverage": 0.003
+        },
+        "Boat Charters": {
+          "coverage": 0.0009
+        },
+        "Boat Dealers": {
+          "coverage": 0.0003
+        },
+        "Boat Parts & Supplies": {
+          "coverage": 0.0001
+        },
+        "Boat Repair": {
+          "coverage": 0.0005
+        },
+        "Boat Tours": {
+          "coverage": 0.0004
+        },
+        "Boating": {
+          "coverage": 0.0019
+        },
+        "Bocce Ball": {
+          "coverage": 0.0
+        },
+        "Body Contouring": {
+          "coverage": 0.0006
+        },
+        "Body Shops": {
+          "coverage": 0.0082
+        },
+        "Bookbinding": {
+          "coverage": 0.0001
+        },
+        "Bookkeepers": {
+          "coverage": 0.0002
+        },
+        "Books": {
+          "coverage": 0.0065
+        },
+        "Bookstores": {
+          "coverage": 0.0028
+        },
+        "Boot Camps": {
+          "coverage": 0.0022
+        },
+        "Botanical Gardens": {
+          "coverage": 0.0004
+        },
+        "Boudoir Photography": {
+          "coverage": 0.0002
+        },
+        "Bounce House Rentals": {
+          "coverage": 0.0001
+        },
+        "Bowling": {
+          "coverage": 0.0013
+        },
+        "Boxing": {
+          "coverage": 0.0009
+        },
+        "Brasseries": {
+          "coverage": 0.0003
+        },
+        "Brazilian": {
+          "coverage": 0.0005
+        },
+        "Brazilian Jiu-jitsu": {
+          "coverage": 0.0003
+        },
+        "Breakfast & Brunch": {
+          "coverage": 0.0416
+        },
+        "Breweries": {
+          "coverage": 0.0058
+        },
+        "Brewing Supplies": {
+          "coverage": 0.0003
+        },
+        "Brewpubs": {
+          "coverage": 0.0012
+        },
+        "Bridal": {
+          "coverage": 0.0037
+        },
+        "British": {
+          "coverage": 0.0005
+        },
+        "Bubble Soccer": {
+          "coverage": 0.0
+        },
+        "Bubble Tea": {
+          "coverage": 0.0032
+        },
+        "Buddhist Temples": {
+          "coverage": 0.0001
+        },
+        "Buffets": {
+          "coverage": 0.0041
+        },
+        "Building Supplies": {
+          "coverage": 0.0064
+        },
+        "Burgers": {
+          "coverage": 0.0376
+        },
+        "Burmese": {
+          "coverage": 0.0001
+        },
+        "Bus Rental": {
+          "coverage": 0.0
+        },
+        "Bus Stations": {
+          "coverage": 0.0
+        },
+        "Bus Tours": {
+          "coverage": 0.0005
+        },
+        "Buses": {
+          "coverage": 0.0003
+        },
+        "Business Consulting": {
+          "coverage": 0.0004
+        },
+        "Business Financing": {
+          "coverage": 0.0001
+        },
+        "Business Law": {
+          "coverage": 0.0004
+        },
+        "Butcher": {
+          "coverage": 0.0012
+        },
+        "CPR Classes": {
+          "coverage": 0.0002
+        },
+        "CSA": {
+          "coverage": 0.0003
+        },
+        "Cabaret": {
+          "coverage": 0.0002
+        },
+        "Cabinetry": {
+          "coverage": 0.0014
+        },
+        "Cafes": {
+          "coverage": 0.0184
+        },
+        "Cafeteria": {
+          "coverage": 0.0003
+        },
+        "Cajun/Creole": {
+          "coverage": 0.0062
+        },
+        "Calabrian": {
+          "coverage": 0.0
+        },
+        "Calligraphy": {
+          "coverage": 0.0
+        },
+        "Cambodian": {
+          "coverage": 0.0001
+        },
+        "Campgrounds": {
+          "coverage": 0.0006
+        },
+        "Canadian (New)": {
+          "coverage": 0.0017
+        },
+        "Candle Stores": {
+          "coverage": 0.0007
+        },
+        "Candy Stores": {
+          "coverage": 0.0024
+        },
+        "Cannabis Clinics": {
+          "coverage": 0.0009
+        },
+        "Cannabis Collective": {
+          "coverage": 0.0001
+        },
+        "Cannabis Dispensaries": {
+          "coverage": 0.0009
+        },
+        "Cannabis Tours": {
+          "coverage": 0.0
+        },
+        "Cantonese": {
+          "coverage": 0.0006
+        },
+        "Car Auctions": {
+          "coverage": 0.0001
+        },
+        "Car Brokers": {
+          "coverage": 0.0001
+        },
+        "Car Buyers": {
+          "coverage": 0.0006
+        },
+        "Car Dealers": {
+          "coverage": 0.0111
+        },
+        "Car Inspectors": {
+          "coverage": 0.0003
+        },
+        "Car Rental": {
+          "coverage": 0.0045
+        },
+        "Car Share Services": {
+          "coverage": 0.0001
+        },
+        "Car Stereo Installation": {
+          "coverage": 0.0016
+        },
+        "Car Wash": {
+          "coverage": 0.0064
+        },
+        "Car Window Tinting": {
+          "coverage": 0.0015
+        },
+        "Cardio Classes": {
+          "coverage": 0.001
+        },
+        "Cardiologists": {
+          "coverage": 0.0003
+        },
+        "Cards & Stationery": {
+          "coverage": 0.0017
+        },
+        "Career Counseling": {
+          "coverage": 0.0002
+        },
+        "Caribbean": {
+          "coverage": 0.0039
+        },
+        "Caricatures": {
+          "coverage": 0.0001
+        },
+        "Carousels": {
+          "coverage": 0.0
+        },
+        "Carpenters": {
+          "coverage": 0.0007
+        },
+        "Carpet Cleaning": {
+          "coverage": 0.0035
+        },
+        "Carpet Dyeing": {
+          "coverage": 0.0
+        },
+        "Carpet Installation": {
+          "coverage": 0.0009
+        },
+        "Carpeting": {
+          "coverage": 0.002
+        },
+        "Casinos": {
+          "coverage": 0.0008
+        },
+        "Caterers": {
+          "coverage": 0.0176
+        },
+        "Ceremonial Clothing": {
+          "coverage": 0.0
+        },
+        "Challenge Courses": {
+          "coverage": 0.0003
+        },
+        "Champagne Bars": {
+          "coverage": 0.0002
+        },
+        "Check Cashing/Pay-day Loans": {
+          "coverage": 0.0003
+        },
+        "Cheerleading": {
+          "coverage": 0.0
+        },
+        "Cheese Shops": {
+          "coverage": 0.001
+        },
+        "Cheese Tasting Classes": {
+          "coverage": 0.0
+        },
+        "Cheesesteaks": {
+          "coverage": 0.0041
+        },
+        "Chicken Shop": {
+          "coverage": 0.0054
+        },
+        "Chicken Wings": {
+          "coverage": 0.0198
+        },
+        "Child Care & Day Care": {
+          "coverage": 0.0027
+        },
+        "Childbirth Education": {
+          "coverage": 0.0001
+        },
+        "Childproofing": {
+          "coverage": 0.0
+        },
+        "Children's Clothing": {
+          "coverage": 0.003
+        },
+        "Children's Museums": {
+          "coverage": 0.0001
+        },
+        "Chimney Sweeps": {
+          "coverage": 0.0008
+        },
+        "Chinese": {
+          "coverage": 0.0211
+        },
+        "Chinese Martial Arts": {
+          "coverage": 0.0
+        },
+        "Chiropractors": {
+          "coverage": 0.0048
+        },
+        "Chocolatiers & Shops": {
+          "coverage": 0.0023
+        },
+        "Christmas Trees": {
+          "coverage": 0.0004
+        },
+        "Churches": {
+          "coverage": 0.0014
+        },
+        "Cideries": {
+          "coverage": 0.0002
+        },
+        "Cigar Bars": {
+          "coverage": 0.0004
+        },
+        "Cinema": {
+          "coverage": 0.0024
+        },
+        "Circuit Training Gyms": {
+          "coverage": 0.0003
+        },
+        "Circus Schools": {
+          "coverage": 0.0
+        },
+        "Climbing": {
+          "coverage": 0.0004
+        },
+        "Clock Repair": {
+          "coverage": 0.0002
+        },
+        "Clothing Rental": {
+          "coverage": 0.0002
+        },
+        "Clowns": {
+          "coverage": 0.0001
+        },
+        "Club Crawl": {
+          "coverage": 0.0
+        },
+        "Cocktail Bars": {
+          "coverage": 0.0114
+        },
+        "Coffee & Tea": {
+          "coverage": 0.0447
+        },
+        "Coffee & Tea Supplies": {
+          "coverage": 0.0
+        },
+        "Coffee Roasteries": {
+          "coverage": 0.0019
+        },
+        "Coffeeshops": {
+          "coverage": 0.0001
+        },
+        "College Counseling": {
+          "coverage": 0.0
+        },
+        "Colleges & Universities": {
+          "coverage": 0.0012
+        },
+        "Colombian": {
+          "coverage": 0.0004
+        },
+        "Colonics": {
+          "coverage": 0.0001
+        },
+        "Comedy Clubs": {
+          "coverage": 0.0006
+        },
+        "Comfort Food": {
+          "coverage": 0.005
+        },
+        "Comic Books": {
+          "coverage": 0.001
+        },
+        "Commercial Real Estate": {
+          "coverage": 0.0008
+        },
+        "Commercial Truck Dealers": {
+          "coverage": 0.0002
+        },
+        "Commercial Truck Repair": {
+          "coverage": 0.0004
+        },
+        "Commissioned Artists": {
+          "coverage": 0.0001
+        },
+        "Community Centers": {
+          "coverage": 0.0002
+        },
+        "Community Gardens": {
+          "coverage": 0.0
+        },
+        "Community Service/Non-Profit": {
+          "coverage": 0.0033
+        },
+        "Computers": {
+          "coverage": 0.0022
+        },
+        "Concept Shops": {
+          "coverage": 0.0
+        },
+        "Concierge Medicine": {
+          "coverage": 0.0001
+        },
+        "Condominiums": {
+          "coverage": 0.0002
+        },
+        "Consumer Law": {
+          "coverage": 0.0
+        },
+        "Contract Law": {
+          "coverage": 0.0
+        },
+        "Contractors": {
+          "coverage": 0.0155
+        },
+        "Convenience Stores": {
+          "coverage": 0.0128
+        },
+        "Conveyor Belt Sushi": {
+          "coverage": 0.0
+        },
+        "Cooking Classes": {
+          "coverage": 0.0006
+        },
+        "Cooking Schools": {
+          "coverage": 0.0005
+        },
+        "Cosmetic Dentists": {
+          "coverage": 0.0108
+        },
+        "Cosmetic Surgeons": {
+          "coverage": 0.0024
+        },
+        "Cosmetics & Beauty Supply": {
+          "coverage": 0.0103
+        },
+        "Cosmetology Schools": {
+          "coverage": 0.0006
+        },
+        "Costumes": {
+          "coverage": 0.0009
+        },
+        "Counseling & Mental Health": {
+          "coverage": 0.0015
+        },
+        "Countertop Installation": {
+          "coverage": 0.001
+        },
+        "Country Clubs": {
+          "coverage": 0.0009
+        },
+        "Country Dance Halls": {
+          "coverage": 0.0001
+        },
+        "Couriers & Delivery Services": {
+          "coverage": 0.0021
+        },
+        "Courthouses": {
+          "coverage": 0.0001
+        },
+        "Crane Services": {
+          "coverage": 0.0001
+        },
+        "Cremation Services": {
+          "coverage": 0.0002
+        },
+        "Creperies": {
+          "coverage": 0.0011
+        },
+        "Criminal Defense Law": {
+          "coverage": 0.0006
+        },
+        "Crisis Pregnancy Centers": {
+          "coverage": 0.0
+        },
+        "Cryotherapy": {
+          "coverage": 0.0002
+        },
+        "Cuban": {
+          "coverage": 0.0019
+        },
+        "Cucina campana": {
+          "coverage": 0.0
+        },
+        "Cultural Center": {
+          "coverage": 0.0004
+        },
+        "Cupcakes": {
+          "coverage": 0.0028
+        },
+        "Currency Exchange": {
+          "coverage": 0.0
+        },
+        "Custom Cakes": {
+          "coverage": 0.002
+        },
+        "Customized Merchandise": {
+          "coverage": 0.0006
+        },
+        "Cycling Classes": {
+          "coverage": 0.0008
+        },
+        "Czech": {
+          "coverage": 0.0
+        },
+        "DIY Auto Shop": {
+          "coverage": 0.0
+        },
+        "DJs": {
+          "coverage": 0.0008
+        },
+        "DUI Law": {
+          "coverage": 0.0005
+        },
+        "DUI Schools": {
+          "coverage": 0.0
+        },
+        "Damage Restoration": {
+          "coverage": 0.0023
+        },
+        "Dance Clubs": {
+          "coverage": 0.003
+        },
+        "Dance Schools": {
+          "coverage": 0.0007
+        },
+        "Dance Studios": {
+          "coverage": 0.0013
+        },
+        "Dance Wear": {
+          "coverage": 0.0001
+        },
+        "Dart Arenas": {
+          "coverage": 0.0
+        },
+        "Data Recovery": {
+          "coverage": 0.0008
+        },
+        "Day Camps": {
+          "coverage": 0.0003
+        },
+        "Day Spas": {
+          "coverage": 0.0133
+        },
+        "Debt Relief Services": {
+          "coverage": 0.0001
+        },
+        "Decks & Railing": {
+          "coverage": 0.0008
+        },
+        "Delicatessen": {
+          "coverage": 0.0002
+        },
+        "Delis": {
+          "coverage": 0.0159
+        },
+        "Demolition Services": {
+          "coverage": 0.0003
+        },
+        "Dental Hygienists": {
+          "coverage": 0.0003
+        },
+        "Dentists": {
+          "coverage": 0.0168
+        },
+        "Department Stores": {
+          "coverage": 0.0095
+        },
+        "Departments of Motor Vehicles": {
+          "coverage": 0.0009
+        },
+        "Dermatologists": {
+          "coverage": 0.0022
+        },
+        "Desserts": {
+          "coverage": 0.0212
+        },
+        "Diagnostic Imaging": {
+          "coverage": 0.0012
+        },
+        "Diagnostic Services": {
+          "coverage": 0.0031
+        },
+        "Dialysis Clinics": {
+          "coverage": 0.0
+        },
+        "Diamond Buyers": {
+          "coverage": 0.0001
+        },
+        "Dietitians": {
+          "coverage": 0.0001
+        },
+        "Digitizing Services": {
+          "coverage": 0.0001
+        },
+        "Dim Sum": {
+          "coverage": 0.0009
+        },
+        "Diners": {
+          "coverage": 0.01
+        },
+        "Dinner Theater": {
+          "coverage": 0.0002
+        },
+        "Disability Law": {
+          "coverage": 0.0
+        },
+        "Disc Golf": {
+          "coverage": 0.0001
+        },
+        "Discount Store": {
+          "coverage": 0.0058
+        },
+        "Distilleries": {
+          "coverage": 0.0007
+        },
+        "Dive Bars": {
+          "coverage": 0.0042
+        },
+        "Dive Shops": {
+          "coverage": 0.0001
+        },
+        "Diving": {
+          "coverage": 0.0003
+        },
+        "Divorce & Family Law": {
+          "coverage": 0.0009
+        },
+        "Do-It-Yourself Food": {
+          "coverage": 0.001
+        },
+        "Doctors": {
+          "coverage": 0.025
+        },
+        "Dog Parks": {
+          "coverage": 0.0011
+        },
+        "Dog Walkers": {
+          "coverage": 0.0019
+        },
+        "Dominican": {
+          "coverage": 0.0003
+        },
+        "Donairs": {
+          "coverage": 0.0006
+        },
+        "Donation Center": {
+          "coverage": 0.0007
+        },
+        "Donburi": {
+          "coverage": 0.0
+        },
+        "Donuts": {
+          "coverage": 0.0073
+        },
+        "Door Sales/Installation": {
+          "coverage": 0.0018
+        },
+        "Doulas": {
+          "coverage": 0.0002
+        },
+        "Drama Schools": {
+          "coverage": 0.0
+        },
+        "Drive-In Theater": {
+          "coverage": 0.0001
+        },
+        "Drive-Thru Bars": {
+          "coverage": 0.0001
+        },
+        "Driving Schools": {
+          "coverage": 0.0004
+        },
+        "Drones": {
+          "coverage": 0.0
+        },
+        "Drugstores": {
+          "coverage": 0.0108
+        },
+        "Dry Cleaning": {
+          "coverage": 0.0025
+        },
+        "Dry Cleaning & Laundry": {
+          "coverage": 0.0072
+        },
+        "Drywall Installation & Repair": {
+          "coverage": 0.001
+        },
+        "Dumplings": {
+          "coverage": 0.0
+        },
+        "Dumpster Rental": {
+          "coverage": 0.0002
+        },
+        "Duplication Services": {
+          "coverage": 0.0
+        },
+        "EV Charging Stations": {
+          "coverage": 0.0001
+        },
+        "Ear Nose & Throat": {
+          "coverage": 0.0005
+        },
+        "Eastern European": {
+          "coverage": 0.0
+        },
+        "Eatertainment": {
+          "coverage": 0.0002
+        },
+        "Editorial Services": {
+          "coverage": 0.0001
+        },
+        "Education": {
+          "coverage": 0.0128
+        },
+        "Educational Services": {
+          "coverage": 0.0009
+        },
+        "Egyptian": {
+          "coverage": 0.0001
+        },
+        "Elder Care Planning": {
+          "coverage": 0.0
+        },
+        "Elder Law": {
+          "coverage": 0.0
+        },
+        "Electricians": {
+          "coverage": 0.0033
+        },
+        "Electricity Suppliers": {
+          "coverage": 0.0
+        },
+        "Electronics": {
+          "coverage": 0.0094
+        },
+        "Electronics Repair": {
+          "coverage": 0.0033
+        },
+        "Elementary Schools": {
+          "coverage": 0.0015
+        },
+        "Elevator Services": {
+          "coverage": 0.0
+        },
+        "Embassy": {
+          "coverage": 0.0
+        },
+        "Embroidery & Crochet": {
+          "coverage": 0.0005
+        },
+        "Emergency Medicine": {
+          "coverage": 0.0001
+        },
+        "Emergency Pet Hospital": {
+          "coverage": 0.0005
+        },
+        "Emergency Rooms": {
+          "coverage": 0.0006
+        },
+        "Empanadas": {
+          "coverage": 0.0004
+        },
+        "Employment Agencies": {
+          "coverage": 0.0005
+        },
+        "Employment Law": {
+          "coverage": 0.0003
+        },
+        "Endocrinologists": {
+          "coverage": 0.0002
+        },
+        "Endodontists": {
+          "coverage": 0.0047
+        },
+        "Engraving": {
+          "coverage": 0.0002
+        },
+        "Environmental Abatement": {
+          "coverage": 0.0003
+        },
+        "Environmental Testing": {
+          "coverage": 0.0004
+        },
+        "Escape Games": {
+          "coverage": 0.0012
+        },
+        "Estate Liquidation": {
+          "coverage": 0.0002
+        },
+        "Estate Planning Law": {
+          "coverage": 0.0005
+        },
+        "Estheticians": {
+          "coverage": 0.0003
+        },
+        "Ethical Grocery": {
+          "coverage": 0.0
+        },
+        "Ethiopian": {
+          "coverage": 0.0004
+        },
+        "Ethnic Food": {
+          "coverage": 0.0044
+        },
+        "Ethnic Grocery": {
+          "coverage": 0.0002
+        },
+        "Event Photography": {
+          "coverage": 0.0021
+        },
+        "Event Planning & Services": {
+          "coverage": 0.0657
+        },
+        "Excavation Services": {
+          "coverage": 0.0003
+        },
+        "Experiences": {
+          "coverage": 0.0
+        },
+        "Eyebrow Services": {
+          "coverage": 0.003
+        },
+        "Eyelash Service": {
+          "coverage": 0.0085
+        },
+        "Eyewear & Opticians": {
+          "coverage": 0.0068
+        },
+        "Fabric Stores": {
+          "coverage": 0.0012
+        },
+        "Face Painting": {
+          "coverage": 0.0002
+        },
+        "Faith-based Crisis Pregnancy Centers": {
+          "coverage": 0.0
+        },
+        "Falafel": {
+          "coverage": 0.0007
+        },
+        "Family Practice": {
+          "coverage": 0.0034
+        },
+        "Farm Equipment Repair": {
+          "coverage": 0.0003
+        },
+        "Farmers Market": {
+          "coverage": 0.0033
+        },
+        "Farming Equipment": {
+          "coverage": 0.0004
+        },
+        "Farms": {
+          "coverage": 0.0006
+        },
+        "Fashion": {
+          "coverage": 0.0382
+        },
+        "Fast Food": {
+          "coverage": 0.0431
+        },
+        "Fences & Gates": {
+          "coverage": 0.0013
+        },
+        "Fencing Clubs": {
+          "coverage": 0.0
+        },
+        "Ferries": {
+          "coverage": 0.0
+        },
+        "Fertility": {
+          "coverage": 0.0003
+        },
+        "Festivals": {
+          "coverage": 0.0029
+        },
+        "Filipino": {
+          "coverage": 0.0007
+        },
+        "Financial Advising": {
+          "coverage": 0.0012
+        },
+        "Financial Services": {
+          "coverage": 0.0098
+        },
+        "Fingerprinting": {
+          "coverage": 0.0001
+        },
+        "Fire Departments": {
+          "coverage": 0.0
+        },
+        "Fire Protection Services": {
+          "coverage": 0.0003
+        },
+        "Firearm Training": {
+          "coverage": 0.0004
+        },
+        "Fireplace Services": {
+          "coverage": 0.0008
+        },
+        "Firewood": {
+          "coverage": 0.0003
+        },
+        "Fireworks": {
+          "coverage": 0.0001
+        },
+        "First Aid Classes": {
+          "coverage": 0.0001
+        },
+        "Fish & Chips": {
+          "coverage": 0.0013
+        },
+        "Fishing": {
+          "coverage": 0.0011
+        },
+        "Fitness & Instruction": {
+          "coverage": 0.0219
+        },
+        "Fitness/Exercise Equipment": {
+          "coverage": 0.0007
+        },
+        "Flea Markets": {
+          "coverage": 0.0005
+        },
+        "Flight Instruction": {
+          "coverage": 0.0001
+        },
+        "Float Spa": {
+          "coverage": 0.0003
+        },
+        "Flooring": {
+          "coverage": 0.0041
+        },
+        "Floral Designers": {
+          "coverage": 0.0017
+        },
+        "Florists": {
+          "coverage": 0.0064
+        },
+        "Flowers": {
+          "coverage": 0.0001
+        },
+        "Flowers & Gifts": {
+          "coverage": 0.0129
+        },
+        "Flyboarding": {
+          "coverage": 0.0
+        },
+        "Fondue": {
+          "coverage": 0.0002
+        },
+        "Food": {
+          "coverage": 0.1851
+        },
+        "Food Banks": {
+          "coverage": 0.0001
+        },
+        "Food Court": {
+          "coverage": 0.0009
+        },
+        "Food Delivery Services": {
+          "coverage": 0.007
+        },
+        "Food Stands": {
+          "coverage": 0.0028
+        },
+        "Food Tours": {
+          "coverage": 0.0004
+        },
+        "Food Trucks": {
+          "coverage": 0.0085
+        },
+        "Foot Care": {
+          "coverage": 0.0
+        },
+        "Formal Wear": {
+          "coverage": 0.0019
+        },
+        "Foundation Repair": {
+          "coverage": 0.0003
+        },
+        "Framing": {
+          "coverage": 0.0013
+        },
+        "Free Diving": {
+          "coverage": 0.0
+        },
+        "French": {
+          "coverage": 0.0034
+        },
+        "Fruits & Veggies": {
+          "coverage": 0.0035
+        },
+        "Fuel Docks": {
+          "coverage": 0.0
+        },
+        "Funeral Services & Cemeteries": {
+          "coverage": 0.0011
+        },
+        "Fur Clothing": {
+          "coverage": 0.0
+        },
+        "Furniture Assembly": {
+          "coverage": 0.0004
+        },
+        "Furniture Rental": {
+          "coverage": 0.0001
+        },
+        "Furniture Repair": {
+          "coverage": 0.0004
+        },
+        "Furniture Reupholstery": {
+          "coverage": 0.0011
+        },
+        "Furniture Stores": {
+          "coverage": 0.0106
+        },
+        "Fuzhou": {
+          "coverage": 0.0
+        },
+        "Game Truck Rental": {
+          "coverage": 0.0
+        },
+        "Garage Door Services": {
+          "coverage": 0.0011
+        },
+        "Gardeners": {
+          "coverage": 0.0017
+        },
+        "Gas Stations": {
+          "coverage": 0.0071
+        },
+        "Gastroenterologist": {
+          "coverage": 0.0003
+        },
+        "Gastropubs": {
+          "coverage": 0.0034
+        },
+        "Gay Bars": {
+          "coverage": 0.0009
+        },
+        "Gelato": {
+          "coverage": 0.0013
+        },
+        "Gemstones & Minerals": {
+          "coverage": 0.0002
+        },
+        "General Dentistry": {
+          "coverage": 0.0133
+        },
+        "General Festivals": {
+          "coverage": 0.0
+        },
+        "General Litigation": {
+          "coverage": 0.0005
+        },
+        "Generator Installation/Repair": {
+          "coverage": 0.0005
+        },
+        "Georgian": {
+          "coverage": 0.0
+        },
+        "German": {
+          "coverage": 0.0008
+        },
+        "Gerontologists": {
+          "coverage": 0.0
+        },
+        "Gift Shops": {
+          "coverage": 0.0053
+        },
+        "Glass & Mirrors": {
+          "coverage": 0.0015
+        },
+        "Glass Blowing": {
+          "coverage": 0.0001
+        },
+        "Gluten-Free": {
+          "coverage": 0.0052
+        },
+        "Go Karts": {
+          "coverage": 0.0003
+        },
+        "Gold Buyers": {
+          "coverage": 0.0009
+        },
+        "Golf": {
+          "coverage": 0.0033
+        },
+        "Golf Cart Dealers": {
+          "coverage": 0.0
+        },
+        "Golf Cart Rentals": {
+          "coverage": 0.0001
+        },
+        "Golf Equipment": {
+          "coverage": 0.0005
+        },
+        "Golf Equipment Shops": {
+          "coverage": 0.0001
+        },
+        "Golf Lessons": {
+          "coverage": 0.0004
+        },
+        "Graphic Design": {
+          "coverage": 0.0016
+        },
+        "Greek": {
+          "coverage": 0.0052
+        },
+        "Grill Services": {
+          "coverage": 0.0001
+        },
+        "Grilling Equipment": {
+          "coverage": 0.0003
+        },
+        "Grocery": {
+          "coverage": 0.0209
+        },
+        "Grout Services": {
+          "coverage": 0.0007
+        },
+        "Guamanian": {
+          "coverage": 0.0
+        },
+        "Guest Houses": {
+          "coverage": 0.0004
+        },
+        "Guitar Stores": {
+          "coverage": 0.0006
+        },
+        "Gun/Rifle Ranges": {
+          "coverage": 0.001
+        },
+        "Guns & Ammo": {
+          "coverage": 0.0016
+        },
+        "Gunsmith": {
+          "coverage": 0.0002
+        },
+        "Gutter Services": {
+          "coverage": 0.0021
+        },
+        "Gymnastics": {
+          "coverage": 0.0005
+        },
+        "Gyms": {
+          "coverage": 0.0122
+        },
+        "Hainan": {
+          "coverage": 0.0
+        },
+        "Hair Extensions": {
+          "coverage": 0.0041
+        },
+        "Hair Loss Centers": {
+          "coverage": 0.0004
+        },
+        "Hair Removal": {
+          "coverage": 0.0216
+        },
+        "Hair Salons": {
+          "coverage": 0.0336
+        },
+        "Hair Stylists": {
+          "coverage": 0.0097
+        },
+        "Haitian": {
+          "coverage": 0.0001
+        },
+        "Hakka": {
+          "coverage": 0.0
+        },
+        "Halal": {
+          "coverage": 0.0024
+        },
+        "Halfway Houses": {
+          "coverage": 0.0
+        },
+        "Halotherapy": {
+          "coverage": 0.0002
+        },
+        "Handyman": {
+          "coverage": 0.0024
+        },
+        "Hang Gliding": {
+          "coverage": 0.0
+        },
+        "Hardware Stores": {
+          "coverage": 0.0053
+        },
+        "Hats": {
+          "coverage": 0.0004
+        },
+        "Haunted Houses": {
+          "coverage": 0.0003
+        },
+        "Hawaiian": {
+          "coverage": 0.0012
+        },
+        "Hazardous Waste Disposal": {
+          "coverage": 0.0001
+        },
+        "Head Shops": {
+          "coverage": 0.0013
+        },
+        "Health & Medical": {
+          "coverage": 0.079
+        },
+        "Health Coach": {
+          "coverage": 0.0002
+        },
+        "Health Insurance Offices": {
+          "coverage": 0.0001
+        },
+        "Health Markets": {
+          "coverage": 0.004
+        },
+        "Health Retreats": {
+          "coverage": 0.0002
+        },
+        "Hearing Aid Providers": {
+          "coverage": 0.0002
+        },
+        "Heating & Air Conditioning/HVAC": {
+          "coverage": 0.008
+        },
+        "Henna Artists": {
+          "coverage": 0.0003
+        },
+        "Hepatologists": {
+          "coverage": 0.0
+        },
+        "Herbal Shops": {
+          "coverage": 0.0003
+        },
+        "Herbs & Spices": {
+          "coverage": 0.0007
+        },
+        "High Fidelity Audio Equipment": {
+          "coverage": 0.0002
+        },
+        "Hiking": {
+          "coverage": 0.0014
+        },
+        "Himalayan/Nepalese": {
+          "coverage": 0.0001
+        },
+        "Hindu Temples": {
+          "coverage": 0.0
+        },
+        "Historical Tours": {
+          "coverage": 0.0009
+        },
+        "Hobby Shops": {
+          "coverage": 0.0037
+        },
+        "Hockey Equipment": {
+          "coverage": 0.0001
+        },
+        "Holiday Decorating Services": {
+          "coverage": 0.0001
+        },
+        "Holiday Decorations": {
+          "coverage": 0.0003
+        },
+        "Holistic Animal Care": {
+          "coverage": 0.0001
+        },
+        "Home & Garden": {
+          "coverage": 0.0386
+        },
+        "Home & Rental Insurance": {
+          "coverage": 0.001
+        },
+        "Home Automation": {
+          "coverage": 0.0008
+        },
+        "Home Cleaning": {
+          "coverage": 0.0056
+        },
+        "Home Decor": {
+          "coverage": 0.0126
+        },
+        "Home Developers": {
+          "coverage": 0.0001
+        },
+        "Home Energy Auditors": {
+          "coverage": 0.0001
+        },
+        "Home Health Care": {
+          "coverage": 0.0007
+        },
+        "Home Inspectors": {
+          "coverage": 0.0019
+        },
+        "Home Network Installation": {
+          "coverage": 0.0003
+        },
+        "Home Organization": {
+          "coverage": 0.001
+        },
+        "Home Services": {
+          "coverage": 0.0952
+        },
+        "Home Staging": {
+          "coverage": 0.0003
+        },
+        "Home Theatre Installation": {
+          "coverage": 0.0009
+        },
+        "Home Window Tinting": {
+          "coverage": 0.0011
+        },
+        "Homeless Shelters": {
+          "coverage": 0.0
+        },
+        "Homeowner Association": {
+          "coverage": 0.0001
+        },
+        "Honduran": {
+          "coverage": 0.0002
+        },
+        "Honey": {
+          "coverage": 0.0001
+        },
+        "Hong Kong Style Cafe": {
+          "coverage": 0.0
+        },
+        "Hookah Bars": {
+          "coverage": 0.0016
+        },
+        "Horse Boarding": {
+          "coverage": 0.0002
+        },
+        "Horse Equipment Shops": {
+          "coverage": 0.0001
+        },
+        "Horse Racing": {
+          "coverage": 0.0001
+        },
+        "Horseback Riding": {
+          "coverage": 0.0004
+        },
+        "Hospice": {
+          "coverage": 0.0003
+        },
+        "Hospitalists": {
+          "coverage": 0.0
+        },
+        "Hospitals": {
+          "coverage": 0.0026
+        },
+        "Hostels": {
+          "coverage": 0.0003
+        },
+        "Hot Air Balloons": {
+          "coverage": 0.0001
+        },
+        "Hot Dogs": {
+          "coverage": 0.0052
+        },
+        "Hot Pot": {
+          "coverage": 0.0005
+        },
+        "Hot Tub & Pool": {
+          "coverage": 0.0017
+        },
+        "Hotel bar": {
+          "coverage": 0.0
+        },
+        "Hotels": {
+          "coverage": 0.0198
+        },
+        "Hotels & Travel": {
+          "coverage": 0.0389
+        },
+        "House Sitters": {
+          "coverage": 0.0001
+        },
+        "Housing Cooperatives": {
+          "coverage": 0.0
+        },
+        "Hungarian": {
+          "coverage": 0.0
+        },
+        "Hunting & Fishing Supplies": {
+          "coverage": 0.0006
+        },
+        "Hybrid Car Repair": {
+          "coverage": 0.0001
+        },
+        "Hydro-jetting": {
+          "coverage": 0.0004
+        },
+        "Hydroponics": {
+          "coverage": 0.0001
+        },
+        "Hydrotherapy": {
+          "coverage": 0.0001
+        },
+        "Hypnosis/Hypnotherapy": {
+          "coverage": 0.0003
+        },
+        "IP & Internet Law": {
+          "coverage": 0.0
+        },
+        "IT Services & Computer Repair": {
+          "coverage": 0.0079
+        },
+        "IV Hydration": {
+          "coverage": 0.0003
+        },
+        "Iberian": {
+          "coverage": 0.0001
+        },
+        "Ice Cream & Frozen Yogurt": {
+          "coverage": 0.0177
+        },
+        "Ice Delivery": {
+          "coverage": 0.0
+        },
+        "Immigration Law": {
+          "coverage": 0.0001
+        },
+        "Immunodermatologists": {
+          "coverage": 0.0
+        },
+        "Imported Food": {
+          "coverage": 0.0013
+        },
+        "Indian": {
+          "coverage": 0.0056
+        },
+        "Indonesian": {
+          "coverage": 0.0002
+        },
+        "Indoor Landscaping": {
+          "coverage": 0.0
+        },
+        "Indoor Playcentre": {
+          "coverage": 0.0005
+        },
+        "Infectious Disease Specialists": {
+          "coverage": 0.0
+        },
+        "Installment Loans": {
+          "coverage": 0.0001
+        },
+        "Insulation Installation": {
+          "coverage": 0.0006
+        },
+        "Insurance": {
+          "coverage": 0.0027
+        },
+        "Interior Design": {
+          "coverage": 0.0034
+        },
+        "Interlock Systems": {
+          "coverage": 0.0
+        },
+        "Internal Medicine": {
+          "coverage": 0.0014
+        },
+        "International": {
+          "coverage": 0.0
+        },
+        "International Grocery": {
+          "coverage": 0.0014
+        },
+        "Internet Cafes": {
+          "coverage": 0.001
+        },
+        "Internet Service Providers": {
+          "coverage": 0.0024
+        },
+        "Interval Training Gyms": {
+          "coverage": 0.0013
+        },
+        "Investing": {
+          "coverage": 0.0006
+        },
+        "Irish": {
+          "coverage": 0.0014
+        },
+        "Irish Pub": {
+          "coverage": 0.001
+        },
+        "Irrigation": {
+          "coverage": 0.0014
+        },
+        "Israeli": {
+          "coverage": 0.0
+        },
+        "Italian": {
+          "coverage": 0.0305
+        },
+        "Izakaya": {
+          "coverage": 0.0001
+        },
+        "Jails & Prisons": {
+          "coverage": 0.0
+        },
+        "Japanese": {
+          "coverage": 0.0122
+        },
+        "Japanese Curry": {
+          "coverage": 0.0001
+        },
+        "Jazz & Blues": {
+          "coverage": 0.0012
+        },
+        "Jet Skis": {
+          "coverage": 0.0002
+        },
+        "Jewelry": {
+          "coverage": 0.0102
+        },
+        "Jewelry Repair": {
+          "coverage": 0.0023
+        },
+        "Juice Bars & Smoothies": {
+          "coverage": 0.0112
+        },
+        "Junk Removal & Hauling": {
+          "coverage": 0.0027
+        },
+        "Junkyards": {
+          "coverage": 0.0001
+        },
+        "Karaoke": {
+          "coverage": 0.0022
+        },
+        "Karaoke Rental": {
+          "coverage": 0.0
+        },
+        "Karate": {
+          "coverage": 0.0002
+        },
+        "Kebab": {
+          "coverage": 0.0006
+        },
+        "Keys & Locksmiths": {
+          "coverage": 0.0021
+        },
+        "Kickboxing": {
+          "coverage": 0.0005
+        },
+        "Kids Activities": {
+          "coverage": 0.0024
+        },
+        "Kids Hair Salons": {
+          "coverage": 0.0003
+        },
+        "Kiosk": {
+          "coverage": 0.0
+        },
+        "Kitchen & Bath": {
+          "coverage": 0.0051
+        },
+        "Kitchen Incubators": {
+          "coverage": 0.0
+        },
+        "Kitchen Supplies": {
+          "coverage": 0.0002
+        },
+        "Kiteboarding": {
+          "coverage": 0.0
+        },
+        "Knife Sharpening": {
+          "coverage": 0.0002
+        },
+        "Knitting Supplies": {
+          "coverage": 0.0008
+        },
+        "Kombucha": {
+          "coverage": 0.0003
+        },
+        "Korean": {
+          "coverage": 0.0033
+        },
+        "Kosher": {
+          "coverage": 0.0005
+        },
+        "LAN Centers": {
+          "coverage": 0.0
+        },
+        "Laboratory Testing": {
+          "coverage": 0.0018
+        },
+        "Lactation Services": {
+          "coverage": 0.0002
+        },
+        "Lahmacun": {
+          "coverage": 0.0
+        },
+        "Lakes": {
+          "coverage": 0.0002
+        },
+        "Land Surveying": {
+          "coverage": 0.0
+        },
+        "Landmarks & Historical Buildings": {
+          "coverage": 0.002
+        },
+        "Landscape Architects": {
+          "coverage": 0.0016
+        },
+        "Landscaping": {
+          "coverage": 0.006
+        },
+        "Language Schools": {
+          "coverage": 0.0001
+        },
+        "Laotian": {
+          "coverage": 0.0003
+        },
+        "Laser Eye Surgery/Lasik": {
+          "coverage": 0.0013
+        },
+        "Laser Hair Removal": {
+          "coverage": 0.0026
+        },
+        "Laser Tag": {
+          "coverage": 0.0003
+        },
+        "Latin American": {
+          "coverage": 0.0054
+        },
+        "Laundromat": {
+          "coverage": 0.0013
+        },
+        "Laundry Services": {
+          "coverage": 0.0077
+        },
+        "Lawn Services": {
+          "coverage": 0.001
+        },
+        "Lawyers": {
+          "coverage": 0.0024
+        },
+        "Leather Goods": {
+          "coverage": 0.0009
+        },
+        "Lebanese": {
+          "coverage": 0.0006
+        },
+        "Legal Services": {
+          "coverage": 0.0005
+        },
+        "Leisure Centers": {
+          "coverage": 0.0003
+        },
+        "Libraries": {
+          "coverage": 0.0014
+        },
+        "Lice Services": {
+          "coverage": 0.0001
+        },
+        "Life Coach": {
+          "coverage": 0.0008
+        },
+        "Life Insurance": {
+          "coverage": 0.001
+        },
+        "Lighting Fixtures & Equipment": {
+          "coverage": 0.0022
+        },
+        "Lighting Stores": {
+          "coverage": 0.0003
+        },
+        "Limos": {
+          "coverage": 0.002
+        },
+        "Lingerie": {
+          "coverage": 0.0013
+        },
+        "Live/Raw Food": {
+          "coverage": 0.0006
+        },
+        "Livestock Feed & Supply": {
+          "coverage": 0.0003
+        },
+        "Local Fish Stores": {
+          "coverage": 0.0003
+        },
+        "Local Flavor": {
+          "coverage": 0.0107
+        },
+        "Local Services": {
+          "coverage": 0.0744
+        },
+        "Lounges": {
+          "coverage": 0.008
+        },
+        "Luggage": {
+          "coverage": 0.0003
+        },
+        "Luggage Storage": {
+          "coverage": 0.0
+        },
+        "Macarons": {
+          "coverage": 0.0004
+        },
+        "Machine & Tool Rental": {
+          "coverage": 0.0002
+        },
+        "Machine Shops": {
+          "coverage": 0.0001
+        },
+        "Magicians": {
+          "coverage": 0.0002
+        },
+        "Mags": {
+          "coverage": 0.0065
+        },
+        "Mailbox Centers": {
+          "coverage": 0.0023
+        },
+        "Makerspaces": {
+          "coverage": 0.0
+        },
+        "Makeup Artists": {
+          "coverage": 0.0065
+        },
+        "Malaysian": {
+          "coverage": 0.0002
+        },
+        "Marinas": {
+          "coverage": 0.0003
+        },
+        "Marketing": {
+          "coverage": 0.0008
+        },
+        "Martial Arts": {
+          "coverage": 0.0018
+        },
+        "Masonry/Concrete": {
+          "coverage": 0.0024
+        },
+        "Mass Media": {
+          "coverage": 0.001
+        },
+        "Massage": {
+          "coverage": 0.0142
+        },
+        "Massage Schools": {
+          "coverage": 0.0001
+        },
+        "Massage Therapy": {
+          "coverage": 0.009
+        },
+        "Matchmakers": {
+          "coverage": 0.0001
+        },
+        "Maternity Wear": {
+          "coverage": 0.0004
+        },
+        "Mattresses": {
+          "coverage": 0.0042
+        },
+        "Meaderies": {
+          "coverage": 0.0
+        },
+        "Meat Shops": {
+          "coverage": 0.0037
+        },
+        "Mediators": {
+          "coverage": 0.0001
+        },
+        "Medical Cannabis Referrals": {
+          "coverage": 0.0002
+        },
+        "Medical Centers": {
+          "coverage": 0.0075
+        },
+        "Medical Law": {
+          "coverage": 0.0001
+        },
+        "Medical Spas": {
+          "coverage": 0.0052
+        },
+        "Medical Supplies": {
+          "coverage": 0.0013
+        },
+        "Medical Transportation": {
+          "coverage": 0.0002
+        },
+        "Meditation Centers": {
+          "coverage": 0.0007
+        },
+        "Mediterranean": {
+          "coverage": 0.0084
+        },
+        "Memory Care": {
+          "coverage": 0.0001
+        },
+        "Men's Clothing": {
+          "coverage": 0.0085
+        },
+        "Men's Hair Salons": {
+          "coverage": 0.0055
+        },
+        "Metal Detector Services": {
+          "coverage": 0.0
+        },
+        "Metal Fabricators": {
+          "coverage": 0.0005
+        },
+        "Mexican": {
+          "coverage": 0.0307
+        },
+        "Middle Eastern": {
+          "coverage": 0.0039
+        },
+        "Middle Schools & High Schools": {
+          "coverage": 0.0005
+        },
+        "Midwives": {
+          "coverage": 0.0003
+        },
+        "Military Surplus": {
+          "coverage": 0.0001
+        },
+        "Mini Golf": {
+          "coverage": 0.0006
+        },
+        "Mobile Dent Repair": {
+          "coverage": 0.0003
+        },
+        "Mobile Home Dealers": {
+          "coverage": 0.0001
+        },
+        "Mobile Home Parks": {
+          "coverage": 0.0001
+        },
+        "Mobile Home Repair": {
+          "coverage": 0.0
+        },
+        "Mobile Phone Accessories": {
+          "coverage": 0.0031
+        },
+        "Mobile Phone Repair": {
+          "coverage": 0.0035
+        },
+        "Mobile Phones": {
+          "coverage": 0.0063
+        },
+        "Mobility Equipment Sales & Services": {
+          "coverage": 0.0002
+        },
+        "Modern European": {
+          "coverage": 0.0009
+        },
+        "Mohels": {
+          "coverage": 0.0
+        },
+        "Mongolian": {
+          "coverage": 0.0002
+        },
+        "Montessori Schools": {
+          "coverage": 0.0001
+        },
+        "Moroccan": {
+          "coverage": 0.0003
+        },
+        "Mortgage Brokers": {
+          "coverage": 0.0024
+        },
+        "Mortgage Lenders": {
+          "coverage": 0.0008
+        },
+        "Mortuary Services": {
+          "coverage": 0.0
+        },
+        "Mosques": {
+          "coverage": 0.0
+        },
+        "Motorcycle Dealers": {
+          "coverage": 0.0015
+        },
+        "Motorcycle Gear": {
+          "coverage": 0.0006
+        },
+        "Motorcycle Parts & Supplies": {
+          "coverage": 0.0001
+        },
+        "Motorcycle Rental": {
+          "coverage": 0.0001
+        },
+        "Motorcycle Repair": {
+          "coverage": 0.0013
+        },
+        "Motorsport Vehicle Dealers": {
+          "coverage": 0.0001
+        },
+        "Motorsport Vehicle Repairs": {
+          "coverage": 0.0001
+        },
+        "Mountain Biking": {
+          "coverage": 0.0004
+        },
+        "Movers": {
+          "coverage": 0.0062
+        },
+        "Muay Thai": {
+          "coverage": 0.0001
+        },
+        "Municipality": {
+          "coverage": 0.0
+        },
+        "Museums": {
+          "coverage": 0.0028
+        },
+        "Music & DVDs": {
+          "coverage": 0.0015
+        },
+        "Music & Video": {
+          "coverage": 0.0065
+        },
+        "Music Production Services": {
+          "coverage": 0.0001
+        },
+        "Music Venues": {
+          "coverage": 0.0073
+        },
+        "Musical Instrument Services": {
+          "coverage": 0.0012
+        },
+        "Musical Instruments & Teachers": {
+          "coverage": 0.0018
+        },
+        "Musicians": {
+          "coverage": 0.0003
+        },
+        "Nail Salons": {
+          "coverage": 0.0308
+        },
+        "Nail Technicians": {
+          "coverage": 0.0021
+        },
+        "Nanny Services": {
+          "coverage": 0.0001
+        },
+        "Natural Gas Suppliers": {
+          "coverage": 0.0
+        },
+        "Naturopathic/Holistic": {
+          "coverage": 0.0015
+        },
+        "Nephrologists": {
+          "coverage": 0.0
+        },
+        "Neurologist": {
+          "coverage": 0.0004
+        },
+        "Neuropathologists": {
+          "coverage": 0.0
+        },
+        "Neurotologists": {
+          "coverage": 0.0
+        },
+        "New Mexican Cuisine": {
+          "coverage": 0.0007
+        },
+        "Newspapers & Magazines": {
+          "coverage": 0.0003
+        },
+        "Nicaraguan": {
+          "coverage": 0.0
+        },
+        "Nightlife": {
+          "coverage": 0.0818
+        },
+        "Noodles": {
+          "coverage": 0.0025
+        },
+        "Notaries": {
+          "coverage": 0.0034
+        },
+        "Nudist": {
+          "coverage": 0.0
+        },
+        "Nurse Practitioner": {
+          "coverage": 0.0001
+        },
+        "Nurseries & Gardening": {
+          "coverage": 0.0059
+        },
+        "Nursing Schools": {
+          "coverage": 0.0
+        },
+        "Nutritionists": {
+          "coverage": 0.0029
+        },
+        "Observatories": {
+          "coverage": 0.0
+        },
+        "Obstetricians & Gynecologists": {
+          "coverage": 0.0021
+        },
+        "Occupational Therapy": {
+          "coverage": 0.0007
+        },
+        "Office Cleaning": {
+          "coverage": 0.0025
+        },
+        "Office Equipment": {
+          "coverage": 0.0017
+        },
+        "Officiants": {
+          "coverage": 0.0003
+        },
+        "Oil Change Stations": {
+          "coverage": 0.0157
+        },
+        "Olive Oil": {
+          "coverage": 0.0002
+        },
+        "Oncologist": {
+          "coverage": 0.0001
+        },
+        "Opera & Ballet": {
+          "coverage": 0.0001
+        },
+        "Ophthalmologists": {
+          "coverage": 0.0028
+        },
+        "Optometrists": {
+          "coverage": 0.0074
+        },
+        "Oral Surgeons": {
+          "coverage": 0.005
+        },
+        "Organic Stores": {
+          "coverage": 0.0019
+        },
+        "Oriental": {
+          "coverage": 0.0
+        },
+        "Orthodontists": {
+          "coverage": 0.0044
+        },
+        "Orthopedists": {
+          "coverage": 0.0015
+        },
+        "Orthotics": {
+          "coverage": 0.0005
+        },
+        "Osteopathic Physicians": {
+          "coverage": 0.0003
+        },
+        "Osteopaths": {
+          "coverage": 0.0
+        },
+        "Otologists": {
+          "coverage": 0.0
+        },
+        "Outdoor Furniture Stores": {
+          "coverage": 0.0005
+        },
+        "Outdoor Gear": {
+          "coverage": 0.0025
+        },
+        "Outdoor Movies": {
+          "coverage": 0.0
+        },
+        "Outdoor Power Equipment Services": {
+          "coverage": 0.0002
+        },
+        "Outlet Stores": {
+          "coverage": 0.0012
+        },
+        "Oxygen Bars": {
+          "coverage": 0.0
+        },
+        "Packing Services": {
+          "coverage": 0.0018
+        },
+        "Packing Supplies": {
+          "coverage": 0.0011
+        },
+        "Paddleboarding": {
+          "coverage": 0.0007
+        },
+        "Pain Management": {
+          "coverage": 0.0008
+        },
+        "Paint & Sip": {
+          "coverage": 0.0007
+        },
+        "Paint Stores": {
+          "coverage": 0.0008
+        },
+        "Paint-Your-Own Pottery": {
+          "coverage": 0.0002
+        },
+        "Paintball": {
+          "coverage": 0.0002
+        },
+        "Painters": {
+          "coverage": 0.003
+        },
+        "Pakistani": {
+          "coverage": 0.0015
+        },
+        "Pan Asian": {
+          "coverage": 0.0005
+        },
+        "Pancakes": {
+          "coverage": 0.0001
+        },
+        "Paragliding": {
+          "coverage": 0.0
+        },
+        "Parasailing": {
+          "coverage": 0.0001
+        },
+        "Parent Cafes": {
+          "coverage": 0.0
+        },
+        "Parenting Classes": {
+          "coverage": 0.0001
+        },
+        "Parking": {
+          "coverage": 0.0016
+        },
+        "Parklets": {
+          "coverage": 0.0
+        },
+        "Parks": {
+          "coverage": 0.0066
+        },
+        "Party & Event Planning": {
+          "coverage": 0.0071
+        },
+        "Party Bike Rentals": {
+          "coverage": 0.0001
+        },
+        "Party Bus Rentals": {
+          "coverage": 0.0008
+        },
+        "Party Characters": {
+          "coverage": 0.0001
+        },
+        "Party Equipment Rentals": {
+          "coverage": 0.0013
+        },
+        "Party Supplies": {
+          "coverage": 0.0021
+        },
+        "Passport & Visa Services": {
+          "coverage": 0.0001
+        },
+        "Pasta Shops": {
+          "coverage": 0.0013
+        },
+        "Patent Law": {
+          "coverage": 0.0
+        },
+        "Pathologists": {
+          "coverage": 0.0
+        },
+        "Patio Coverings": {
+          "coverage": 0.0004
+        },
+        "Patisserie/Cake Shop": {
+          "coverage": 0.0008
+        },
+        "Pawn Shops": {
+          "coverage": 0.0007
+        },
+        "Payroll Services": {
+          "coverage": 0.0003
+        },
+        "Pediatric Dentists": {
+          "coverage": 0.0035
+        },
+        "Pediatricians": {
+          "coverage": 0.0017
+        },
+        "Pedicabs": {
+          "coverage": 0.0
+        },
+        "Performing Arts": {
+          "coverage": 0.0039
+        },
+        "Perfume": {
+          "coverage": 0.0004
+        },
+        "Periodontists": {
+          "coverage": 0.0031
+        },
+        "Permanent Makeup": {
+          "coverage": 0.0025
+        },
+        "Persian/Iranian": {
+          "coverage": 0.0003
+        },
+        "Personal Assistants": {
+          "coverage": 0.0002
+        },
+        "Personal Care Services": {
+          "coverage": 0.0002
+        },
+        "Personal Chefs": {
+          "coverage": 0.0008
+        },
+        "Personal Injury Law": {
+          "coverage": 0.001
+        },
+        "Personal Shopping": {
+          "coverage": 0.0011
+        },
+        "Peruvian": {
+          "coverage": 0.0005
+        },
+        "Pest Control": {
+          "coverage": 0.0033
+        },
+        "Pet Adoption": {
+          "coverage": 0.0011
+        },
+        "Pet Boarding": {
+          "coverage": 0.0028
+        },
+        "Pet Breeders": {
+          "coverage": 0.0001
+        },
+        "Pet Cremation Services": {
+          "coverage": 0.0002
+        },
+        "Pet Groomers": {
+          "coverage": 0.0103
+        },
+        "Pet Hospice": {
+          "coverage": 0.0002
+        },
+        "Pet Insurance": {
+          "coverage": 0.0001
+        },
+        "Pet Photography": {
+          "coverage": 0.0001
+        },
+        "Pet Services": {
+          "coverage": 0.0174
+        },
+        "Pet Sitting": {
+          "coverage": 0.009
+        },
+        "Pet Stores": {
+          "coverage": 0.0069
+        },
+        "Pet Training": {
+          "coverage": 0.0037
+        },
+        "Pet Transportation": {
+          "coverage": 0.0002
+        },
+        "Pet Waste Removal": {
+          "coverage": 0.0001
+        },
+        "Pets": {
+          "coverage": 0.025
+        },
+        "Petting Zoos": {
+          "coverage": 0.0001
+        },
+        "Pharmacy": {
+          "coverage": 0.0034
+        },
+        "Phlebologists": {
+          "coverage": 0.0
+        },
+        "Photo Booth Rentals": {
+          "coverage": 0.0006
+        },
+        "Photographers": {
+          "coverage": 0.0033
+        },
+        "Photography Classes": {
+          "coverage": 0.0001
+        },
+        "Photography Stores & Services": {
+          "coverage": 0.0031
+        },
+        "Physical Therapy": {
+          "coverage": 0.0037
+        },
+        "Piano Bars": {
+          "coverage": 0.0003
+        },
+        "Piano Services": {
+          "coverage": 0.0003
+        },
+        "Piano Stores": {
+          "coverage": 0.0001
+        },
+        "Pick Your Own Farms": {
+          "coverage": 0.0002
+        },
+        "Pickleball": {
+          "coverage": 0.0
+        },
+        "Piercing": {
+          "coverage": 0.0025
+        },
+        "Pilates": {
+          "coverage": 0.002
+        },
+        "Pita": {
+          "coverage": 0.0
+        },
+        "Pizza": {
+          "coverage": 0.0473
+        },
+        "Placenta Encapsulations": {
+          "coverage": 0.0
+        },
+        "Planetarium": {
+          "coverage": 0.0
+        },
+        "Plastic Surgeons": {
+          "coverage": 0.0007
+        },
+        "Playgrounds": {
+          "coverage": 0.0018
+        },
+        "Playsets": {
+          "coverage": 0.0
+        },
+        "Plumbing": {
+          "coverage": 0.0074
+        },
+        "Plus Size Fashion": {
+          "coverage": 0.0009
+        },
+        "Podiatrists": {
+          "coverage": 0.0008
+        },
+        "Poke": {
+          "coverage": 0.0014
+        },
+        "Pole Dancing Classes": {
+          "coverage": 0.0002
+        },
+        "Police Departments": {
+          "coverage": 0.0002
+        },
+        "Polish": {
+          "coverage": 0.0003
+        },
+        "Pool & Billiards": {
+          "coverage": 0.0003
+        },
+        "Pool & Hot Tub Service": {
+          "coverage": 0.002
+        },
+        "Pool Cleaners": {
+          "coverage": 0.0014
+        },
+        "Pool Halls": {
+          "coverage": 0.0011
+        },
+        "Pop-Up Restaurants": {
+          "coverage": 0.0005
+        },
+        "Pop-up Shops": {
+          "coverage": 0.0002
+        },
+        "Popcorn Shops": {
+          "coverage": 0.0004
+        },
+        "Portable Toilet Services": {
+          "coverage": 0.0
+        },
+        "Portuguese": {
+          "coverage": 0.0002
+        },
+        "Post Offices": {
+          "coverage": 0.0022
+        },
+        "Poutineries": {
+          "coverage": 0.0002
+        },
+        "Powder Coating": {
+          "coverage": 0.0001
+        },
+        "Prenatal/Perinatal Care": {
+          "coverage": 0.0002
+        },
+        "Preschools": {
+          "coverage": 0.0023
+        },
+        "Pressure Washers": {
+          "coverage": 0.0021
+        },
+        "Pretzels": {
+          "coverage": 0.001
+        },
+        "Preventive Medicine": {
+          "coverage": 0.0001
+        },
+        "Print Media": {
+          "coverage": 0.0005
+        },
+        "Printing Services": {
+          "coverage": 0.0052
+        },
+        "Private Investigation": {
+          "coverage": 0.0001
+        },
+        "Private Jet Charter": {
+          "coverage": 0.0
+        },
+        "Private Schools": {
+          "coverage": 0.0001
+        },
+        "Private Tutors": {
+          "coverage": 0.0003
+        },
+        "Process Servers": {
+          "coverage": 0.0
+        },
+        "Proctologists": {
+          "coverage": 0.0
+        },
+        "Product Design": {
+          "coverage": 0.0
+        },
+        "Professional Services": {
+          "coverage": 0.0215
+        },
+        "Professional Sports Teams": {
+          "coverage": 0.0004
+        },
+        "Propane": {
+          "coverage": 0.001
+        },
+        "Property Management": {
+          "coverage": 0.005
+        },
+        "Props": {
+          "coverage": 0.0
+        },
+        "Prosthetics": {
+          "coverage": 0.0001
+        },
+        "Prosthodontists": {
+          "coverage": 0.0003
+        },
+        "Psychiatrists": {
+          "coverage": 0.0006
+        },
+        "Psychic Mediums": {
+          "coverage": 0.0002
+        },
+        "Psychics": {
+          "coverage": 0.0004
+        },
+        "Psychologists": {
+          "coverage": 0.0002
+        },
+        "Public Adjusters": {
+          "coverage": 0.0001
+        },
+        "Public Art": {
+          "coverage": 0.0001
+        },
+        "Public Markets": {
+          "coverage": 0.0002
+        },
+        "Public Relations": {
+          "coverage": 0.0001
+        },
+        "Public Services & Government": {
+          "coverage": 0.0081
+        },
+        "Public Transportation": {
+          "coverage": 0.0009
+        },
+        "Pubs": {
+          "coverage": 0.0121
+        },
+        "Puerto Rican": {
+          "coverage": 0.0007
+        },
+        "Pulmonologist": {
+          "coverage": 0.0001
+        },
+        "Pumpkin Patches": {
+          "coverage": 0.0002
+        },
+        "Qi Gong": {
+          "coverage": 0.0001
+        },
+        "RV Dealers": {
+          "coverage": 0.0007
+        },
+        "RV Parks": {
+          "coverage": 0.0006
+        },
+        "RV Rental": {
+          "coverage": 0.0004
+        },
+        "RV Repair": {
+          "coverage": 0.0007
+        },
+        "Race Tracks": {
+          "coverage": 0.0002
+        },
+        "Races & Competitions": {
+          "coverage": 0.0001
+        },
+        "Racing Experience": {
+          "coverage": 0.0
+        },
+        "Radio Stations": {
+          "coverage": 0.0003
+        },
+        "Radiologists": {
+          "coverage": 0.0005
+        },
+        "Rafting/Kayaking": {
+          "coverage": 0.0008
+        },
+        "Ramen": {
+          "coverage": 0.0015
+        },
+        "Ranches": {
+          "coverage": 0.0
+        },
+        "Real Estate": {
+          "coverage": 0.0237
+        },
+        "Real Estate Agents": {
+          "coverage": 0.0037
+        },
+        "Real Estate Law": {
+          "coverage": 0.0003
+        },
+        "Real Estate Photography": {
+          "coverage": 0.0002
+        },
+        "Real Estate Services": {
+          "coverage": 0.0053
+        },
+        "Recording & Rehearsal Studios": {
+          "coverage": 0.0002
+        },
+        "Recreation Centers": {
+          "coverage": 0.0016
+        },
+        "Recycling Center": {
+          "coverage": 0.0011
+        },
+        "Refinishing Services": {
+          "coverage": 0.001
+        },
+        "Reflexology": {
+          "coverage": 0.0027
+        },
+        "Registration Services": {
+          "coverage": 0.0005
+        },
+        "Rehabilitation Center": {
+          "coverage": 0.0015
+        },
+        "Reiki": {
+          "coverage": 0.0013
+        },
+        "Religious Items": {
+          "coverage": 0.0001
+        },
+        "Religious Organizations": {
+          "coverage": 0.0019
+        },
+        "Religious Schools": {
+          "coverage": 0.0001
+        },
+        "Reproductive Health Services": {
+          "coverage": 0.0002
+        },
+        "Reptile Shops": {
+          "coverage": 0.0001
+        },
+        "Resorts": {
+          "coverage": 0.0011
+        },
+        "Rest Stops": {
+          "coverage": 0.0001
+        },
+        "Restaurant Supplies": {
+          "coverage": 0.0002
+        },
+        "Restaurants": {
+          "coverage": 0.3483
+        },
+        "Retina Specialists": {
+          "coverage": 0.0001
+        },
+        "Retirement Homes": {
+          "coverage": 0.0006
+        },
+        "Rheumatologists": {
+          "coverage": 0.0001
+        },
+        "Roadside Assistance": {
+          "coverage": 0.0011
+        },
+        "Rock Climbing": {
+          "coverage": 0.0002
+        },
+        "Rodeo": {
+          "coverage": 0.0
+        },
+        "Rolfing": {
+          "coverage": 0.0001
+        },
+        "Roman": {
+          "coverage": 0.0
+        },
+        "Roof Inspectors": {
+          "coverage": 0.0003
+        },
+        "Roofing": {
+          "coverage": 0.0031
+        },
+        "Rugs": {
+          "coverage": 0.001
+        },
+        "Russian": {
+          "coverage": 0.0003
+        },
+        "Safe Stores": {
+          "coverage": 0.0001
+        },
+        "Safety Equipment": {
+          "coverage": 0.0001
+        },
+        "Sailing": {
+          "coverage": 0.0001
+        },
+        "Salad": {
+          "coverage": 0.0204
+        },
+        "Salvadoran": {
+          "coverage": 0.0004
+        },
+        "Sandblasting": {
+          "coverage": 0.0
+        },
+        "Sandwiches": {
+          "coverage": 0.0557
+        },
+        "Sardinian": {
+          "coverage": 0.0
+        },
+        "Sauna Installation & Repair": {
+          "coverage": 0.0
+        },
+        "Saunas": {
+          "coverage": 0.0004
+        },
+        "Scandinavian": {
+          "coverage": 0.0001
+        },
+        "Scavenger Hunts": {
+          "coverage": 0.0001
+        },
+        "Scooter Rentals": {
+          "coverage": 0.0001
+        },
+        "Scooter Tours": {
+          "coverage": 0.0001
+        },
+        "Scottish": {
+          "coverage": 0.0
+        },
+        "Screen Printing": {
+          "coverage": 0.0005
+        },
+        "Screen Printing/T-Shirt Printing": {
+          "coverage": 0.0008
+        },
+        "Scuba Diving": {
+          "coverage": 0.0002
+        },
+        "Seafood": {
+          "coverage": 0.0236
+        },
+        "Seafood Markets": {
+          "coverage": 0.0022
+        },
+        "Security Services": {
+          "coverage": 0.0004
+        },
+        "Security Systems": {
+          "coverage": 0.0019
+        },
+        "Self Storage": {
+          "coverage": 0.0052
+        },
+        "Self-defense Classes": {
+          "coverage": 0.0002
+        },
+        "Senegalese": {
+          "coverage": 0.0
+        },
+        "Senior Centers": {
+          "coverage": 0.0
+        },
+        "Septic Services": {
+          "coverage": 0.0008
+        },
+        "Serbo Croatian": {
+          "coverage": 0.0
+        },
+        "Service Stations": {
+          "coverage": 0.0003
+        },
+        "Session Photography": {
+          "coverage": 0.0023
+        },
+        "Sewing & Alterations": {
+          "coverage": 0.0056
+        },
+        "Sex Therapists": {
+          "coverage": 0.0
+        },
+        "Shades & Blinds": {
+          "coverage": 0.0018
+        },
+        "Shanghainese": {
+          "coverage": 0.0001
+        },
+        "Shared Office Spaces": {
+          "coverage": 0.0004
+        },
+        "Shaved Ice": {
+          "coverage": 0.0018
+        },
+        "Shaved Snow": {
+          "coverage": 0.0001
+        },
+        "Sheds & Outdoor Storage": {
+          "coverage": 0.0
+        },
+        "Shipping Centers": {
+          "coverage": 0.0053
+        },
+        "Shoe Repair": {
+          "coverage": 0.0017
+        },
+        "Shoe Shine": {
+          "coverage": 0.0002
+        },
+        "Shoe Stores": {
+          "coverage": 0.0068
+        },
+        "Shopping": {
+          "coverage": 0.1622
+        },
+        "Shopping Centers": {
+          "coverage": 0.002
+        },
+        "Shredding Services": {
+          "coverage": 0.0002
+        },
+        "Shutters": {
+          "coverage": 0.0006
+        },
+        "Sicilian": {
+          "coverage": 0.0001
+        },
+        "Siding": {
+          "coverage": 0.0012
+        },
+        "Signmaking": {
+          "coverage": 0.0014
+        },
+        "Silent Disco": {
+          "coverage": 0.0
+        },
+        "Singaporean": {
+          "coverage": 0.0001
+        },
+        "Skate Parks": {
+          "coverage": 0.0002
+        },
+        "Skate Shops": {
+          "coverage": 0.0003
+        },
+        "Skating Rinks": {
+          "coverage": 0.0007
+        },
+        "Ski & Snowboard Shops": {
+          "coverage": 0.0003
+        },
+        "Ski Resorts": {
+          "coverage": 0.0001
+        },
+        "Ski Schools": {
+          "coverage": 0.0
+        },
+        "Skiing": {
+          "coverage": 0.0
+        },
+        "Skilled Nursing": {
+          "coverage": 0.0003
+        },
+        "Skin Care": {
+          "coverage": 0.0166
+        },
+        "Skydiving": {
+          "coverage": 0.0001
+        },
+        "Sledding": {
+          "coverage": 0.0
+        },
+        "Sleep Specialists": {
+          "coverage": 0.0003
+        },
+        "Smog Check Stations": {
+          "coverage": 0.0015
+        },
+        "Smokehouse": {
+          "coverage": 0.0005
+        },
+        "Snorkeling": {
+          "coverage": 0.0001
+        },
+        "Snow Removal": {
+          "coverage": 0.0011
+        },
+        "Soccer": {
+          "coverage": 0.0002
+        },
+        "Social Clubs": {
+          "coverage": 0.0009
+        },
+        "Social Security Law": {
+          "coverage": 0.0001
+        },
+        "Software Development": {
+          "coverage": 0.0001
+        },
+        "Solar Installation": {
+          "coverage": 0.0008
+        },
+        "Solar Panel Cleaning": {
+          "coverage": 0.0001
+        },
+        "Somali": {
+          "coverage": 0.0
+        },
+        "Soul Food": {
+          "coverage": 0.0036
+        },
+        "Soup": {
+          "coverage": 0.0071
+        },
+        "South African": {
+          "coverage": 0.0
+        },
+        "Southern": {
+          "coverage": 0.0066
+        },
+        "Souvenir Shops": {
+          "coverage": 0.0008
+        },
+        "Spanish": {
+          "coverage": 0.0019
+        },
+        "Speakeasies": {
+          "coverage": 0.0002
+        },
+        "Special Education": {
+          "coverage": 0.0004
+        },
+        "Specialty Food": {
+          "coverage": 0.0282
+        },
+        "Specialty Schools": {
+          "coverage": 0.0062
+        },
+        "Speech Therapists": {
+          "coverage": 0.0001
+        },
+        "Sperm Clinic": {
+          "coverage": 0.0
+        },
+        "Spin Classes": {
+          "coverage": 0.0
+        },
+        "Spine Surgeons": {
+          "coverage": 0.0002
+        },
+        "Spiritual Shop": {
+          "coverage": 0.0006
+        },
+        "Sport Equipment Hire": {
+          "coverage": 0.0
+        },
+        "Sporting Goods": {
+          "coverage": 0.011
+        },
+        "Sports Bars": {
+          "coverage": 0.0141
+        },
+        "Sports Betting": {
+          "coverage": 0.0
+        },
+        "Sports Clubs": {
+          "coverage": 0.0021
+        },
+        "Sports Medicine": {
+          "coverage": 0.0019
+        },
+        "Sports Psychologists": {
+          "coverage": 0.0
+        },
+        "Sports Wear": {
+          "coverage": 0.0038
+        },
+        "Spray Tanning": {
+          "coverage": 0.0022
+        },
+        "Squash": {
+          "coverage": 0.0
+        },
+        "Sri Lankan": {
+          "coverage": 0.0
+        },
+        "Stadiums & Arenas": {
+          "coverage": 0.0009
+        },
+        "Steakhouses": {
+          "coverage": 0.01
+        },
+        "Stonemasons": {
+          "coverage": 0.0
+        },
+        "Storefront Clinics": {
+          "coverage": 0.0
+        },
+        "Street Vendors": {
+          "coverage": 0.0024
+        },
+        "Strip Clubs": {
+          "coverage": 0.0002
+        },
+        "Striptease Dancers": {
+          "coverage": 0.0
+        },
+        "Structural Engineers": {
+          "coverage": 0.0001
+        },
+        "Stucco Services": {
+          "coverage": 0.0004
+        },
+        "Sugaring": {
+          "coverage": 0.0003
+        },
+        "Summer Camps": {
+          "coverage": 0.0015
+        },
+        "Sunglasses": {
+          "coverage": 0.0003
+        },
+        "Supernatural Readings": {
+          "coverage": 0.0009
+        },
+        "Supper Clubs": {
+          "coverage": 0.0
+        },
+        "Surf Schools": {
+          "coverage": 0.0001
+        },
+        "Surf Shop": {
+          "coverage": 0.0002
+        },
+        "Surfing": {
+          "coverage": 0.0002
+        },
+        "Surgeons": {
+          "coverage": 0.0008
+        },
+        "Sushi Bars": {
+          "coverage": 0.0114
+        },
+        "Swimming Lessons/Schools": {
+          "coverage": 0.0006
+        },
+        "Swimming Pools": {
+          "coverage": 0.0018
+        },
+        "Swimwear": {
+          "coverage": 0.0007
+        },
+        "Synagogues": {
+          "coverage": 0.0001
+        },
+        "Syrian": {
+          "coverage": 0.0001
+        },
+        "Szechuan": {
+          "coverage": 0.0008
+        },
+        "TV Mounting": {
+          "coverage": 0.0004
+        },
+        "Tabletop Games": {
+          "coverage": 0.0005
+        },
+        "Tableware": {
+          "coverage": 0.0001
+        },
+        "Tacos": {
+          "coverage": 0.0068
+        },
+        "Taekwondo": {
+          "coverage": 0.0001
+        },
+        "Tai Chi": {
+          "coverage": 0.0001
+        },
+        "Taiwanese": {
+          "coverage": 0.0005
+        },
+        "Talent Agencies": {
+          "coverage": 0.0001
+        },
+        "Tanning": {
+          "coverage": 0.0044
+        },
+        "Tanning Beds": {
+          "coverage": 0.0009
+        },
+        "Tapas Bars": {
+          "coverage": 0.0015
+        },
+        "Tapas/Small Plates": {
+          "coverage": 0.0029
+        },
+        "Tasting Classes": {
+          "coverage": 0.0003
+        },
+        "Tattoo": {
+          "coverage": 0.0041
+        },
+        "Tattoo Removal": {
+          "coverage": 0.0006
+        },
+        "Tax Law": {
+          "coverage": 0.0001
+        },
+        "Tax Services": {
+          "coverage": 0.0009
+        },
+        "Taxidermy": {
+          "coverage": 0.0
+        },
+        "Taxis": {
+          "coverage": 0.0017
+        },
+        "Tea Rooms": {
+          "coverage": 0.0015
+        },
+        "Teacher Supplies": {
+          "coverage": 0.0001
+        },
+        "Team Building Activities": {
+          "coverage": 0.0009
+        },
+        "Teeth Whitening": {
+          "coverage": 0.0008
+        },
+        "Telecommunications": {
+          "coverage": 0.0026
+        },
+        "Television Service Providers": {
+          "coverage": 0.0011
+        },
+        "Television Stations": {
+          "coverage": 0.0002
+        },
+        "Tenant and Eviction Law": {
+          "coverage": 0.0
+        },
+        "Tennis": {
+          "coverage": 0.0006
+        },
+        "Teppanyaki": {
+          "coverage": 0.0003
+        },
+        "Test Preparation": {
+          "coverage": 0.0002
+        },
+        "Tex-Mex": {
+          "coverage": 0.0061
+        },
+        "Thai": {
+          "coverage": 0.0065
+        },
+        "Themed Cafes": {
+          "coverage": 0.0002
+        },
+        "Threading Services": {
+          "coverage": 0.001
+        },
+        "Thrift Stores": {
+          "coverage": 0.0041
+        },
+        "Ticket Sales": {
+          "coverage": 0.0002
+        },
+        "Tiki Bars": {
+          "coverage": 0.0005
+        },
+        "Tiling": {
+          "coverage": 0.0016
+        },
+        "Tires": {
+          "coverage": 0.0165
+        },
+        "Title Loans": {
+          "coverage": 0.0001
+        },
+        "Tobacco Shops": {
+          "coverage": 0.0046
+        },
+        "Tonkatsu": {
+          "coverage": 0.0
+        },
+        "Tours": {
+          "coverage": 0.0056
+        },
+        "Towing": {
+          "coverage": 0.0046
+        },
+        "Town Car Service": {
+          "coverage": 0.0004
+        },
+        "Town Hall": {
+          "coverage": 0.0
+        },
+        "Toy Stores": {
+          "coverage": 0.0035
+        },
+        "Trade Fairs": {
+          "coverage": 0.0
+        },
+        "Traditional Chinese Medicine": {
+          "coverage": 0.0011
+        },
+        "Traditional Clothing": {
+          "coverage": 0.0
+        },
+        "Traffic Schools": {
+          "coverage": 0.0
+        },
+        "Traffic Ticketing Law": {
+          "coverage": 0.0001
+        },
+        "Trailer Dealers": {
+          "coverage": 0.0002
+        },
+        "Trailer Rental": {
+          "coverage": 0.0002
+        },
+        "Trailer Repair": {
+          "coverage": 0.0003
+        },
+        "Train Stations": {
+          "coverage": 0.0002
+        },
+        "Trainers": {
+          "coverage": 0.0097
+        },
+        "Trains": {
+          "coverage": 0.0001
+        },
+        "Trampoline Parks": {
+          "coverage": 0.0005
+        },
+        "Translation Services": {
+          "coverage": 0.0001
+        },
+        "Transmission Repair": {
+          "coverage": 0.0043
+        },
+        "Transportation": {
+          "coverage": 0.0057
+        },
+        "Travel Agents": {
+          "coverage": 0.0002
+        },
+        "Travel Services": {
+          "coverage": 0.0018
+        },
+        "Tree Services": {
+          "coverage": 0.0037
+        },
+        "Trinidadian": {
+          "coverage": 0.0001
+        },
+        "Trivia Hosts": {
+          "coverage": 0.0
+        },
+        "Trophy Shops": {
+          "coverage": 0.0001
+        },
+        "Truck Rental": {
+          "coverage": 0.0014
+        },
+        "Trusts": {
+          "coverage": 0.0002
+        },
+        "Tubing": {
+          "coverage": 0.0001
+        },
+        "Tui Na": {
+          "coverage": 0.0003
+        },
+        "Turkish": {
+          "coverage": 0.0006
+        },
+        "Tuscan": {
+          "coverage": 0.0
+        },
+        "Tutoring Centers": {
+          "coverage": 0.0004
+        },
+        "Ukrainian": {
+          "coverage": 0.0001
+        },
+        "Ultrasound Imaging Centers": {
+          "coverage": 0.0001
+        },
+        "Undersea/Hyperbaric Medicine": {
+          "coverage": 0.0
+        },
+        "Uniforms": {
+          "coverage": 0.0006
+        },
+        "University Housing": {
+          "coverage": 0.0008
+        },
+        "Unofficial Yelp Events": {
+          "coverage": 0.0
+        },
+        "Urgent Care": {
+          "coverage": 0.0036
+        },
+        "Urologists": {
+          "coverage": 0.0002
+        },
+        "Used": {
+          "coverage": 0.005
+        },
+        "Used Bookstore": {
+          "coverage": 0.0003
+        },
+        "Used Car Dealers": {
+          "coverage": 0.0029
+        },
+        "Utilities": {
+          "coverage": 0.0007
+        },
+        "Uzbek": {
+          "coverage": 0.0001
+        },
+        "Vacation Rental Agents": {
+          "coverage": 0.0001
+        },
+        "Vacation Rentals": {
+          "coverage": 0.0009
+        },
+        "Valet Services": {
+          "coverage": 0.0001
+        },
+        "Vape Shops": {
+          "coverage": 0.0031
+        },
+        "Vascular Medicine": {
+          "coverage": 0.0001
+        },
+        "Vegan": {
+          "coverage": 0.0057
+        },
+        "Vegetarian": {
+          "coverage": 0.0077
+        },
+        "Vehicle Shipping": {
+          "coverage": 0.0002
+        },
+        "Vehicle Wraps": {
+          "coverage": 0.0006
+        },
+        "Venezuelan": {
+          "coverage": 0.0003
+        },
+        "Venues & Event Spaces": {
+          "coverage": 0.0165
+        },
+        "Vermouth Bars": {
+          "coverage": 0.0
+        },
+        "Veterans Organizations": {
+          "coverage": 0.0
+        },
+        "Veterinarians": {
+          "coverage": 0.0092
+        },
+        "Video Game Stores": {
+          "coverage": 0.0007
+        },
+        "Video/Film Production": {
+          "coverage": 0.0006
+        },
+        "Videographers": {
+          "coverage": 0.0005
+        },
+        "Videos & Video Game Rental": {
+          "coverage": 0.0012
+        },
+        "Vietnamese": {
+          "coverage": 0.0057
+        },
+        "Vintage & Consignment": {
+          "coverage": 0.005
+        },
+        "Vinyl Records": {
+          "coverage": 0.0009
+        },
+        "Virtual Reality Centers": {
+          "coverage": 0.0002
+        },
+        "Visitor Centers": {
+          "coverage": 0.0001
+        },
+        "Vitamins & Supplements": {
+          "coverage": 0.0017
+        },
+        "Vocal Coach": {
+          "coverage": 0.0
+        },
+        "Vocational & Technical School": {
+          "coverage": 0.0004
+        },
+        "Waffles": {
+          "coverage": 0.0013
+        },
+        "Waldorf Schools": {
+          "coverage": 0.0
+        },
+        "Walk-in Clinics": {
+          "coverage": 0.001
+        },
+        "Walking Tours": {
+          "coverage": 0.0007
+        },
+        "Wallpapering": {
+          "coverage": 0.0001
+        },
+        "Watch Repair": {
+          "coverage": 0.0016
+        },
+        "Watches": {
+          "coverage": 0.0022
+        },
+        "Water Delivery": {
+          "coverage": 0.0002
+        },
+        "Water Heater Installation/Repair": {
+          "coverage": 0.0037
+        },
+        "Water Parks": {
+          "coverage": 0.0002
+        },
+        "Water Purification Services": {
+          "coverage": 0.0009
+        },
+        "Water Stores": {
+          "coverage": 0.0001
+        },
+        "Water Suppliers": {
+          "coverage": 0.0
+        },
+        "Waterproofing": {
+          "coverage": 0.0006
+        },
+        "Waxing": {
+          "coverage": 0.0155
+        },
+        "Web Design": {
+          "coverage": 0.0008
+        },
+        "Wedding Chapels": {
+          "coverage": 0.0002
+        },
+        "Wedding Planning": {
+          "coverage": 0.0047
+        },
+        "Weight Loss Centers": {
+          "coverage": 0.0029
+        },
+        "Well Drilling": {
+          "coverage": 0.0001
+        },
+        "Whale Watching Tours": {
+          "coverage": 0.0
+        },
+        "Wheel & Rim Repair": {
+          "coverage": 0.002
+        },
+        "Whiskey Bars": {
+          "coverage": 0.0006
+        },
+        "Wholesale Stores": {
+          "coverage": 0.0018
+        },
+        "Wholesalers": {
+          "coverage": 0.0004
+        },
+        "Wigs": {
+          "coverage": 0.0006
+        },
+        "Wildlife Control": {
+          "coverage": 0.0007
+        },
+        "Wildlife Hunting Ranges": {
+          "coverage": 0.0
+        },
+        "Wills": {
+          "coverage": 0.0002
+        },
+        "Window Washing": {
+          "coverage": 0.0015
+        },
+        "Windows Installation": {
+          "coverage": 0.003
+        },
+        "Windshield Installation & Repair": {
+          "coverage": 0.0023
+        },
+        "Wine & Spirits": {
+          "coverage": 0.0161
+        },
+        "Wine Bars": {
+          "coverage": 0.0079
+        },
+        "Wine Tasting Classes": {
+          "coverage": 0.0002
+        },
+        "Wine Tasting Room": {
+          "coverage": 0.001
+        },
+        "Wine Tours": {
+          "coverage": 0.0007
+        },
+        "Wineries": {
+          "coverage": 0.0023
+        },
+        "Women's Clothing": {
+          "coverage": 0.0145
+        },
+        "Workers Compensation Law": {
+          "coverage": 0.0002
+        },
+        "Wraps": {
+          "coverage": 0.0021
+        },
+        "Yelp Events": {
+          "coverage": 0.0003
+        },
+        "Yoga": {
+          "coverage": 0.0062
+        },
+        "Ziplining": {
+          "coverage": 0.0001
+        },
+        "Zoos": {
+          "coverage": 0.0003
+        }
+      }
+    },
+    "user": {
+      "count": 1986049,
+      "attributes": {
+        "average_stars": {
+          "dtype": "float",
+          "coverage": 1.0,
+          "samples": [
+            3.91,
+            3.74,
+            3.32,
+            4.27,
+            3.54
+          ]
+        },
+        "compliment_writer": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            239,
+            1521,
+            35,
+            10,
+            0
+          ]
+        },
+        "cool": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            5994,
+            27281,
+            1003,
+            299,
+            7
+          ]
+        },
+        "fans": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            267,
+            3138,
+            52,
+            28,
+            1
+          ]
+        },
+        "funny": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            1259,
+            13066,
+            1010,
+            330,
+            15
+          ]
+        },
+        "popularity": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "prolificacy": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "review_count": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            585,
+            4333,
+            665,
+            224,
+            79
+          ]
+        },
+        "useful": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            7217,
+            43091,
+            2086,
+            512,
+            29
+          ]
+        }
+      }
+    }
+  },
+  "edge_types": {
+    "business-user": {
+      "count": 6743879,
+      "attributes": {
+        "cool": {
+          "dtype": "float",
+          "coverage": 1.0,
+          "samples": [
+            0.0,
+            1.0,
+            3.0,
+            2.0,
+            5.0
+          ]
+        },
+        "funny": {
+          "dtype": "float",
+          "coverage": 1.0,
+          "samples": [
+            0.0,
+            3.0,
+            2.0,
+            1.0,
+            11.0
+          ]
+        },
+        "stars": {
+          "dtype": "float",
+          "coverage": 1.0,
+          "samples": [
+            5.0,
+            3.0,
+            1.0,
+            4.0,
+            2.0
+          ]
+        },
+        "useful": {
+          "dtype": "float",
+          "coverage": 1.0,
+          "samples": [
+            0.0,
+            1.0,
+            4.0,
+            3.0,
+            2.0
+          ]
+        }
+      }
+    }
+  },
+  "connectivity": [
+    {
+      "src": "business",
+      "edge": "business-user",
+      "dst": "user",
+      "count": 6743879
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Core sampling engine, Web UI, and HTTP client (Python 3.10 or 3.11).
+numpy==1.26.4
+torch==2.2.1
+scipy==1.12.0
+pandas==1.5.3
+networkx==3.2.1
+littleballoffur==2.3.1
+flask>=3.0,<4
+httpx>=0.27,<1

@@ -1,0 +1,432 @@
+{
+  "dataset": "citation",
+  "top_n": 10,
+  "node_types": {
+    "author": {
+      "author_name": [
+        {
+          "value": "Wei Wang",
+          "count": 222
+        },
+        {
+          "value": "Wei Li",
+          "count": 171
+        },
+        {
+          "value": "Wei Zhang",
+          "count": 147
+        },
+        {
+          "value": "Yang Liu",
+          "count": 139
+        },
+        {
+          "value": "Lei Wang",
+          "count": 139
+        },
+        {
+          "value": "Yu Zhang",
+          "count": 130
+        },
+        {
+          "value": "Li Li",
+          "count": 123
+        },
+        {
+          "value": "Lei Zhang",
+          "count": 122
+        },
+        {
+          "value": "Jun Zhang",
+          "count": 122
+        },
+        {
+          "value": "Wei Liu",
+          "count": 121
+        }
+      ],
+      "author_org": [
+        {
+          "value": "",
+          "count": 113510
+        },
+        {
+          "value": "Carnegie - Mellon University",
+          "count": 986
+        },
+        {
+          "value": "Tsinghua University,",
+          "count": 786
+        },
+        {
+          "value": "Stanford, University",
+          "count": 738
+        },
+        {
+          "value": "University of California",
+          "count": 698
+        },
+        {
+          "value": "CHINESE ACADEMY OF SCIENCES",
+          "count": 642
+        },
+        {
+          "value": "University of Illinois at Urbana Champaign;",
+          "count": 587
+        },
+        {
+          "value": "National University of Singapore",
+          "count": 558
+        },
+        {
+          "value": "Association for Information Systems",
+          "count": 487
+        },
+        {
+          "value": "massachusetts institute of technology",
+          "count": 485
+        }
+      ]
+    },
+    "fos": {
+      "fos_name": [
+        {
+          "value": "Telecommunications network",
+          "count": 1
+        },
+        {
+          "value": "Computer science",
+          "count": 1
+        },
+        {
+          "value": "Mind map",
+          "count": 1
+        },
+        {
+          "value": "Human–computer interaction",
+          "count": 1
+        },
+        {
+          "value": "Multimedia",
+          "count": 1
+        },
+        {
+          "value": "Empirical research",
+          "count": 1
+        },
+        {
+          "value": "Comprehension",
+          "count": 1
+        },
+        {
+          "value": "Communications protocol",
+          "count": 1
+        },
+        {
+          "value": "Statue",
+          "count": 1
+        },
+        {
+          "value": "Engineering drawing",
+          "count": 1
+        }
+      ]
+    },
+    "paper": {
+      "doc_type": [
+        {
+          "value": "Conference",
+          "count": 486153
+        },
+        {
+          "value": "Journal",
+          "count": 199205
+        },
+        {
+          "value": "Repository",
+          "count": 5206
+        },
+        {
+          "value": "Book",
+          "count": 335
+        },
+        {
+          "value": "Patent",
+          "count": 284
+        },
+        {
+          "value": "BookChapter",
+          "count": 1
+        }
+      ],
+      "id": [
+        {
+          "value": "paper1091",
+          "count": 1
+        },
+        {
+          "value": "paper1674",
+          "count": 1
+        },
+        {
+          "value": "paper1688",
+          "count": 1
+        },
+        {
+          "value": "paper6522",
+          "count": 1
+        },
+        {
+          "value": "paper8373",
+          "count": 1
+        },
+        {
+          "value": "paper8763",
+          "count": 1
+        },
+        {
+          "value": "paper9415",
+          "count": 1
+        },
+        {
+          "value": "paper11796",
+          "count": 1
+        },
+        {
+          "value": "paper13070",
+          "count": 1
+        },
+        {
+          "value": "paper13205",
+          "count": 1
+        }
+      ],
+      "n_citation": [
+        {
+          "value": 0,
+          "count": 95987
+        },
+        {
+          "value": 1,
+          "count": 73418
+        },
+        {
+          "value": 2,
+          "count": 60320
+        },
+        {
+          "value": 3,
+          "count": 49446
+        },
+        {
+          "value": 4,
+          "count": 40707
+        },
+        {
+          "value": 5,
+          "count": 34449
+        },
+        {
+          "value": 6,
+          "count": 29057
+        },
+        {
+          "value": 7,
+          "count": 24852
+        },
+        {
+          "value": 8,
+          "count": 21635
+        },
+        {
+          "value": 9,
+          "count": 18917
+        }
+      ],
+      "title": [
+        {
+          "value": "Verification, Testing and Statistics",
+          "count": 4
+        },
+        {
+          "value": "Randomly coloring constant degree graphs",
+          "count": 3
+        },
+        {
+          "value": "Reliable and efficient geometric computing",
+          "count": 3
+        },
+        {
+          "value": "Functional dependencies on extended relations defined by regular languages",
+          "count": 2
+        },
+        {
+          "value": "Extraction of Road Information from Guidance Map Images",
+          "count": 2
+        },
+        {
+          "value": "The Computer Generation of Poisson Random Variables",
+          "count": 2
+        },
+        {
+          "value": "Simulation of hybrid circuits in constraint logic programming",
+          "count": 2
+        },
+        {
+          "value": "Localization for a system of colliding robots",
+          "count": 2
+        },
+        {
+          "value": "Disjunctive logic programs with inheritance",
+          "count": 2
+        },
+        {
+          "value": "Approximating the Sparsest k-Subgraph in Chordal Graphs",
+          "count": 2
+        }
+      ],
+      "year": [
+        {
+          "value": 2015,
+          "count": 72581
+        },
+        {
+          "value": 2014,
+          "count": 49048
+        },
+        {
+          "value": 2013,
+          "count": 47354
+        },
+        {
+          "value": 2012,
+          "count": 45029
+        },
+        {
+          "value": 2010,
+          "count": 40806
+        },
+        {
+          "value": 2011,
+          "count": 38988
+        },
+        {
+          "value": 2009,
+          "count": 35978
+        },
+        {
+          "value": 2005,
+          "count": 35122
+        },
+        {
+          "value": 2006,
+          "count": 35013
+        },
+        {
+          "value": 2007,
+          "count": 33340
+        }
+      ]
+    },
+    "venue": {
+      "venue_name": [
+        {
+          "value": "Soft Computing",
+          "count": 2
+        },
+        {
+          "value": "Decision Support Systems",
+          "count": 2
+        },
+        {
+          "value": "arXiv: Numerical Analysis",
+          "count": 2
+        },
+        {
+          "value": "International Conference on Human-Computer Interaction",
+          "count": 1
+        },
+        {
+          "value": "International Conference on Virtual Reality",
+          "count": 1
+        },
+        {
+          "value": "Pattern Recognition and Machine Intelligence",
+          "count": 1
+        },
+        {
+          "value": "International Symposium on Computer and Information Sciences",
+          "count": 1
+        },
+        {
+          "value": "Asian Conference on Intelligent Information and Database Systems",
+          "count": 1
+        },
+        {
+          "value": "International Conference on Computer Vision and Graphics",
+          "count": 1
+        },
+        {
+          "value": "International Conference on Mining Intelligence and Knowledge Exploration",
+          "count": 1
+        }
+      ],
+      "venue_type": [
+        {
+          "value": "C",
+          "count": 2810
+        },
+        {
+          "value": "J",
+          "count": 2071
+        }
+      ]
+    }
+  },
+  "edge_types": {
+    "belong_to": {
+      "fos_w": [
+        {
+          "value": 0.0,
+          "count": 480073
+        },
+        {
+          "value": 0.46012,
+          "count": 614
+        },
+        {
+          "value": 0.46154,
+          "count": 614
+        },
+        {
+          "value": 0.46082,
+          "count": 608
+        },
+        {
+          "value": 0.45979,
+          "count": 608
+        },
+        {
+          "value": 0.46397,
+          "count": 608
+        },
+        {
+          "value": 0.46531,
+          "count": 607
+        },
+        {
+          "value": 0.46091,
+          "count": 606
+        },
+        {
+          "value": 0.45839,
+          "count": 603
+        },
+        {
+          "value": 0.46284,
+          "count": 603
+        }
+      ]
+    }
+  }
+}

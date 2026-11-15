@@ -1,0 +1,4578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HypoLens — Visual Builder</title>
+
+  <!-- highlight.js theme — switched dynamically via JS -->
+  <link id="hljs-theme" rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <style>
+/* ── reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── dark theme (default) ───────────────────────────────────────────────── */
+:root {
+  --bg:         #0d0f18;
+  --surface:    #141720;
+  --surface2:   #1c2030;
+  --surface3:   #242840;
+  --border:     #2a2f4a;
+  --border-hi:  #3d4470;
+  --accent:     #6c8fff;
+  --accent2:    #a78bfa;
+  --green:      #4ade80;
+  --green-dim:  #1a3d2a;
+  --red:        #f87171;
+  --red-dim:    #3d1a1a;
+  --yellow:     #facc15;
+  --yellow-dim: #3d300a;
+  --blue-dim:   #1a2a50;
+  --purple-dim: #2a1a50;
+  --muted:      #7880a0;
+  --text:       #c8d0f0;
+  --text-dim:   #5a6080;
+  --radius:     12px;
+  --radius-sm:  8px;
+  --font-mono:  "JetBrains Mono","Fira Code","Cascadia Code",monospace;
+  --header-h:   56px;
+  --left-w:     400px;
+}
+
+/* ── light theme ─────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:         #f0f2f8;
+  --surface:    #ffffff;
+  --surface2:   #f5f7fd;
+  --surface3:   #eaedf6;
+  --border:     #d4d9ee;
+  --border-hi:  #b0b8d8;
+  --accent:     #3b6ff5;
+  --accent2:    #7c5af0;
+  --green:      #16a34a;
+  --green-dim:  #dcfce7;
+  --red:        #dc2626;
+  --red-dim:    #fee2e2;
+  --yellow:     #ca8a04;
+  --yellow-dim: #fef9c3;
+  --blue-dim:   #dbeafe;
+  --purple-dim: #ede9fe;
+  --muted:      #6370a0;
+  --text:       #1e2540;
+  --text-dim:   #a0a8c0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;           /* full-screen: no page scroll */
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ── header ──────────────────────────────────────────────────────────────── */
+header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 28px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+header .logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  font-variant: small-caps;
+  background: linear-gradient(120deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+header .subtitle {
+  color: var(--muted);
+  font-size: .8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* ── theme toggle button ────────────────────────────────────────────────── */
+#theme-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: auto;
+  transition: border-color .2s, color .2s, background .2s, transform .15s;
+}
+#theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--surface3);
+  transform: rotate(20deg);
+}
+
+header .status-chip {
+  margin-left: auto;
+  font-size: .72rem;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+header .status-chip.running { color: var(--accent); border-color: var(--accent); }
+header .status-chip.ok      { color: var(--green);  border-color: var(--green); }
+header .status-chip.fail    { color: var(--red);    border-color: var(--red); }
+
+/* ── app shell ───────────────────────────────────────────────────────────── */
+#app {
+  display: flex;
+  height: calc(100vh - var(--header-h));
+  overflow: hidden;
+}
+
+/* ── left panel ──────────────────────────────────────────────────────────── */
+#left {
+  width: var(--left-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+#left-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── right panel ─────────────────────────────────────────────────────────── */
+#right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+  padding: 20px;
+  gap: 18px;
+}
+
+/* ── tab bar ─────────────────────────────────────────────────────────────── */
+#tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+  padding: 0 20px;
+}
+.tab-btn {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: color .15s, border-color .15s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  position: relative;
+  top: 1px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tab-count {
+  background: var(--surface3);
+  color: var(--muted);
+  border-radius: 999px;
+  font-size: .65rem;
+  padding: 1px 7px;
+  font-weight: 700;
+  transition: background .2s, color .2s;
+}
+.tab-btn.active .tab-count {
+  background: var(--blue-dim);
+  color: var(--accent);
+}
+
+/* ── tab panes ───────────────────────────────────────────────────────────── */
+.tab-pane {
+  display: none;
+  flex: 1;
+  overflow: visible;
+  padding: 0;
+}
+.tab-pane.active { display: flex; flex-direction: column; }
+
+/* ── form elements ───────────────────────────────────────────────────────── */
+.field-label {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+select, textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: .88rem;
+  padding: 9px 13px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108,143,255,.12);
+}
+textarea {
+  font-family: inherit;
+  resize: none;
+  height: 110px;
+  line-height: 1.6;
+}
+
+#run-btn, #vb-run-btn {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity .2s, transform .12s;
+  flex-shrink: 0;
+}
+#run-btn:hover,   #vb-run-btn:hover   { opacity: .9; }
+#run-btn:active,  #vb-run-btn:active  { transform: scale(.98); }
+#run-btn:disabled,#vb-run-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.spinner {
+  display: none;
+  width: 16px; height: 16px;
+  border: 2.5px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .65s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── input-mode switch (NL vs Visual Builder) ───────────────────────────────── */
+.mode-switch {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 3px;
+}
+.mode-switch button {
+  flex: 1;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 8px;
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.mode-switch button.active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+.mode-switch button:hover:not(.active) { color: var(--text); }
+
+.input-mode-pane { display: none; }
+.input-mode-pane.active { display: flex; flex-direction: column; gap: 14px; }
+
+/* ── visual builder: canvas ─────────────────────────────────────────────────── */
+.vb-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.vb-tbtn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: .72rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.vb-tbtn:hover { border-color: var(--accent); color: var(--accent); }
+.vb-tbtn.active { border-color: var(--accent); color: var(--accent); background: var(--blue-dim); }
+.vb-tbtn.danger:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+
+.vb-hint {
+  font-size: .7rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  padding: 6px 9px;
+  background: var(--surface2);
+  border: 1px dashed var(--border-hi);
+  border-radius: var(--radius-sm);
+}
+
+#vb-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  min-height: 200px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.vb-canvas-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.vb-canvas-resizer {
+  height: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ns-resize;
+  flex-shrink: 0;
+  user-select: none;
+}
+.vb-canvas-resizer::before {
+  content: "";
+  width: 48px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-hi);
+  transition: background .15s;
+}
+.vb-canvas-resizer:hover::before { background: var(--accent); }
+.vb-canvas-resizer.dragging::before { background: var(--accent); }
+.vb-canvas-panel-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.vb-canvas-panel-hdr .vb-toolbar { flex-shrink: 0; }
+/* side-by-side row: canvas (flex:1) + TEST clause (fixed column) — stretch so
+   both columns share the same top & bottom edges. */
+.vb-right-top {
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+.vb-test-panel {
+  flex: 0 0 320px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vb-test-panel-hdr { flex-shrink: 0; }
+/* TEST inspector fills the space between header and Parse button so the
+   column matches the canvas-panel height. */
+.vb-test-inspector { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+/* floating inspector popover inside the canvas — auto-shows on selection */
+.vb-inspector-popover {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 320px;
+  max-height: calc(100% - 20px);
+  overflow-y: auto;
+  z-index: 5;
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+  padding: 10px 11px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.35);
+}
+.vb-inspector-popover.show { display: block; }
+.vb-inspector-popover-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+}
+.vb-inspector-popover-hdr .vb-icon-btn { padding: 0 5px; }
+#vb-canvas-wrap.edge-mode { cursor: crosshair; }
+#vb-canvas-wrap.drag-over {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108,143,255,.18);
+}
+/* schema node card header is draggable — show grab cursor */
+.schema-node-card-hdr[draggable="true"] { cursor: grab; }
+.schema-node-card-hdr[draggable="true"]:active { cursor: grabbing; }
+#vb-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.vb-node-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: var(--muted);
+  pointer-events: none;
+}
+.vb-empty-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: .78rem;
+  text-align: center;
+  padding: 20px;
+  pointer-events: none;
+}
+
+/* ── visual builder: node/edge inspector ─────────────────────────────────────── */
+.vb-inspector {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.vb-inspector-title {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.vb-inspector-empty {
+  font-size: .76rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 10px 0;
+}
+.vb-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.vb-row select, .vb-row input[type="text"], .vb-row input[type="number"] {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: .78rem;
+  padding: 6px 8px;
+  outline: none;
+}
+.vb-row select:focus, .vb-row input:focus { border-color: var(--accent); }
+.vb-row label {
+  font-size: .7rem;
+  color: var(--muted);
+  white-space: nowrap;
+  min-width: 44px;
+}
+.vb-attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.vb-attr-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.vb-icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: .85rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+  flex-shrink: 0;
+}
+.vb-icon-btn:hover { color: var(--red); background: var(--red-dim); }
+.vb-add-attr-btn {
+  align-self: flex-start;
+  background: none;
+  border: 1px dashed var(--border-hi);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: .7rem;
+  padding: 4px 9px;
+  cursor: pointer;
+}
+.vb-add-attr-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── visual builder: TEST clause builder ─────────────────────────────────────── */
+.vb-test-preview {
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  color: var(--accent);
+  background: var(--blue-dim);
+  border-radius: 6px;
+  padding: 7px 9px;
+  word-break: break-all;
+  line-height: 1.5;
+}
+.vb-ghtql-preview {
+  font-family: var(--font-mono);
+  font-size: .73rem;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.55;
+  max-height: 130px;
+  overflow-y: auto;
+}
+.vb-error-text {
+  font-size: .74rem;
+  color: var(--red);
+  line-height: 1.5;
+}
+.vb-error-text.ok {
+  color: var(--green);
+}
+#vb-run-btn.flash-ok {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+#vb-run-btn.flash-bad {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* ── suggested-hypothesis cards ──────────────────────────────────────────── */
+.vb-examples-hint {
+  font-size: .72rem;
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 2px 0 8px;
+}
+.ex-btn {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--purple-dim);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: .86rem;
+  padding: 12px 14px 11px;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.5;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.ex-btn:hover {
+  border-color: var(--accent2);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+}
+.ex-btn.active {
+  box-shadow: 0 0 0 1px var(--accent2);
+}
+.ex-cta-done { display: none; }
+.ex-btn.active .ex-cta-idle { display: none; }
+.ex-btn.active .ex-cta-done { display: inline; }
+.ex-quote {
+  color: var(--accent2);
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-right: 4px;
+  vertical-align: -1px;
+}
+.ex-cta {
+  align-self: flex-end;
+  font-size: .73rem;
+  font-weight: 600;
+  color: var(--accent2);
+  opacity: .7;
+  transition: opacity .15s, transform .15s;
+}
+.ex-btn:hover .ex-cta {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* ── suggest panel ───────────────────────────────────────────────────────── */
+.suggest-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#suggest-btn {
+  width: 100%;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-hi);
+  background: transparent;
+  color: var(--muted);
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: border-color .15s, color .15s, background .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+#suggest-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--blue-dim);
+}
+#suggest-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+#suggest-btn .sug-spin {
+  display: none;
+  width: 12px; height: 12px;
+  border: 2px solid var(--muted);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+#suggest-btn.loading .sug-spin { display: inline-block; }
+#suggest-btn.loading .sug-icon { display: none; }
+.suggest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.sug-card {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: .75rem;
+  color: var(--text-dim);
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.55;
+  transition: border-color .15s, color .15s, background .15s;
+  animation: fadeUp .2s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+.sug-card:hover {
+  border-color: var(--accent2);
+  color: var(--text);
+  background: var(--purple-dim);
+}
+.sug-card-icon {
+  flex-shrink: 0;
+  font-size: .7rem;
+  margin-top: 1px;
+  color: var(--accent2);
+  opacity: .7;
+}
+.sug-error {
+  font-size: .72rem;
+  color: var(--red);
+  padding: 4px 0;
+}
+
+/* ── step cards ──────────────────────────────────────────────────────────── */
+.step-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+  animation: fadeUp .2s ease;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } }
+
+.step-card:last-child { margin-bottom: 0; }
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+}
+.step-header:hover { background: var(--surface3); }
+
+.step-badge {
+  font-size: .65rem;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.b-step   { background: var(--blue-dim);   color: var(--accent); }
+.b-tool   { background: var(--green-dim);  color: var(--green); }
+.b-finish { background: var(--green-dim);  color: var(--green); }
+.b-error  { background: var(--red-dim);    color: var(--red); }
+.b-status { background: var(--surface3);   color: var(--muted); }
+
+.step-summary {
+  flex: 1;
+  font-size: .82rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.step-caret {
+  color: var(--muted);
+  font-size: .65rem;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.step-card.open .step-caret { transform: rotate(90deg); }
+
+.step-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .28s cubic-bezier(.4,0,.2,1);
+}
+.step-card.open .step-body { max-height: 4000px; }
+
+/* ── block sections inside a step card ───────────────────────────────────── */
+.blk {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+.blk-label {
+  font-size: .65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lbl-think  { color: var(--accent2); }
+.lbl-tool   { color: var(--green); }
+.lbl-obs    { color: var(--yellow); }
+.lbl-ghtql  { color: var(--green); }
+.lbl-err    { color: var(--red); }
+
+/* ── raw output collapsible ──────────────────────────────────────────────── */
+.raw-output-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  padding: 3px 0;
+  transition: color .15s;
+}
+.raw-output-toggle:hover { color: var(--text); }
+.raw-output-caret {
+  font-size: .6rem;
+  transition: transform .2s;
+  display: inline-block;
+}
+.raw-output-body {
+  display: none;
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  max-height: 320px;
+  overflow-y: auto;
+}
+.raw-output-body.open { display: block; }
+.raw-output-caret.open { transform: rotate(90deg); }
+
+.think-text {
+  font-size: .83rem;
+  line-height: 1.7;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+/* ── code / pre ──────────────────────────────────────────────────────────── */
+pre {
+  margin: 0;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+pre code {
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px !important;
+}
+
+/* ── result area ─────────────────────────────────────────────────────────── */
+.result-section { margin-bottom: 24px; }
+.result-section:last-child { margin-bottom: 0; }
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.result-title {
+  font-size: .72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.tag-ok   { color: var(--green); }
+.tag-fail { color: var(--red); }
+
+.copy-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: .68rem;
+  padding: 3px 11px;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+/* ── Pattern graph visualisation ────────────────────────────────────────── */
+.pgraph-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* one SVG card per pattern id */
+.pgraph-svg-wrap {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: visible;
+  display: block;
+  width: 100%;
+}
+
+/* ── JSON tree ───────────────────────────────────────────────────────────── */
+.json-tree {
+  font-family: var(--font-mono);
+  font-size: .79rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  overflow-x: auto;
+}
+.jk { color: #7c3aed; }
+.js { color: #16a34a; }
+.jn { color: #ea580c; }
+.jb { color: #0284c7; }
+.jz { color: var(--muted); }
+
+/* light-mode JSON colours */
+[data-theme="light"] .jk { color: #6d28d9; }
+[data-theme="light"] .js { color: #15803d; }
+[data-theme="light"] .jn { color: #c2410c; }
+[data-theme="light"] .jb { color: #0369a1; }
+
+/* ── empty state ─────────────────────────────────────────────────────────── */
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-dim);
+  padding: 40px 0;
+}
+.empty-icon { font-size: 2.5rem; opacity: .25; }
+.empty-text { font-size: .85rem; }
+
+/* ── pulse dot ───────────────────────────────────────────────────────────── */
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: pulse 1.1s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.2; } }
+.pulse-dot.off { animation: none; opacity: .2; }
+
+/* ── divider ─────────────────────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 0;
+}
+
+/* ── schema panel ────────────────────────────────────────────────────────── */
+.schema-section-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 0;
+}
+.schema-section-hdr:hover .field-label { color: var(--accent); }
+.schema-section-hdr .field-label { margin-bottom: 0; cursor: pointer; transition: color .15s; }
+.schema-caret {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: .6rem;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.schema-section.open .schema-caret { transform: rotate(90deg); }
+.schema-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s cubic-bezier(.4,0,.2,1);
+}
+.schema-section.open .schema-body { max-height: 3000px; }
+
+/* overview chips row */
+.schema-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.schema-chip {
+  font-size: .68rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.schema-chip span { color: var(--text); font-weight: 700; }
+
+/* connectivity diagram — SVG schema graph */
+.schema-graph {
+  margin-bottom: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  overflow: visible;
+}
+.schema-graph svg {
+  display: block;
+  overflow: visible;
+}
+.sg-node rect {
+  stroke-width: 1.5;
+}
+.sg-node text {
+  font-size: .72rem;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  user-select: none;
+}
+.sg-node.snp-0 rect { fill: var(--blue-dim);   stroke: var(--accent);  }
+.sg-node.snp-0 text { fill: var(--accent); }
+.sg-node.snp-1 rect { fill: var(--purple-dim); stroke: var(--accent2); }
+.sg-node.snp-1 text { fill: var(--accent2); }
+.sg-node.snp-2 rect { fill: var(--green-dim);  stroke: var(--green);   }
+.sg-node.snp-2 text { fill: var(--green); }
+.sg-node.snp-3 rect { fill: var(--yellow-dim); stroke: var(--yellow);  }
+.sg-node.snp-3 text { fill: var(--yellow); }
+.sg-edge path {
+  fill: none;
+  stroke: var(--border-hi);
+  stroke-width: 1.5;
+}
+.sg-arrow-head { fill: var(--border-hi); }
+.sg-edge-label {
+  font-size: .68rem;
+  fill: var(--muted);
+  text-anchor: middle;
+  dominant-baseline: central;
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+.sg-edge-label:hover { fill: var(--text); }
+.sg-edge-attr {
+  font-size: .63rem;
+  fill: var(--text-dim);
+  text-anchor: middle;
+  dominant-baseline: central;
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+.sg-edge-attr:hover { fill: var(--muted); }
+
+/* node type pills (used in node cards section) */
+.schema-node-pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: .72rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.snp-0 { background: var(--blue-dim);   color: var(--accent); border: 1px solid var(--accent); }
+.snp-1 { background: var(--purple-dim); color: var(--accent2); border: 1px solid var(--accent2); }
+.snp-2 { background: var(--green-dim);  color: var(--green); border: 1px solid var(--green); }
+.snp-3 { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+
+/* node type cards */
+.schema-node-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.schema-node-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.schema-node-card-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  background: var(--surface2);
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+}
+.schema-node-card-hdr:hover { background: var(--surface3); }
+.schema-node-name {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.schema-node-count {
+  margin-left: auto;
+  font-size: .65rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.schema-drag-handle {
+  color: var(--text-dim);
+  font-size: .8rem;
+  line-height: 1;
+  flex-shrink: 0;
+  cursor: grab;
+  opacity: .5;
+  transition: opacity .15s, color .15s;
+}
+.schema-node-card-hdr:hover .schema-drag-handle { opacity: 1; color: var(--accent); }
+.schema-drag-tip {
+  font-size: .68rem;
+  color: var(--text-dim);
+  padding: 4px 2px 0;
+  font-style: italic;
+}
+.schema-node-caret {
+  color: var(--muted);
+  font-size: .58rem;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.schema-node-card.open .schema-node-caret { transform: rotate(90deg); }
+.schema-node-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .25s cubic-bezier(.4,0,.2,1);
+}
+.schema-node-card.open .schema-node-body { max-height: 2000px; }
+.schema-flags-row {
+  padding: 6px 11px;
+  border-top: 1px solid var(--border);
+  font-size: .68rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.schema-flags-row strong { color: var(--yellow); }
+.schema-flag-tag {
+  display: inline-block;
+  background: var(--yellow-dim);
+  color: var(--yellow);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: .63rem;
+  margin: 1px 2px;
+  border: 1px solid rgba(250,204,21,.2);
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.schema-flag-tag:hover { opacity: .75; }
+
+/* ── attr / flag tooltip ─────────────────────────────────────────────────── */
+#attr-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  padding: 10px 13px;
+  min-width: 160px;
+  max-width: 260px;
+  font-size: .78rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s, transform .15s;
+}
+#attr-tooltip.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+#attr-tooltip .tt-name {
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--accent2);
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+#attr-tooltip .tt-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 3px;
+  align-items: baseline;
+}
+#attr-tooltip .tt-lbl {
+  font-size: .65rem;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: 52px;
+}
+#attr-tooltip .tt-val {
+  font-size: .72rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+  word-break: break-all;
+}
+#attr-tooltip .tt-samples {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid var(--border);
+  font-size: .68rem;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  line-height: 1.7;
+}
+/* clickable attr tags inside node cards */
+.schema-attr-tag {
+  display: inline-block;
+  background: var(--blue-dim);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: .68rem;
+  font-family: var(--font-mono);
+  margin: 2px 2px;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.schema-attr-tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--blue-dim);
+}
+
+/* ── GHT execution panel (Opt_PHASE) ────────────────────────────────────── */
+.exec-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.exec-params {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.exec-field { flex: 1; min-width: 130px; }
+.exec-field label {
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 5px;
+}
+.exec-field input, .exec-field select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-size: .82rem;
+  padding: 7px 10px;
+  outline: none;
+}
+.exec-field input:focus, .exec-field select:focus {
+  border-color: var(--accent);
+}
+/* Advanced parameters fold (Sampling %, Samples) — hidden by default,
+   takes full width inside .exec-params so it sits on its own row. */
+.exec-advanced {
+  flex: 0 0 100%;
+  margin-top: 6px;
+}
+.exec-advanced > summary {
+  cursor: pointer;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  list-style: none;
+  user-select: none;
+}
+.exec-advanced > summary::-webkit-details-marker { display: none; }
+.exec-advanced > summary::before {
+  content: "▶ ";
+  color: var(--text-dim);
+  font-size: .6rem;
+  margin-right: 6px;
+  display: inline-block;
+  transition: transform .15s;
+}
+.exec-advanced[open] > summary::before { transform: rotate(90deg); }
+.exec-advanced-body {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.exec-btn {
+  padding: 9px 18px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: #fff;
+  font-size: .84rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity .2s, transform .12s;
+}
+.exec-btn:hover   { opacity: .9; }
+.exec-btn:active  { transform: scale(.98); }
+.exec-btn:disabled{ opacity: .45; cursor: not-allowed; }
+.exec-btn .spinner { display: none; width: 14px; height: 14px; border-width: 2px; }
+.exec-btn.running .spinner { display: inline-block; }
+
+.ghtql-editor {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--text);
+  resize: vertical;
+  outline: none;
+  white-space: pre-wrap;
+  tab-size: 2;
+}
+.ghtql-editor:focus { border-color: var(--accent, #6c5ce7); }
+.ghtql-edit-msg {
+  margin-top: 6px;
+  font-size: .76rem;
+  line-height: 1.5;
+  min-height: 1em;
+}
+.ghtql-edit-msg.ok  { color: var(--green); }
+.ghtql-edit-msg.err { color: var(--red); }
+
+.exec-error {
+  margin-top: 12px;
+  color: var(--red);
+  font-size: .82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  display: none;
+}
+.exec-error.show { display: block; }
+
+.exec-results { margin-top: 16px; display: none; }
+.exec-results.show { display: block; }
+
+/* AI summary card */
+.exec-ai-summary {
+  margin-top: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+  /* No overflow:hidden — the ⓘ tooltip in Technical Details must escape the card. */
+}
+.exec-ai-summary-hdr {
+  padding: 8px 13px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--accent2);
+  background: var(--purple-dim);
+  border-bottom: 1px solid var(--border);
+}
+.exec-ai-summary-body {
+  padding: 10px 14px;
+  font-size: .84rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+.exec-ai-item {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.exec-ai-item:last-child { border-bottom: none; }
+.exec-ai-item strong { color: var(--muted); font-weight: 600; }
+.exec-ai-item b { color: var(--accent2); font-weight: 700; }
+.exec-ai-item em { font-style: italic; color: var(--text); }
+/* Combined result + conclusion explicit output */
+.exec-ai-verdict {
+  font-size: .9rem;
+  line-height: 1.6;
+}
+/* Full-color result sentence (no badge background): "Rejected: …" in red/green */
+.exec-ai-verdict-line.kw-pos { color: var(--green); font-weight: 600; background: none; padding: 0; font-size: .9rem; }
+.exec-ai-verdict-line.kw-neg { color: var(--red);   font-weight: 600; background: none; padding: 0; font-size: .9rem; }
+.exec-ai-verdict-line.kw-warn { color: var(--yellow); font-weight: 600; background: none; padding: 0; font-size: .9rem; }
+.exec-ai-conclusion {
+  margin-top: 4px;
+  color: var(--text);
+}
+/* "How to read the p-value" hint — a small ⓘ icon whose tooltip explains the
+   H0 inversion, so "p = 0.9 → Accepted" is not misread as a failed test. */
+.exec-ai-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  color: var(--accent2);
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: help;
+  vertical-align: baseline;
+}
+.exec-ai-tip {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  width: 250px;
+  padding: 8px 10px;
+  font-size: .76rem;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: left;
+  white-space: normal;
+  color: var(--text);
+  background: var(--surface3);
+  border: 1px solid var(--border-hi);
+  border-radius: 5px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .28);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .12s;
+  pointer-events: none;
+  z-index: 50;
+}
+.exec-ai-info:hover .exec-ai-tip,
+.exec-ai-info:focus .exec-ai-tip {
+  opacity: 1;
+  visibility: visible;
+}
+/* keyword badges — colored background pills for result / status words */
+.exec-ai-item .kw-pos {
+  color: var(--green); background: var(--green-dim);
+  padding: 1px 7px; border-radius: 4px; font-weight: 600;
+}
+.exec-ai-item .kw-neg {
+  color: var(--red); background: var(--red-dim);
+  padding: 1px 7px; border-radius: 4px; font-weight: 600;
+}
+.exec-ai-item .kw-warn {
+  color: var(--yellow); background: var(--yellow-dim);
+  padding: 1px 7px; border-radius: 4px; font-weight: 600;
+}
+/* numeric / value highlight — plain colored text, no badge */
+.exec-ai-item .kw-num {
+  color: var(--accent); font-weight: 600;
+}
+.exec-ai-loading {
+  color: var(--text-dim);
+  font-style: italic;
+}
+.exec-ai-error {
+  color: var(--muted);
+  font-style: italic;
+}
+/* Collapsible technical details (p-value, sample mean) */
+.exec-ai-details {
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  padding-top: 4px;
+}
+.exec-ai-details > summary {
+  cursor: pointer;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  padding: 4px 0;
+  list-style: none;
+  user-select: none;
+}
+.exec-ai-details > summary::-webkit-details-marker { display: none; }
+.exec-ai-details > summary::before {
+  content: "▸ ";
+  color: var(--text-dim);
+  transition: transform .15s;
+  display: inline-block;
+}
+.exec-ai-details[open] > summary::before {
+  transform: rotate(90deg);
+}
+.exec-ai-details[open] > summary {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+.exec-ai-details.exec-ai-nested {
+  margin: 6px 0 2px 4px;
+  border-top: none;        /* no divider between Sampling Consensus text and its nested table */
+  padding-top: 0;
+}
+
+/* Recommendation chips */
+.exec-recommend {
+  margin-top: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.exec-recommend-hdr {
+  padding: 8px 13px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--accent2);
+  background: var(--purple-dim);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.exec-recommend-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px 3px 7px;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: none;
+  color: var(--accent2);
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.exec-recommend-refresh:hover { background: var(--surface); border-color: var(--accent2); }
+.exec-recommend-refresh:active { transform: scale(.96); }
+.exec-recommend-refresh .refresh-icon { font-size: .9rem; line-height: 1; }
+.exec-recommend-refresh.spinning .refresh-icon { animation: rc-spin .6s linear infinite; }
+@keyframes rc-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+.exec-recommend-body {
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.exec-recommend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: .82rem;
+  color: var(--text);
+  background: var(--blue-dim);
+  border: 1px solid var(--border-hi);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .1s;
+  max-width: 100%;
+}
+.exec-recommend-chip:hover {
+  border-color: var(--accent);
+  background: var(--purple-dim);
+}
+.exec-recommend-chip:active { transform: scale(.97); }
+.exec-recommend-chip .chip-icon { font-size: .9em; opacity: .8; }
+.exec-recommend-chip .chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.exec-recommend-btn {
+  padding: 7px 16px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--blue-dim);
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.exec-recommend-btn:hover { background: var(--purple-dim); }
+.exec-recommend-btn:active { transform: scale(.97); }
+
+.exec-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.exec-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.exec-stat-label {
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.exec-stat-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+.exec-stat-value.ok  { color: var(--green); }
+.exec-stat-value.bad { color: var(--red); }
+.exec-stat-hint {
+  font-size: .62rem;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+.exec-table th[title] { cursor: help; }
+
+.exec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .78rem;
+}
+.exec-table th, .exec-table td {
+  border: 1px solid var(--border);
+  padding: 7px 10px;
+  text-align: right;
+  font-family: var(--font-mono);
+}
+.exec-table th:first-child, .exec-table td:first-child { text-align: left; font-family: inherit; }
+.exec-table th {
+  background: var(--surface3);
+  color: var(--muted);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.exec-table td.accept { color: var(--green); }
+.exec-table td.reject { color: var(--red); }
+
+/* ── scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- ── attr tooltip ────────────────────────────────────────────────────────── -->
+<div id="attr-tooltip"></div>
+
+<!-- ── header ──────────────────────────────────────────────────────────────── -->
+<header>
+<span class="logo">HypoLens</span>
+<span class="subtitle">Interactive Graph Hypothesis Testing</span>
+  <button id="theme-toggle" title="Toggle light / dark" onclick="toggleTheme()">🌙</button>
+</header>
+
+<!-- ── app ─────────────────────────────────────────────────────────────────── -->
+<div id="app">
+
+  <!-- ── left ──────────────────────────────────────────────────────────────── -->
+  <div id="left">
+    <div id="left-scroll">
+
+      <!-- dataset -->
+      <div>
+        <label class="field-label" for="dataset-select">Dataset</label>
+        <select id="dataset-select">
+          {% for ds in datasets %}
+          <option value="{{ ds }}" {% if ds == default_dataset %}selected{% endif %}>{{ {"Citation": "DBLP"}.get(ds, ds) }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- schema -->
+      <div class="schema-section" id="schema-section">
+        <div class="schema-section-hdr" onclick="toggleSchemaSection()">
+          <label class="field-label" style="pointer-events:none">Schema</label>
+          <span class="schema-caret">▶</span>
+        </div>
+        <div class="schema-body">
+          <div id="schema-container">
+            <div style="color:var(--text-dim);font-size:.78rem;">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Visual Builder pane ═════════════════════════════════════════════ -->
+      <div class="input-mode-pane active" id="pane-mode-vb">
+
+        <!-- example -->
+        <div>
+          <label class="field-label">Suggested Hypothesis</label>
+          <div class="vb-examples-hint">Load this example to try a pattern and a test.</div>
+          <div id="vb-examples" style="display:flex;flex-direction:column;gap:7px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── right ─────────────────────────────────────────────────────────────── -->
+  <div id="right">
+
+    <div class="vb-right-top">
+      <!-- canvas (pattern view) — header (label + toolbar inline) + canvas + hint -->
+      <div class="vb-canvas-panel">
+        <div class="vb-canvas-panel-hdr">
+          <span class="field-label">Pattern Canvas</span>
+          <div class="vb-toolbar">
+            <button class="vb-tbtn" id="vb-add-node-btn" onclick="vbToggleAddNodeMenu()">➕ Add Node</button>
+            <button class="vb-tbtn" id="vb-edge-btn" onclick="vbToggleEdgeMode()">🔗 Connect</button>
+            <button class="vb-tbtn danger" id="vb-delete-btn" onclick="vbDeleteSelected()">🗑 Delete</button>
+          </div>
+        </div>
+        <div id="vb-add-node-menu" style="display:none;" class="vb-toolbar"></div>
+        <div id="vb-canvas-wrap">
+          <svg id="vb-canvas"></svg>
+          <div class="vb-empty-hint" id="vb-empty-hint">Drag a node type from the Schema panel here,<br>or click "Add Node" to place your first node.</div>
+          <!-- floating inspector: auto-appears when a node/edge is selected -->
+          <div class="vb-inspector-popover" id="vb-inspector-popover">
+            <div class="vb-inspector-popover-hdr">
+              <span>Inspector</span>
+              <button class="vb-icon-btn" id="vb-inspector-close" onclick="vbCloseInspector()" title="Close">✕</button>
+            </div>
+            <div id="vb-inspector-body"></div>
+          </div>
+        </div>
+        <div class="vb-canvas-resizer" id="vb-canvas-resizer" title="Drag to resize canvas"></div>
+        <div class="vb-hint" id="vb-hint">Drag nodes to move them. Click "Connect", then click a source node followed by a target node to draw a directed edge.</div>
+      </div>
+
+      <!-- TEST clause builder -->
+      <div class="vb-test-panel">
+        <div class="vb-test-panel-hdr"><span class="field-label">Test Target</span></div>
+        <div class="vb-inspector vb-test-inspector">
+          <div class="vb-row">
+            <label>Target</label>
+            <select id="vb-test-mode" onchange="vbRenderTestBuilder()">
+              <option value="node">single node attribute</option>
+              <option value="edge">edge attribute</option>
+              <option value="node_diff">absolute difference (2 nodes)</option>
+              <option value="edge_diff">difference (2 edges)</option>
+            </select>
+          </div>
+          <div id="vb-test-target-body"></div>
+          <div class="vb-row">
+            <label>Operator</label>
+            <select id="vb-test-op" onchange="vbUpdatePreview()">
+              <option value="<">&lt;</option>
+              <option value=">">&gt;</option>
+            </select>
+          </div>
+          <div class="vb-row">
+            <label>Compare to</label>
+            <select id="vb-test-rhs-mode" onchange="vbRenderTestBuilder()">
+              <option value="mu">population mean (μ)</option>
+              <option value="scalar">fixed value</option>
+            </select>
+          </div>
+          <div id="vb-test-rhs-body"></div>
+          <div class="vb-test-preview" id="vb-test-preview">TEST …</div>
+        </div>
+        <div class="vb-error-text" id="vb-error-text"></div>
+        <button id="vb-run-btn" onclick="runVisualBuilder()">
+          <span id="vb-btn-text">▶  Parse Pattern</span>
+          <span class="spinner" id="vb-spinner"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- result pane -->
+    <div class="tab-pane active" id="pane-result">
+      <div id="result-container" class="empty">
+        <div class="empty-icon">📋</div>
+        <div class="empty-text">Build a pattern and run it to see results here.</div>
+      </div>
+    </div>
+
+  </div><!-- #right -->
+</div><!-- #app -->
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+//  State
+// ─────────────────────────────────────────────────────────────────────────────
+let _patternData = null;
+let _schemaData  = null;   // cached /api/schema/<dataset> response, used by the Visual Builder
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Theme toggle
+// ─────────────────────────────────────────────────────────────────────────────
+const HLJS_DARK  = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css";
+const HLJS_LIGHT = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css";
+
+function applyTheme(theme) {
+  const root   = document.documentElement;
+  const btn    = document.getElementById("theme-toggle");
+  const hljsEl = document.getElementById("hljs-theme");
+  if (theme === "light") {
+    root.setAttribute("data-theme", "light");
+    btn.textContent  = "☀️";
+    hljsEl.href      = HLJS_LIGHT;
+  } else {
+    root.removeAttribute("data-theme");
+    btn.textContent  = "🌙";
+    hljsEl.href      = HLJS_DARK;
+  }
+  // re-highlight any visible code blocks after theme switch
+  document.querySelectorAll("pre code.hljs").forEach(el => {
+    el.classList.remove("hljs");
+    hljs.highlightElement(el);
+  });
+  localStorage.setItem("theme", theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  applyTheme(current === "light" ? "dark" : "light");
+}
+
+// restore saved preference
+(function () {
+  const saved = localStorage.getItem("theme") || "dark";
+  if (saved === "light") applyTheme("light");
+})();
+
+// ── Visual Builder preset examples (one node / one edge / one path per dataset) ─
+// Declared here (before first use) because `const` is not hoisted.
+const VB_EXAMPLES = {
+  Citation: [
+    {
+      key: "path",
+      label: "Do papers from Hong Kong University in Data mining get more citations than average?",
+      nodes: [
+        { id: "n0", label: "author", attribute: { author_org: "Hong Kong University" }, x: 70,  y: 130 },
+        { id: "n1", label: "paper",  attribute: {}, x: 180, y: 130 },
+        { id: "n2", label: "fos",    attribute: { fos_name: "Data mining" }, x: 290, y: 130 },
+      ],
+      edges: [{ from: "n0", to: "n1" }, { from: "n1", to: "n2" }],
+      test: { mode: "node", node: "n1", attr: "n_citation", op: ">", rhsMode: "mu" },
+    },
+  ],
+  MovieLens: [
+    {
+      key: "path",
+      label: "Do students rate Sci-Fi movies more favorably than educators?",
+      nodes: [
+        { id: "n0", label: "user",  attribute: { occupation: "college-grad student" }, x: 100, y: 130 },
+        { id: "n1", label: "movie", attribute: { "Sci-Fi": 1 }, x: 230, y: 130 },
+        { id: "n2", label: "user",  attribute: { occupation: "academic-educator" }, x: 360, y: 130 },
+      ],
+      edges: [{ from: "n0", to: "n1" }, { from: "n2", to: "n1" }],
+      test: { mode: "edge_diff", edgeA: "n0->n1", edgeB: "n2->n1", attr: "rating", op: ">", rhsMode: "scalar", scalar: "0" },
+    },
+  ],
+  Yelp: [
+    {
+      key: "path",
+      label: "Do high-activity reviewers rate Louisiana and Illinois businesses differently (by more than 0.5 stars)?",
+      nodes: [
+        { id: "n0", label: "user",     attribute: { popularity: "high" }, x: 180, y: 80 },
+        { id: "n1", label: "business", attribute: { state: "LA" }, x: 80,  y: 200 },
+        { id: "n2", label: "business", attribute: { state: "IL" }, x: 280, y: 200 },
+      ],
+      edges: [{ from: "n0", to: "n1" }, { from: "n0", to: "n2" }],
+      test: { mode: "node_diff", nodeA: "n1", nodeB: "n2", attr: "stars", op: ">", rhsMode: "scalar", scalar: "0.5" },
+    },
+  ],
+};
+
+function vbPopulateExamples() {
+  const ds = document.getElementById("dataset-select").value;
+  const box = document.getElementById("vb-examples");
+  if (!box) return;
+  box.innerHTML = "";
+  (VB_EXAMPLES[ds] || []).forEach((ex, idx) => {
+    const b = document.createElement("button");
+    b.className = "ex-btn";
+    b.innerHTML = `<span class="ex-text"><span class="ex-quote">💡</span>${esc(ex.label)}</span>`
+                + `<span class="ex-cta"><span class="ex-cta-idle">Use this →</span>`
+                + `<span class="ex-cta-done">Loaded ✓</span></span>`;
+    b.onclick = () => vbLoadExample(ex, idx);
+    box.appendChild(b);
+  });
+}
+
+// Highlight the preset card that was last loaded (cleared for ad-hoc loads).
+function vbSetActiveExample(idx) {
+  document.querySelectorAll("#vb-examples .ex-btn").forEach((el, i) => {
+    el.classList.toggle("active", idx != null && i === idx);
+  });
+}
+
+function vbLoadExample(ex, idx) {
+  // reset to a clean canvas, then load the example's nodes/edges
+  vbResetCanvas();
+  VB.nextIdx = 0;
+
+  // Center the example's nodes within the current canvas dimensions.
+  const wrap = document.getElementById("vb-canvas-wrap");
+  const cw = wrap.clientWidth  || 400;
+  const ch = wrap.clientHeight || 340;
+
+  // Compute the bounding box of the example's node positions.
+  const xs = ex.nodes.map(n => n.x);
+  const ys = ex.nodes.map(n => n.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const patW = (maxX - minX) || 1;
+  const patH = (maxY - minY) || 1;
+  // Offset to move the pattern's center to the canvas's center.
+  const offX = (cw - patW) / 2 - minX;
+  const offY = (ch - patH) / 2 - minY;
+
+  ex.nodes.forEach(n => {
+    VB.nodes.push({ id: n.id, label: n.label, attribute: { ...n.attribute }, x: n.x + offX, y: n.y + offY });
+    VB.nextIdx = Math.max(VB.nextIdx, parseInt(n.id.slice(1)) + 1);
+  });
+  ex.edges.forEach(e => VB.edges.push({ from: e.from, to: e.to }));
+
+  // populate the TEST clause form fields
+  document.getElementById("vb-test-mode").value = ex.test.mode;
+  document.getElementById("vb-test-op").value = ex.test.op;
+  document.getElementById("vb-test-rhs-mode").value = ex.test.rhsMode;
+
+  // re-render the target/RHS pickers so the specific node/edge/attr can be set
+  vbRenderTestBuilder();
+
+  // now set the specific selections (the pickers exist after vbRenderTestBuilder)
+  if (ex.test.mode === "node") {
+    const ns = document.getElementById("vb-test-node");
+    if (ns) ns.value = ex.test.node;
+    // refresh the attribute picker for the newly selected node's label
+    vbOnTestNodeChange();
+    const as = document.getElementById("vb-test-attr");
+    if (as) as.value = ex.test.attr;
+  } else if (ex.test.mode === "edge") {
+    const es = document.getElementById("vb-test-edge");
+    if (es) es.value = ex.test.edge;
+    // the attribute picker may need refreshing for the selected edge
+    vbOnTestEdgeChange();
+    const as2 = document.getElementById("vb-test-edge-attr");
+    if (as2) as2.value = ex.test.attr;
+  } else if (ex.test.mode === "node_diff") {
+    const aSel = document.getElementById("vb-test-node-a");
+    const bSel = document.getElementById("vb-test-node-b");
+    if (aSel) aSel.value = ex.test.nodeA;
+    // refresh the attribute picker for the newly selected node A's label
+    vbOnTestDiffNodeChange();
+    if (bSel) bSel.value = ex.test.nodeB;
+    const dSel = document.getElementById("vb-test-diff-attr");
+    if (dSel) dSel.value = ex.test.attr;
+  } else if (ex.test.mode === "edge_diff") {
+    const eA = document.getElementById("vb-test-edge");
+    const eB = document.getElementById("vb-test-edge-b");
+    if (eA) eA.value = ex.test.edgeA;
+    // refresh the attribute picker for the newly selected edge A
+    vbOnTestEdgeDiffChange();
+    if (eB) eB.value = ex.test.edgeB;
+    const aSel2 = document.getElementById("vb-test-edge-attr");
+    if (aSel2) aSel2.value = ex.test.attr;
+  }
+  // scalar RHS value
+  if (ex.test.rhsMode === "scalar") {
+    const sc = document.getElementById("vb-test-rhs-scalar");
+    if (sc) sc.value = ex.test.scalar;
+  }
+
+  vbRenderCanvas();
+  vbRenderInspector();
+  vbUpdatePreview();
+  vbSetActiveExample(idx);
+}
+
+// ── adapter: load a parser entry dict onto the canvas ─────────────────────
+// Converts a parsed GHT-QL entry (no x/y on nodes) to the VB example format
+// with a circular auto-layout, then delegates to vbLoadExample.
+function vbLoadParsedPattern(entry, description) {
+  const pNodes = (entry.pattern || {}).nodes || [];
+  const pEdges = (entry.pattern || {}).edges || [];
+
+  // circle layout — vbLoadExample will re-center to the canvas viewport
+  const n  = pNodes.length || 1;
+  const cx = 200, cy = 200, r = Math.max(60, 35 * n);
+  const nodes = pNodes.map((pn, i) => {
+    const a = 2 * Math.PI * i / n - Math.PI / 2;
+    return {
+      id:        pn.id,
+      label:     pn.label,
+      attribute: { ...(pn.attribute || {}) },
+      x:         cx + r * Math.cos(a),
+      y:         cy + r * Math.sin(a),
+    };
+  });
+  const edges = pEdges.map(e => ({ from: e.from, to: e.to }));
+
+  // map target → test mode
+  const test = { mode: "node", op: ">", rhsMode: "mu", scalar: "0" };
+  const t = entry.test || {};
+  test.op = t.op || ">";
+  const tgt = entry.target || {};
+  if (tgt.node) {
+    test.mode = "node";
+    test.node = tgt.node.id;
+    test.attr = tgt.node.attribute;
+  } else if (tgt.edge) {
+    test.mode = "edge";
+    test.edge = tgt.edge.from + "->" + tgt.edge.to;
+    test.attr = tgt.edge.attribute;
+  } else if (tgt.node_diff) {
+    test.mode = "node_diff";
+    test.nodeA = tgt.node_diff.nodes[0];
+    test.nodeB = tgt.node_diff.nodes[1];
+    test.attr = tgt.node_diff.attribute;
+  } else if (tgt.edge_diff) {
+    test.mode = "edge_diff";
+    test.edgeA = tgt.edge_diff.edges[0][0] + "->" + tgt.edge_diff.edges[0][1];
+    test.edgeB = tgt.edge_diff.edges[1][0] + "->" + tgt.edge_diff.edges[1][1];
+    test.attr  = tgt.edge_diff.attribute;
+  }
+
+  // map rhs → rhsMode/scalar
+  const rhs = t.rhs;
+  if (rhs === "mu" || rhs === undefined) {
+    test.rhsMode = "mu";
+  } else if (typeof rhs === "number") {
+    test.rhsMode = "scalar";
+    test.scalar  = String(rhs);
+  } else if (typeof rhs === "string") {
+    test.rhsMode = "scalar";
+    test.scalar  = rhs;
+  } else {
+    // rhs is a dict (two-sample) — VB builder can't represent it; fall back to mu
+    test.rhsMode = "mu";
+  }
+
+  const ex = {
+    key:   entry.type || "path",
+    label: description || "Recommended pattern",
+    nodes,
+    edges,
+    test,
+  };
+  vbLoadExample(ex);
+}
+
+document.getElementById("dataset-select").addEventListener("change", () => {
+vbPopulateExamples();
+loadSchema(document.getElementById("dataset-select").value);
+// dataset changed — the Visual Builder canvas references the old schema's
+// node types/attributes, so reset it to avoid stale/invalid patterns
+vbResetCanvas();
+});
+vbPopulateExamples();
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Schema panel
+// ─────────────────────────────────────────────────────────────────────────────
+const NODE_COLORS = ["snp-0", "snp-1", "snp-2", "snp-3"];
+const _nodeColorMap = {};   // nodeName → color-class index
+
+function toggleSchemaSection() {
+  document.getElementById("schema-section").classList.toggle("open");
+}
+
+function fmtCount(n) {
+  if (n == null) return "—";
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+  if (n >= 1_000)     return (n / 1_000).toFixed(1) + "K";
+  return String(n);
+}
+
+function getNodeColorIdx(name) {
+  if (!(name in _nodeColorMap)) {
+    _nodeColorMap[name] = Object.keys(_nodeColorMap).length % NODE_COLORS.length;
+  }
+  return _nodeColorMap[name];
+}
+
+/**
+ * Render the schema connectivity as an SVG graph where each node type appears
+ * exactly once, with directed edges drawn between them.
+ *
+ * Layout: nodes are placed on a circle (circular layout), which works well for
+ * the small number of node types (2-4) typical in GHT datasets.  Edids between
+ * the same pair of nodes are offset slightly so they don't overlap.
+ */
+function renderSchemaGraph(data, conn) {
+  // Collect unique node types from both connectivity and node_types
+  const nodeSet = new Set();
+  conn.forEach(({ src, dst }) => { nodeSet.add(src); nodeSet.add(dst); });
+  const nodes = [...nodeSet];
+
+  // Assign colors (must call getNodeColorIdx for each so the map is populated
+  // before the node cards section reuses it).
+  nodes.forEach(n => getNodeColorIdx(n));
+
+  // ── Layout: circular ──────────────────────────────────────────────────────
+  const padX = 70, padY = 40;
+  const nodeW = 80, nodeH = 30;
+  const n = nodes.length;
+  // For 2 nodes, place them horizontally with enough room for edge labels;
+  // for >2, use a circle
+  let positions = {};
+  if (n <= 2) {
+    // Place the two nodes horizontally with a compact spread that fits the
+    // ~340px sidebar. Edge labels render above/below the connecting line, so
+    // they don't need to fit entirely between the nodes.
+    const spread = 160;
+    const cx = padX + nodeW / 2;
+    const cy = padY + nodeH / 2 + 14;   // shift down so labels can go above
+    positions[nodes[0]] = { x: cx, y: cy };
+    if (nodes[1]) positions[nodes[1]] = { x: cx + spread, y: cy };
+  } else {
+    const rx = 120, ry = 70;
+    const cx = padX + rx, cy = padY + ry;
+    nodes.forEach((nt, i) => {
+      const angle = (i / n) * 2 * Math.PI - Math.PI / 2;  // start from top
+      positions[nt] = {
+        x: cx + rx * Math.cos(angle),
+        y: cy + ry * Math.sin(angle),
+      };
+    });
+  }
+
+  // Compute SVG dimensions
+  const xs = Object.values(positions).map(p => p.x);
+  const ys = Object.values(positions).map(p => p.y);
+  const isHoriz2 = n <= 2;
+  // For 2-node arcs, leave room above/below the node rects for the arc apex
+  // plus the label/attribute text.
+  const padTop = isHoriz2 ? 48 : 10;
+  const padBottom = isHoriz2 ? 48 : 30;
+  const minX = Math.min(...xs) - nodeW / 2 - 10;
+  const maxX = Math.max(...xs) + nodeW / 2 + 10;
+  const minY = Math.min(...ys) - nodeH / 2 - padTop;
+  const maxY = Math.max(...ys) + nodeH / 2 + padBottom;
+  const svgW = maxX - minX;
+  const svgH = maxY - minY;
+
+  // Group edges by unordered pair to offset parallel AND reverse edges
+  const pairKey = (s, d) => s <= d ? `${s}->${d}` : `${d}->${s}`;
+  const pairCounts = {};
+  conn.forEach(({ src, dst }) => {
+    const k = pairKey(src, dst);
+    pairCounts[k] = (pairCounts[k] || 0) + 1;
+  });
+  const pairIndex = {};
+
+  // Build SVG elements
+  let svgInner = "";
+
+  // ── Edges ─────────────────────────────────────────────────────────────────
+  conn.forEach(({ src, edge, dst, count: connCount }) => {
+    const sp = positions[src];
+    const dp = positions[dst];
+    if (!sp || !dp) return;
+
+    const edgeInfo = data.edge_types[edge] || {};
+    const cnt = fmtCount(connCount != null ? connCount : edgeInfo.count);
+
+    // Offset for parallel edges between the same pair
+    const k = pairKey(src, dst);
+    const total = pairCounts[k];
+    const idx = pairIndex[k] || 0;
+    pairIndex[k] = idx + 1;
+    const offset = total > 1 ? (idx - (total - 1) / 2) * 18 : 0;
+
+    // For 2-node horizontal layouts, always arc edges so labels clear the
+    // node rectangles. Single edge arcs up; parallel edges alternate up/down.
+    const isHoriz2 = n <= 2;
+    const bendDir = isHoriz2 ? (total === 1 ? -1 : (idx % 2 === 0 ? -1 : +1)) : 0;
+
+    // Self-loop
+    if (src === dst) {
+      const lx = sp.x - nodeW / 2 - 20;
+      const ly = sp.y;
+      const path = `M ${sp.x - nodeW/2} ${sp.y - 4} C ${lx} ${sp.y - 35}, ${lx} ${sp.y + 35}, ${sp.x - nodeW/2} ${sp.y + 4}`;
+      svgInner += `<g class="sg-edge"><path d="${path}"/></g>`;
+      // Label
+      svgInner += `<text class="sg-edge-label" x="${lx - 8}" y="${sp.y}" data-tip='${esc(JSON.stringify({name: edge, count: cnt, attrs: Object.keys(edgeInfo.attributes || {})}))}'>${esc(edge)}</text>`;
+      return;
+    }
+
+    // Compute edge endpoints on node rect borders
+    const dx = dp.x - sp.x;
+    const dy = dp.y - sp.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const ux = dx / dist;
+    const uy = dy / dist;
+    // Perpendicular unit vector for offset
+    const px = -uy;
+    const py = ux;
+
+    // Start/end points on rect borders (approximate as ellipse for offset).
+    // For 2-node horizontal layouts, start/end at node center height (no line
+    // offset) — the arc apex carries the vertical separation instead.
+    const vertOff = isHoriz2 ? 0 : offset;
+    const sx = sp.x + ux * (nodeW / 2) + px * vertOff;
+    const sy = sp.y + uy * (nodeH / 2) + py * vertOff;
+    const ex = dp.x - ux * (nodeW / 2) + px * vertOff;
+    const ey = dp.y - uy * (nodeH / 2) + py * vertOff;
+
+    // Curved path for parallel edges, straight for single edges
+    let path;
+    let mx, my;
+    if (isHoriz2) {
+      // Arc with apex above (bendDir<0) or below (bendDir>0) the node centers
+      const apexY = sp.y + bendDir * 26;
+      path = `M ${sx} ${sy} Q ${(sx + ex) / 2} ${apexY} ${ex} ${ey}`;
+      mx = (sx + ex) / 2;
+      my = apexY;
+    } else if (offset !== 0) {
+      const cpx = (sx + ex) / 2 + px * 15;
+      const cpy = (sy + ey) / 2 + py * 15;
+      path = `M ${sx} ${sy} Q ${cpx} ${cpy} ${ex} ${ey}`;
+      mx = (sx + ex) / 2 + px * 10;
+      my = (sy + ey) / 2 + py * 10;
+    } else {
+      path = `M ${sx} ${sy} L ${ex} ${ey}`;
+      mx = (sx + ex) / 2;
+      my = (sy + ey) / 2;
+    }
+
+    svgInner += `<g class="sg-edge"><path d="${path}"/></g>`;
+
+    // Edge label position: for 2-node arcs, place label at the apex (clears
+    // the node rects); for other layouts, place at the midpoint.
+    const tip = JSON.stringify({ name: edge, count: cnt, attrs: Object.keys(edgeInfo.attributes || {}) });
+    const labelY = isHoriz2 ? my + (bendDir < 0 ? -4 : +6) : my - 5;
+    svgInner += `<text class="sg-edge-label" x="${mx}" y="${labelY}" data-tip='${tip.replace(/'/g, "&#39;")}'>${esc(edge)}</text>`;
+
+    // Edge attribute tags: for 2-node arcs, place on the opposite side of the
+    // apex from the label so they don't collide with it.
+    const edgeAttrKeys = Object.keys(edgeInfo.attributes || {}).sort((a, b) => {
+      const ca = (edgeInfo.attributes[a] || {}).coverage || 0;
+      const cb = (edgeInfo.attributes[b] || {}).coverage || 0;
+      return cb - ca;
+    });
+    if (edgeAttrKeys.length > 0) {
+      const attrStr = edgeAttrKeys.join(", ");
+      const attrY = isHoriz2 ? my + (bendDir < 0 ? -16 : +18) : my + 6;
+      svgInner += `<text class="sg-edge-attr" x="${mx}" y="${attrY}" data-tip='${esc(JSON.stringify({name: edge, attrs: edgeAttrKeys}))}'>${esc(attrStr)}</text>`;
+    }
+  });
+
+  // ── Nodes ─────────────────────────────────────────────────────────────────
+  nodes.forEach(nt => {
+    const p = positions[nt];
+    const ci = getNodeColorIdx(nt);
+    const info = data.node_types[nt] || {};
+    const cnt = fmtCount(info.count || 0);
+    svgInner += `<g class="sg-node ${NODE_COLORS[ci]}" transform="translate(${p.x - nodeW/2}, ${p.y - nodeH/2})">
+      <rect width="${nodeW}" height="${nodeH}" rx="12" ry="12"/>
+      <text x="${nodeW/2}" y="${nodeH/2}">${esc(nt)}</text>
+    </g>`;
+    // Node count below the rect
+    svgInner += `<text x="${p.x}" y="${p.y + nodeH/2 + 12}" text-anchor="middle" style="font-size:.65rem;fill:var(--text-dim);font-family:var(--font-mono)">${cnt}</text>`;
+  });
+
+  return `<div class="schema-graph">
+    <svg viewBox="${minX} ${minY} ${svgW} ${svgH}" width="${Math.round(svgW)}" height="${Math.round(svgH)}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="sg-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L7,3 L0,6 z" class="sg-arrow-head"/>
+        </marker>
+      </defs>
+      ${svgInner}
+    </svg>
+  </div>`;
+}
+
+function renderSchema(data) {
+  const c = document.getElementById("schema-container");
+  // Clear color map for this dataset
+  for (const k of Object.keys(_nodeColorMap)) delete _nodeColorMap[k];
+
+  // ── 1. Overview chips ─────────────────────────────────────────────────────
+  const nodeTypes = Object.keys(data.node_types || {}).sort((a, b) => {
+    return (data.node_types[b].count || 0) - (data.node_types[a].count || 0);
+  });
+  const edgeTypes = Object.keys(data.edge_types || {}).sort((a, b) => {
+    return (data.edge_types[b].count || 0) - (data.edge_types[a].count || 0);
+  });
+  let html = `<div class="schema-overview">
+    <div class="schema-chip">nodes <span>${fmtCount(data.node_count)}</span></div>
+    <div class="schema-chip">edges <span>${fmtCount(data.edge_count)}</span></div>
+    <div class="schema-chip">node types <span>${nodeTypes.length}</span></div>
+    <div class="schema-chip">edge types <span>${edgeTypes.length}</span></div>
+  </div>`;
+
+  // ── 2. Connectivity graph (SVG) ───────────────────────────────────────────
+  const conn = data.connectivity || [];
+  if (conn.length > 0) {
+    html += renderSchemaGraph(data, conn);
+  }
+
+  // ── 3. Node type cards (draggable) ────────────────────────────────────────
+  html += `<div class="schema-drag-tip">Tip: drag a node type card below onto the canvas</div>`;
+  html += `<div class="schema-node-cards">`;
+  nodeTypes.forEach((nt, idx) => {
+    const info   = data.node_types[nt];
+    const ci     = getNodeColorIdx(nt);
+    const attrs  = info.attributes || {};
+    const bfCnt  = info.binary_flags_count || 0;
+    const bfSamp = info.binary_flags_sample || [];
+    const cardId = `snc-${idx}`;
+
+    // node attributes → inline clickable tags, sorted by coverage desc
+    const atKeys = Object.keys(attrs).sort((a, b) => {
+      const ca = (attrs[a] || {}).coverage || 0;
+      const cb = (attrs[b] || {}).coverage || 0;
+      return cb - ca;
+    });
+    const attrTagsHtml = atKeys.map(ak => {
+      const a = attrs[ak];
+      const cov = a.coverage != null ? `${(a.coverage * 100).toFixed(0)}%` : "";
+      const tip = JSON.stringify({ name: ak, dtype: a.dtype, coverage: cov, samples: a.samples || [] });
+      return `<span class="schema-attr-tag" data-tip='${tip.replace(/'/g,"&#39;")}'>${esc(ak)}</span>`;
+    }).join("");
+
+    let bfHtml = "";
+    if (bfCnt > 0) {
+      // bfSamp is [{name, coverage}, ...] sorted by coverage desc
+      const tags = bfSamp.map(f => {
+        const fname = typeof f === "object" ? f.name : f;
+        const fcov  = typeof f === "object" && f.coverage != null
+          ? `${(f.coverage * 100).toFixed(1)}%` : "";
+        const tip = JSON.stringify({ name: fname, dtype: "bool", coverage: fcov, samples: ["0","1"] });
+        return `<span class="schema-flag-tag" data-tip='${tip.replace(/'/g,"&#39;")}'>${esc(fname)}</span>`;
+      }).join("");
+      bfHtml = `<div class="schema-flags-row">
+        <strong>binary_flags</strong> · ${bfCnt} total<br>
+        ${tags}${bfCnt > bfSamp.length ? `<span class="schema-flag-tag" style="opacity:.5">+${bfCnt - bfSamp.length} more</span>` : ""}
+      </div>`;
+    }
+
+    html += `
+    <div class="schema-node-card" id="${cardId}">
+      <div class="schema-node-card-hdr" draggable="true"
+           ondragstart="vbSchemaDragStart(event, '${esc(nt)}')"
+           onclick="document.getElementById('${cardId}').classList.toggle('open')"
+           title="Drag onto the canvas to add a ${esc(nt)} node">
+        <span class="schema-node-pill ${NODE_COLORS[ci]}" style="font-size:.65rem;padding:2px 8px">${esc(nt)}</span>
+        <span class="schema-node-name"></span>
+        <span class="schema-node-count">${fmtCount(info.count)} nodes</span>
+        <span class="schema-drag-handle" title="Drag to canvas">⠿</span>
+        <span class="schema-node-caret">▶</span>
+      </div>
+      <div class="schema-node-body">
+        ${atKeys.length ? `<div style="padding:8px 11px 6px;border-top:1px solid var(--border)">${attrTagsHtml}</div>` : ""}
+        ${bfHtml}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;   // schema-node-cards
+
+  c.innerHTML = html;
+}
+
+function loadSchema(dataset) {
+  const c = document.getElementById("schema-container");
+  c.innerHTML = `<div style="color:var(--text-dim);font-size:.78rem;">Loading…</div>`;
+  fetch(`/api/schema/${encodeURIComponent(dataset)}`)
+    .then(r => r.json())
+    .then(data => {
+      _schemaData = data;
+      renderSchema(data);
+      vbOnSchemaLoaded();   // refresh the Visual Builder (node-type menu, attr pickers)
+    })
+    .catch(() => {
+      c.innerHTML = `<div style="color:var(--red);font-size:.78rem;">Failed to load schema.</div>`;
+    });
+}
+
+// ── Attr tooltip ─────────────────────────────────────────────────────────────
+const _tt = document.getElementById("attr-tooltip");
+let _ttTimer = null;
+
+function showAttrTooltip(el, tipJson) {
+  clearTimeout(_ttTimer);
+  let tip;
+  try { tip = JSON.parse(tipJson); } catch { return; }
+
+  const samples = (tip.samples || []).slice(0, 5);
+  let inner = `<div class="tt-name">${esc(tip.name)}</div>`;
+  if (tip.dtype)    inner += `<div class="tt-row"><span class="tt-lbl">type</span><span class="tt-val">${esc(tip.dtype)}</span></div>`;
+  if (tip.coverage) inner += `<div class="tt-row"><span class="tt-lbl">coverage</span><span class="tt-val">${esc(tip.coverage)}</span></div>`;
+  if (samples.length) {
+    inner += `<div class="tt-samples">${samples.map(s => esc(String(s))).join("  ·  ")}</div>`;
+  }
+  _tt.innerHTML = inner;
+  _tt.classList.add("visible");
+  positionTooltip(el);
+}
+
+function positionTooltip(el) {
+  const r  = el.getBoundingClientRect();
+  const tw = _tt.offsetWidth  || 200;
+  const th = _tt.offsetHeight || 80;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  let left = r.left;
+  let top  = r.bottom + 6;
+  if (left + tw > vw - 8) left = vw - tw - 8;
+  if (top  + th > vh - 8) top  = r.top - th - 6;
+  _tt.style.left = left + "px";
+  _tt.style.top  = top  + "px";
+}
+
+function hideAttrTooltip() {
+  _ttTimer = setTimeout(() => _tt.classList.remove("visible"), 120);
+}
+
+// delegate clicks on data-tip elements inside schema-container
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-tip]");
+  if (el) {
+    e.stopPropagation();
+    if (_tt.classList.contains("visible") && _tt._lastEl === el) {
+      hideAttrTooltip();
+      _tt._lastEl = null;
+    } else {
+      _tt._lastEl = el;
+      showAttrTooltip(el, el.dataset.tip);
+    }
+    return;
+  }
+  // click outside → hide
+  if (!_tt.contains(e.target)) hideAttrTooltip();
+});
+
+_tt.addEventListener("mouseenter", () => clearTimeout(_ttTimer));
+_tt.addEventListener("mouseleave", hideAttrTooltip);
+
+// Load schema on page init; auto-open the section
+(function () {
+  const ds = document.getElementById("dataset-select").value;
+  document.getElementById("schema-section").classList.add("open");
+  loadSchema(ds);
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  HTML escape
+// ─────────────────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// Escape + render markdown bold/italic from LLM output (**x** → <b>, *x* → <em>).
+// Applied AFTER escaping so LLM text can't inject HTML.
+function escMD(s) {
+  return esc(s)
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, "$1<em>$2</em>");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  JSON coloriser
+// ─────────────────────────────────────────────────────────────────────────────
+function coloriseJSON(obj) {
+  return JSON.stringify(obj, null, 2)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"([^"]+)"(?=\s*:)/g, '<span class="jk">"$1"</span>')
+    .replace(/:\s*"([^"]*)"/g,     ': <span class="js">"$1"</span>')
+    .replace(/:\s*(-?\d+\.?\d*)/g, ': <span class="jn">$1</span>')
+    .replace(/:\s*(true|false)/g,  ': <span class="jb">$1</span>')
+    .replace(/:\s*(null)/g,        ': <span class="jz">$1</span>');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Collapsible raw output (used by Parsed Pattern JSON)
+// ─────────────────────────────────────────────────────────────────────────────
+function toggleRawOutput(id) {
+  const body  = document.getElementById(id);
+  const caret = document.getElementById(id + "-caret");
+  if (!body) return;
+  body.classList.toggle("open");
+  caret.classList.toggle("open");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Pattern graph visualisation
+// ─────────────────────────────────────────────────────────────────────────────
+
+// _PGN_COLORS removed — pure SVG rendering uses _PGN_FILL/_PGN_STROKE/_PGN_TEXT
+
+/**
+ * Render a force-free, geometry-based diagram for all patterns in parsed_pattern.
+ * Returns a <div class="pgraph-wrap"> element ready to append.
+ *
+ * Layout: nodes on a circle (or line for 2), edges as SVG arrows.
+ * Everything is drawn in pure SVG so coordinates are always consistent.
+ */
+
+// Colour palette — light-weight style matching the dark UI
+// fill: semi-transparent tint; stroke/text: vivid accent
+const _PGN_FILL   = ["rgba(59,130,246,.12)","rgba(168,85,247,.12)","rgba(34,197,94,.12)","rgba(234,179,8,.12)","rgba(239,68,68,.12)"];
+const _PGN_STROKE = ["#3b82f6","#a855f7","#22c55e","#eab308","#ef4444"];
+const _PGN_TEXT   = ["#60a5fa","#c084fc","#4ade80","#facc15","#f87171"];
+const _PGN_LABEL  = ["#93c5fd","#d8b4fe","#86efac","#fde047","#fca5a5"];
+
+// Truncate an attribute label to at most `max` chars, appending an ellipsis.
+// Keeps the Pattern Graph canvas from having to grow arbitrarily wide just
+// because one attribute value (e.g. a long org name) is unusually long —
+// the full value is still available via the JSON pattern dict below it.
+function _pgnClipText(s, max) {
+  return s.length > max ? s.slice(0, max - 1) + "…" : s;
+}
+
+function renderPatternGraph(parsedPattern) {
+  const wrap = document.createElement("div");
+  wrap.className = "pgraph-wrap";
+
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  for (const [pid, entry] of Object.entries(parsedPattern)) {
+    const pat    = entry.pattern  || {};
+    const nodes  = pat.nodes      || [];
+    const edges  = pat.edges      || [];
+    const test   = entry.test     || {};
+    const target = entry.target   || {};
+
+    if (nodes.length === 0) continue;
+
+    // ── Target nodes ──────────────────────────────────────────────────────
+    // Collect ALL node ids mentioned in the TEST clause (lhs + rhs)
+    const targetNodeIds = new Set();
+    if (target.node)      targetNodeIds.add(target.node.id);
+    if (target.edge)      { targetNodeIds.add(target.edge.from); targetNodeIds.add(target.edge.to); }
+    if (target.node_diff) target.node_diff.nodes.forEach(id => targetNodeIds.add(id));
+    if (typeof test.rhs === "object" && test.rhs?.node) targetNodeIds.add(test.rhs.node.id);
+    // Keep a single id for backward compat (header TEST badge still uses first)
+    const targetNodeId = target.node?.id ?? target.edge?.from ?? target.node_diff?.nodes[0] ?? null;
+
+    // ── Layout constants ──────────────────────────────────────────────────
+    const CR   = 20;          // node circle radius
+    const PADY = 32;
+    const n    = nodes.length;
+    // Orbit radius: enough so circles don't touch (need >= 2*CR gap)
+    const R    = n <= 1 ? 0 : Math.min(140, Math.max(80, n * 32));
+
+    // Label block below nodes (type name + attributes, no TEST here)
+    const LABEL_LINESEP  = 16;   // px per text row
+    const LABEL_GAP      = 7;    // gap: circle edge → first text row
+    const LABEL_MAX_CHARS = 34;  // hard cap on rendered text length (longer values are ellipsised)
+    const LABEL_CHAR_PX  = 5.4;  // ≈ average glyph width at font-size 10-12 (monospace-ish estimate)
+
+    // Longest label line (type name or "key:value" attribute row) that will
+    // actually be rendered for each node — used to size the canvas so that
+    // long attribute values never overflow the left/right edge of the SVG.
+    const nodeLineLengths = nodes.map(nd => {
+      const attrLines = Object.entries(nd.attribute || {}).map(([k, v]) =>
+        _pgnClipText(`${k}:${JSON.stringify(v)}`, LABEL_MAX_CHARS).length);
+      return Math.max(nd.label.length, ...attrLines, 0);
+    });
+    const maxHalfTextW = Math.max(20, ...nodeLineLengths.map(len => (len * LABEL_CHAR_PX) / 2));
+
+    // Horizontal padding must be at least as wide as half the longest label
+    // text (plus a small margin) so text centred under an edge node doesn't
+    // run past the canvas boundary.
+    const PADX = Math.max(80, maxHalfTextW + 16);
+    const W    = Math.max(560, PADX * 2 + Math.max(0, n - 1) * 40);
+    const cx   = W / 2;
+
+    // Header area: pid label on row 1, TEST expr on row 2 (if present)
+    // Both are fixed in the top-left corner of the SVG
+    const hasBadge = !!(targetNodeIds.size > 0 && test.agg);
+    const hasPid   = pid !== "visual-pattern";
+    // px reserved at top: TEST badge (row 2) + pid (row 1) or just one of them
+    const HEADER_H = hasBadge ? 42 : (hasPid ? 22 : 0);
+
+    const cy = HEADER_H + PADY + CR + R;   // circle-orbit centre
+
+    const maxTextRows   = Math.max(...nodes.map(nd => 1 + Object.keys(nd.attribute || {}).length));
+    const H = cy + R + CR + LABEL_GAP + maxTextRows * LABEL_LINESEP + PADY;
+
+    // ── Compute node positions ─────────────────────────────────────────────
+    // Keep every node (and by extension its centred label text) within
+    // [maxHalfTextW, W - maxHalfTextW] so long attribute text can never
+    // spill past the left/right edge of the viewBox, regardless of layout.
+    const minX = maxHalfTextW, maxX = W - maxHalfTextW;
+    const posMap = {};
+    nodes.forEach((nd, i) => {
+      let x, y;
+      if (n === 1) {
+        x = cx; y = cy;
+      } else if (n === 2) {
+        x = minX + (maxX - minX) * i; y = cy;
+      } else {
+        const angle = (2 * Math.PI * i / n) - Math.PI / 2;
+        x = Math.min(maxX, Math.max(minX, cx + R * Math.cos(angle)));
+        y = cy + R * Math.sin(angle);
+      }
+      posMap[nd.id] = { x, y };
+    });
+
+    // ── Create SVG ────────────────────────────────────────────────────────
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "pgraph-svg-wrap");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("width",  "100%");
+    svg.setAttribute("height", H);   // intrinsic height drives card height
+    svg.setAttribute("preserveAspectRatio", "xMidYMin meet");
+
+    // ── Defs: arrowhead ───────────────────────────────────────────────────
+    const defs   = document.createElementNS(svgNS, "defs");
+    const marker = document.createElementNS(svgNS, "marker");
+    marker.setAttribute("id",          `arr-${pid}`);
+    marker.setAttribute("markerWidth",  "8");
+    marker.setAttribute("markerHeight", "6");
+    marker.setAttribute("refX",         "7");
+    marker.setAttribute("refY",         "3");
+    marker.setAttribute("orient",       "auto");
+    const poly = document.createElementNS(svgNS, "polygon");
+    poly.setAttribute("points", "0 0, 8 3, 0 6");
+    poly.setAttribute("fill",   "#6b7280");
+    marker.appendChild(poly);
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+
+    // ── Header: pattern id + TEST expression (top-left, fixed) ────────────
+    // Skip the pid label for visual-builder patterns (auto-generated id has
+    // no semantic value).
+    if (pid !== "visual-pattern") {
+      const pidTxt = document.createElementNS(svgNS, "text");
+      pidTxt.setAttribute("x", 12);
+      pidTxt.setAttribute("y", 16);
+      pidTxt.setAttribute("font-size",      "11");
+      pidTxt.setAttribute("font-weight",    "700");
+      pidTxt.setAttribute("letter-spacing", "1");
+      pidTxt.setAttribute("fill",           "#9ca3af");
+      pidTxt.setAttribute("text-anchor",    "start");
+      pidTxt.textContent = pid.toUpperCase();
+      svg.appendChild(pidTxt);
+    }
+
+    // TEST expression — second row in header (only if pattern has a test)
+    if (hasBadge) {
+      let tgtExpr = "?";
+      if (target.node)      tgtExpr = `${target.node.id}.${target.node.attribute}`;
+      if (target.edge)      tgtExpr = `${target.edge.from}->${target.edge.to}.${target.edge.attribute}`;
+      if (target.node_diff) {
+        const d = target.node_diff;
+        tgtExpr = `|${d.nodes[0]}.${d.attribute} − ${d.nodes[1]}.${d.attribute}|`;
+      }
+      const rhs = test.rhs === "mu" ? "μ"
+        : (typeof test.rhs === "object" && test.rhs?.node)
+            ? `mean(${test.rhs.node.id}.${test.rhs.node.attribute})`
+            : String(test.rhs ?? "");
+      const testStr = `TEST  mean(${tgtExpr}) ${test.op} ${rhs}`;
+
+      // Background pill — centered horizontally across the full canvas
+      const testBw = testStr.length * 6.5 + 16;
+      const testX  = (W - testBw) / 2;
+      const testRect = document.createElementNS(svgNS, "rect");
+      testRect.setAttribute("x",      testX.toFixed(1));
+      testRect.setAttribute("y",      "20");
+      testRect.setAttribute("width",  testBw.toFixed(1));
+      testRect.setAttribute("height", "18");
+      testRect.setAttribute("rx",     "4");
+      testRect.setAttribute("fill",   "rgba(59,130,246,.1)");
+      testRect.setAttribute("stroke", "#3b82f6");
+      testRect.setAttribute("stroke-width", "1");
+      svg.appendChild(testRect);
+
+      const testTxt = document.createElementNS(svgNS, "text");
+      testTxt.setAttribute("x",                (testX + 8).toFixed(1));
+      testTxt.setAttribute("y",                "33");
+      testTxt.setAttribute("font-size",        "10");
+      testTxt.setAttribute("font-family",      "monospace");
+      testTxt.setAttribute("fill",             "#3b82f6");
+      testTxt.setAttribute("text-anchor",      "start");
+      testTxt.setAttribute("dominant-baseline","auto");
+      testTxt.textContent = testStr;
+      svg.appendChild(testTxt);
+    }
+
+    // ── Draw edges ────────────────────────────────────────────────────────
+    edges.forEach(e => {
+      const ps = posMap[e.from], pd = posMap[e.to];
+      if (!ps || !pd) return;
+      const dx   = pd.x - ps.x, dy = pd.y - ps.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const sx = ps.x + dx / dist * CR;
+      const sy = ps.y + dy / dist * CR;
+      const ex = pd.x - dx / dist * CR;
+      const ey = pd.y - dy / dist * CR;
+      const line = document.createElementNS(svgNS, "line");
+      line.setAttribute("x1", sx.toFixed(1)); line.setAttribute("y1", sy.toFixed(1));
+      line.setAttribute("x2", ex.toFixed(1)); line.setAttribute("y2", ey.toFixed(1));
+      line.setAttribute("stroke",       "#4b5563");
+      line.setAttribute("stroke-width", "1.5");
+      svg.appendChild(line);
+
+      // Edge attribute label — show the attribute name when this edge is the
+      // TEST target (target.edge), or when the edge carries an inline attribute
+      // constraint from the pattern (e.attribute).
+      let edgeAttrLabel = null;
+      if (target.edge && target.edge.from === e.from && target.edge.to === e.to) {
+        edgeAttrLabel = target.edge.attribute;
+      } else if (target.edge && target.edge.from === e.to && target.edge.to === e.from) {
+        edgeAttrLabel = target.edge.attribute;   // reverse direction match
+      }
+      // Also show inline edge attributes declared in the MATCH pattern
+      if (e.attribute && Object.keys(e.attribute).length > 0) {
+        const attrStr = Object.entries(e.attribute).map(([k,v]) => `${k}:${JSON.stringify(v)}`).join(", ");
+        edgeAttrLabel = edgeAttrLabel ? `${edgeAttrLabel}  [${attrStr}]` : attrStr;
+      }
+      if (edgeAttrLabel) {
+        const mx = (sx + ex) / 2;
+        const my = (sy + ey) / 2;
+        // Place label above the edge line so it doesn't overlap the line
+        const lblY = my - 10;
+        // Small background rect for readability
+        const lblW = edgeAttrLabel.length * 5.4 + 8;
+        const lblRect = document.createElementNS(svgNS, "rect");
+        lblRect.setAttribute("x",      (mx - lblW / 2).toFixed(1));
+        lblRect.setAttribute("y",      (lblY - 8).toFixed(1));
+        lblRect.setAttribute("width",  lblW.toFixed(1));
+        lblRect.setAttribute("height", "12");
+        lblRect.setAttribute("rx",     "3");
+        lblRect.setAttribute("fill",   "rgba(75,85,99,.15)");
+        lblRect.setAttribute("stroke", "none");
+        svg.appendChild(lblRect);
+        const lblTxt = document.createElementNS(svgNS, "text");
+        lblTxt.setAttribute("x",                mx.toFixed(1));
+        lblTxt.setAttribute("y",                lblY.toFixed(1));
+        lblTxt.setAttribute("font-size",        "9");
+        lblTxt.setAttribute("font-family",      "monospace");
+        lblTxt.setAttribute("fill",             "#6b7280");
+        lblTxt.setAttribute("text-anchor",      "middle");
+        lblTxt.setAttribute("dominant-baseline","auto");
+        lblTxt.textContent = edgeAttrLabel;
+        svg.appendChild(lblTxt);
+      }
+    });
+
+    // ── Draw nodes ────────────────────────────────────────────────────────
+    nodes.forEach((nd, i) => {
+      const pos      = posMap[nd.id];
+      const ci       = i % _PGN_STROKE.length;
+      const isTarget = targetNodeIds.has(nd.id);
+      const attrs    = Object.entries(nd.attribute || {});
+
+      // Glow ring for every node mentioned in the TEST clause
+      if (isTarget) {
+        const glow = document.createElementNS(svgNS, "circle");
+        glow.setAttribute("cx", pos.x); glow.setAttribute("cy", pos.y);
+        glow.setAttribute("r",  CR + 5);
+        glow.setAttribute("fill",         "none");
+        glow.setAttribute("stroke",       _PGN_STROKE[ci]);
+        glow.setAttribute("stroke-width", "2");
+        glow.setAttribute("opacity",      "0.45");
+        svg.appendChild(glow);
+      }
+
+      // Circle fill
+      const circ = document.createElementNS(svgNS, "circle");
+      circ.setAttribute("cx", pos.x); circ.setAttribute("cy", pos.y);
+      circ.setAttribute("r",  CR);
+      circ.setAttribute("fill",         _PGN_FILL[ci]);
+      circ.setAttribute("stroke",       _PGN_STROKE[ci]);
+      circ.setAttribute("stroke-width", "1.5");
+      svg.appendChild(circ);
+
+      // Node variable id (e.g. n0) — centred inside circle
+      const idTxt = document.createElementNS(svgNS, "text");
+      idTxt.setAttribute("x", pos.x); idTxt.setAttribute("y", pos.y);
+      idTxt.setAttribute("text-anchor",      "middle");
+      idTxt.setAttribute("dominant-baseline", "central");
+      idTxt.setAttribute("font-size",   "12");
+      idTxt.setAttribute("font-weight", "700");
+      idTxt.setAttribute("font-family", "monospace");
+      idTxt.setAttribute("fill",        _PGN_STROKE[ci]);
+      idTxt.textContent = nd.id;
+      svg.appendChild(idTxt);
+
+      // Label (type name) — first line below circle
+      // ty tracks current y; starts just below circle edge
+      let ty = pos.y + CR + LABEL_GAP + LABEL_LINESEP;   // baseline of first text row
+      const mkTxt = (content, fontSize, color, bold) => {
+        const t = document.createElementNS(svgNS, "text");
+        t.setAttribute("x", pos.x); t.setAttribute("y", ty);
+        t.setAttribute("text-anchor", "middle");
+        t.setAttribute("dominant-baseline", "auto");
+        t.setAttribute("font-size",   fontSize);
+        if (bold) t.setAttribute("font-weight", "600");
+        t.setAttribute("fill", color);
+        t.textContent = content;
+        svg.appendChild(t);
+        ty += LABEL_LINESEP;
+        return t;
+      };
+
+      mkTxt(nd.label, "12", _PGN_STROKE[ci], true);
+
+      // Attribute constraints (long values are clipped — see _pgnClipText;
+      // the full value is still visible in the parsed pattern JSON below)
+      attrs.forEach(([k, v]) => {
+        const full = `${k}:${JSON.stringify(v)}`;
+        const clipped = _pgnClipText(full, LABEL_MAX_CHARS);
+        const t = mkTxt(clipped, "10", "#9ca3af", false);
+        if (clipped !== full) {
+          const title = document.createElementNS(svgNS, "title");
+          title.textContent = full;
+          t.appendChild(title);
+        }
+      });
+
+      // (TEST expression is now rendered in the header, not per-node)
+    });
+
+    wrap.appendChild(svg);
+  }
+  return wrap;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Result pane
+// ─────────────────────────────────────────────────────────────────────────────
+function renderResult(data) {
+  const rc = document.getElementById("result-container");
+  rc.classList.remove("empty");
+  rc.innerHTML = "";
+
+  if (!data.success) {
+    // Strip the leading [pid] prefix from each error — in the Visual Builder
+    // flow pid is always "visual-pattern", so the bracketed prefix is noise.
+    const cleanErrs = (data.errors || []).map(e =>
+      String(e).replace(/^\[[^\]]*\]\s*/, "")
+    );
+    rc.innerHTML = `
+      <div class="result-section">
+        <div class="result-header">
+          <span class="result-title tag-fail">✗ Failed</span>
+        </div>
+        <div style="color:var(--red);font-size:.85rem;line-height:1.6">${esc(cleanErrs.join("\n"))}</div>
+      </div>`;
+    return;
+  }
+
+  if (data.parsed_pattern) {
+    _patternData = data.parsed_pattern;
+    // The live canvas (right panel) already shows the pattern — no separate
+    // Pattern Graph card is needed here. Refresh it so the TEST badge / glow
+    // reflect the final validated state.
+    vbRenderCanvas();
+
+    // ── Parse status — success ─────────────────────────────────────────────
+    const patSec = document.createElement("div");
+    patSec.className = "result-section";
+    patSec.innerHTML = `
+      <div class="result-header">
+        <span class="result-title tag-ok">✓ Parsed</span>
+      </div>`;
+    rc.appendChild(patSec);
+
+    // ── GHT execution panel (run the real Opt_PHASE engine) ───────────────────
+    const execSec = document.createElement("div");
+    execSec.className = "result-section";
+    execSec.innerHTML = `
+      <div class="result-header">
+        <span class="result-title">Run GHT Engine</span>
+      </div>
+      ${renderExecPanelHtml()}`;
+    rc.appendChild(execSec);
+    // Apply initial visibility of sampling fields based on default mode.
+    onExecModeChange();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  GHT execution panel — runs the real Opt_PHASE engine (main.py / sampling.py)
+// ─────────────────────────────────────────────────────────────────────────────
+function renderExecPanelHtml() {
+  return `
+    <div class="exec-panel">
+      <div class="exec-params">
+        <div class="exec-field">
+          <label>Mode</label>
+          <select id="exec-mode" onchange="onExecModeChange()">
+            <option value="sample" selected>Sampling approximation</option>
+            <option value="full">Full-graph exact</option>
+            <option value="compare">Compare (both)</option>
+          </select>
+        </div>
+        <div class="exec-field exec-field-sample">
+          <label>Sampler</label>
+          <select id="exec-sampling-method">
+            <option value="Opt_PHASE" selected>PHASEₒₚₜ</option>
+            <option value="PHASE">PHASE</option>
+          </select>
+        </div>
+        <details class="exec-advanced exec-field-sample">
+          <summary>Advanced parameters</summary>
+          <div class="exec-advanced-body">
+            <div class="exec-field">
+              <label>Sampling %</label>
+              <input type="number" id="exec-sampling-percent" value="5" min="0.5" step="0.5">
+            </div>
+            <div class="exec-field">
+              <label>Samples</label>
+              <input type="number" id="exec-num-samples" value="5" min="1" max="50">
+            </div>
+          </div>
+        </details>
+      </div>
+      <button class="exec-btn" id="exec-run-btn" onclick="runGHTExecution()">
+        <span id="exec-btn-text">▶  Run Hypothesis Test</span>
+        <span class="spinner" id="exec-spinner"></span>
+      </button>
+      <div class="exec-error" id="exec-error"></div>
+      <div class="exec-results" id="exec-results"></div>
+    </div>`;
+}
+
+function _execSetRunning(on) {
+  const btn = document.getElementById("exec-run-btn");
+  if (!btn) return;
+  btn.disabled = on;
+  btn.classList.toggle("running", on);
+  document.getElementById("exec-btn-text").textContent =
+    on ? "Running…" : "▶  Run Hypothesis Test";
+}
+
+// Show/hide sampling-related fields based on the selected mode.
+// "full" mode skips sampling entirely, so Sampling %, Samples, and Sampler
+// are irrelevant.
+function onExecModeChange() {
+  const mode = document.getElementById("exec-mode").value;
+  const showSampling = mode !== "full";
+  document.querySelectorAll(".exec-field-sample").forEach(el => {
+    el.style.display = showSampling ? "" : "none";
+  });
+}
+
+function runGHTExecution() {
+  if (!_patternData) return;
+
+  const pctVal = parseFloat(document.getElementById("exec-sampling-percent").value);
+  const sampling_percent = (!isNaN(pctVal) && pctVal > 0) ? [pctVal] : [];
+  const num_samples = parseInt(document.getElementById("exec-num-samples").value, 10) || 10;
+  const sampling_method = document.getElementById("exec-sampling-method").value;
+  const mode = document.getElementById("exec-mode").value;
+
+  const errEl = document.getElementById("exec-error");
+  const resEl = document.getElementById("exec-results");
+  errEl.textContent = ""; errEl.classList.remove("show");
+  resEl.innerHTML = "";   resEl.classList.remove("show");
+
+  // Sampling % is only required for sample / compare modes.
+  if (mode !== "full" && sampling_percent.length === 0) {
+    errEl.textContent = "Please provide a valid sampling percentage.";
+    errEl.classList.add("show");
+    return;
+  }
+
+  _execSetRunning(true);
+
+  fetch("/api/execute", {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({
+      parsed_pattern: _patternData,
+      sampling_percent,
+      num_samples,
+      sampling_method,
+      mode,
+    }),
+  }).then(res => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const reader  = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = "";
+
+    function pump() {
+      reader.read().then(({ done, value }) => {
+        if (done) { _execSetRunning(false); return; }
+        buf += decoder.decode(value, { stream: true });
+        const parts = buf.split("\n\n");
+        buf = parts.pop();
+        parts.forEach(handleExecSSE);
+        pump();
+      }).catch(err => {
+        errEl.textContent = "Stream error: " + err.message;
+        errEl.classList.add("show");
+        _execSetRunning(false);
+      });
+    }
+    pump();
+  }).catch(err => {
+    errEl.textContent = "Request failed: " + err.message;
+    errEl.classList.add("show");
+    _execSetRunning(false);
+  });
+
+  function handleExecSSE(raw) {
+    const lines = raw.trim().split("\n");
+    let event = "message", dataStr = "";
+    lines.forEach(l => {
+      if (l.startsWith("event:")) event   = l.slice(6).trim();
+      if (l.startsWith("data:"))  dataStr += l.slice(5).trim();
+    });
+    if (!dataStr) return;
+    let data;
+    try { data = JSON.parse(dataStr); } catch { return; }
+
+    if (event === "status") {
+      // Progress messages are hidden from the user; the button spinner is
+      // enough to indicate the system is working.
+    } else if (event === "result") {
+      renderGHTExecutionResult(data);
+    } else if (event === "error") {
+      errEl.textContent = data.message;
+      errEl.classList.add("show");
+      _execSetRunning(false);
+    } else if (event === "done") {
+      _execSetRunning(false);
+    }
+  }
+}
+
+function renderGHTExecutionResult(report) {
+  _lastReport = report;
+  const resEl = document.getElementById("exec-results");
+  resEl.classList.add("show");
+
+  const comp = report.comparison || "==";
+  const testScalar = report.test_scalar;
+  const isMu = report.is_mu_test === true;
+  // paired edge-difference test: "sample mean" is the mean of per-path
+  // differences between the two compared edges — label it accordingly
+  const isDiff = !!report.test_description;
+
+  // ── Per-sample detail table — captured for nesting under Sampling Consensus
+  //    (b4) in the Result Summary's Technical Details.  Hidden in "full" mode.
+  const repeats = ((report.sampling_results || [])[0] || {}).repeats || [];
+  let perSampleHtml = "";
+  if (repeats.length > 0) {
+    perSampleHtml = `
+      <details class="exec-ai-details exec-ai-nested">
+        <summary>Per-sample details (${repeats.length} repeats)</summary>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th title="Repeat index">#</th>
+              <th title="Number of pattern-matching subgraphs found in this repeat">Matches</th>
+              <th title="Sample mean of the target attribute in this repeat">Sample mean</th>
+              <th title="Lower bound of the 95% confidence interval for this repeat">CI lower</th>
+              <th title="Upper bound of the 95% confidence interval for this repeat">CI upper</th>
+              <th title="p-value of the one-sample t-test for this repeat (p &lt; 0.05 → reject H0)">p-value</th>
+              <th title="Per-repeat hypothesis test result">Verdict</th>
+              <th title="Wall-clock time for this repeat">Time (s)</th>
+            </tr>
+          </thead>
+          <tbody>`;
+    repeats.forEach(r => {
+      const sm = r.sample_mean;
+      const smClass = (sm !== null && sm !== undefined && testScalar !== undefined && testScalar !== null)
+        ? (comp === "==" || comp === "=" ? (Math.abs(sm - testScalar) < 0.001 ? "ok" : "bad")
+           : comp === "!=" ? (Math.abs(sm - testScalar) >= 0.001 ? "ok" : "bad")
+           : comp === ">" ? (sm > testScalar ? "ok" : "bad")
+           : comp === "<" ? (sm < testScalar ? "ok" : "bad")
+           : "")
+        : "";
+      const vStr  = r.accept_h0 === null || r.accept_h0 === undefined ? "—"
+                  : r.accept_h0 ? "Accepted" : "Rejected";
+      const vCls  = r.accept_h0 === null || r.accept_h0 === undefined ? ""
+                  : r.accept_h0 ? "ok" : "bad";
+      perSampleHtml += `
+            <tr>
+              <td>${esc(r.index)}</td>
+              <td>${r.valid_matches ?? "—"}</td>
+              <td class="${smClass}" style="font-weight:600">${sm ?? "—"}</td>
+              <td>${r.ci_lower ?? "—"}</td>
+              <td>${r.ci_upper ?? "—"}</td>
+              <td>${r.p_value ?? "—"}</td>
+              <td class="${vCls}">${vStr}</td>
+              <td>${r.sampling_time_seconds ?? "—"}</td>
+            </tr>`;
+    });
+    perSampleHtml += `
+          </tbody>
+        </table>
+      </details>`;
+  }
+
+  let html = "";
+
+  // ── Result summary (bulleted list) ─────────────────────────────────────
+  // Most lines are rule-based (instant, deterministic). Only the final
+  // "Interpretation" line calls the LLM.
+  const _v2    = report.verdict || {};
+  const _aH0   = _v2.accept_h0;
+  const _pVal  = _v2.p_value;
+  const _vote  = _v2.vote || null;
+  const _fgRef = _v2.full_graph || null;
+  const _gt2   = report.ground_truth || null;
+  const _sr2   = (report.sampling_results || [])[0] || {};
+  const _reps2 = _sr2.repeats || [];
+  const _means2 = _reps2.map(r => r.sample_mean).filter(m => m != null);
+
+  // helper: wrap text in a colored keyword span
+  const _kw = (text, cls) => `<span class="kw-${cls}">${esc(text)}</span>`;
+
+  // 1. Hypothesis Result
+  const vWord = _aH0 === true ? "Accepted" : _aH0 === false ? "Rejected" : "Inconclusive";
+  const vCls  = _aH0 === true ? "pos" : _aH0 === false ? "neg" : "warn";
+  const vDesc = _aH0 === true ? "the data supports the stated hypothesis"
+              : _aH0 === false ? "the data does not support the stated hypothesis"
+              : "the result could not be determined";
+  const b1 = `✅ <strong>Hypothesis Result:</strong> ${_kw(vWord, vCls)}. ${vDesc}.`;
+
+  // 2. Statistical Significance — compact "p = val < threshold (descriptor)".
+  // p < 0.05 → reject side (evidence against); p ≥ 0.05 → accept side (supported).
+  // Always show the concrete p value AND its relation to the 0.05 boundary.
+  let sigDesc, sigCls, pStr;
+  if (_pVal == null)              { sigDesc = "unavailable";                    sigCls = "warn"; pStr = "N/A"; }
+  else if (_pVal < 0.001)         { sigDesc = "very strong evidence against";    sigCls = "neg";  pStr = `p = ${_pVal} < 0.001`; }
+  else if (_pVal < 0.01)          { sigDesc = "strong evidence against";        sigCls = "neg";  pStr = `p = ${_pVal} < 0.01`; }
+  else if (_pVal < 0.05)          { sigDesc = "sufficient evidence to reject";   sigCls = "neg";  pStr = `p = ${_pVal} < 0.05`; }
+  else if (_pVal < 0.2)           { sigDesc = "weakly supported";                sigCls = "warn"; pStr = `p = ${_pVal} ≥ 0.05`; }
+  else if (_pVal < 0.4)           { sigDesc = "marginally supported";            sigCls = "warn"; pStr = `p = ${_pVal} ≥ 0.05`; }
+  else if (_pVal < 0.6)           { sigDesc = "moderately supported";            sigCls = "pos";  pStr = `p = ${_pVal} ≥ 0.05`; }
+  else if (_pVal < 0.8)           { sigDesc = "supported";                       sigCls = "pos";  pStr = `p = ${_pVal} ≥ 0.05`; }
+  else if (_pVal < 0.95)          { sigDesc = "strongly supported";              sigCls = "pos";  pStr = `p = ${_pVal} ≥ 0.05`; }
+  else                            { sigDesc = "very strongly supported";         sigCls = "pos";  pStr = `p = ${_pVal} ≥ 0.05`; }
+  const _pTip = `<span class="exec-ai-info" tabindex="0" role="note"
+      aria-label="How to read the p-value"><span class="exec-ai-tip">Your hypothesis is the null hypothesis here, so a larger p-value means stronger support.</span>ⓘ</span>`;
+  const b2 = `📊 <strong>Statistical Significance:</strong> ${_kw(pStr, "num")} (${_kw(sigDesc, sigCls)}).${_pTip}`;
+
+  // 3. Observed Evidence (sample mean vs threshold)
+  const smAvg = _means2.length ? (_means2.reduce((a,b)=>a+b,0)/_means2.length).toFixed(4) : null;
+  let b3;
+  if (smAvg != null && testScalar != null) {
+    // describe the ACTUAL relationship between sample mean and threshold,
+    // not the operator the user picked (the operator belongs to the
+    // hypothesis, not to the observation)
+    const smNum = parseFloat(smAvg);
+    const cmp   = (isNaN(smNum) || smNum >  testScalar) ? "greater than"
+                :                                 smNum === testScalar ? "equal to"
+                :                                                            "less than";
+    const rhsLbl = isMu ? `population mean (μ = ${testScalar})` : `threshold ${testScalar}`;
+    const meanLbl = isDiff ? "Mean difference (edge A − edge B)" : "Sample mean";
+    b3 = `📈 <strong>Observed Evidence:</strong> ${meanLbl} = ${_kw(smAvg, "num")}, ${cmp} ${_kw(rhsLbl, "num")}.`;
+  } else if (_gt2 && _gt2.value != null) {
+    b3 = `📈 <strong>Observed Evidence:</strong> Ground-truth mean = ${_kw(_gt2.value, "num")} over ${_kw(String(_gt2.n_matches), "num")} matches.`;
+  } else {
+    b3 = `📈 <strong>Observed Evidence:</strong> unavailable.`;
+  }
+
+  // 4. Sampling Consensus (sampling / compare mode only). The per-sample
+  //    detail table is part of this item, so it must sit INSIDE this
+  //    .exec-ai-item (above the border-bottom divider), not after it.
+  let b4 = "";
+  if (_vote && _vote.total) {
+    const w = _aH0 ? _vote.accept : _vote.reject;
+    b4 = `🗳️ <strong>Sampling Consensus:</strong> ${_kw(String(w), "num")} of ${_kw(String(_vote.total), "num")} subgraphs supported the hypothesis.`;
+  }
+  if (perSampleHtml) {
+    b4 += perSampleHtml;
+  }
+
+  // 5. Sampling vs. Ground Truth (compare mode ONLY) — sampling result vs.
+  //    full-graph ground-truth result, plus per-subgraph agreement (accuracy).
+  //    Show the full-graph verdict AND the ground-truth mean value.
+  let b5 = "";
+  if (report.mode === "compare"
+      && _fgRef && _fgRef.accept_h0 !== null && _fgRef.accept_h0 !== undefined
+      && _aH0 !== null && _aH0 !== undefined) {
+    const consistent = _fgRef.accept_h0 === _aH0;
+    const consWord = consistent ? "consistent" : "inconsistent";
+    const consCls  = consistent ? "pos" : "neg";
+    const fgVerdictWord = _fgRef.accept_h0 ? "Accepted" : "Rejected";
+    const fgVerdictCls  = _fgRef.accept_h0 ? "pos" : "neg";
+    let gtPart = "";
+    if (_gt2 && _gt2.value != null) {
+      gtPart = ` (ground-truth mean = ${_kw(_gt2.value, "num")} over ${_kw(String(_gt2.n_matches), "num")} matches)`;
+    }
+    let accPart = "";
+    const acc = _sr2.accuracy;
+    if (acc != null) accPart = `; subgraph agreement = ${_kw((acc * 100).toFixed(1) + "%", "num")}`;
+    b5 = `⚖️ <strong>Sampling vs. Ground Truth:</strong> Full-graph result: ${_kw(fgVerdictWord, fgVerdictCls)}${gtPart}; sampling result ${_kw(consWord, consCls)}${accPart}.`;
+  }
+
+  // Visible: Hypothesis Result + LLM Conclusion strung together as one
+  // explicit output for non-experts. Collapsed: Statistical Significance,
+  // Observed Evidence, Sampling Consensus, Sampling vs. Ground Truth.
+  // Deleted: Ground-Truth Reference, Execution Profile.
+  const techDetails = [b2, b3, b4, b5].filter(Boolean)
+    .map(b => `<div class="exec-ai-item">${b}</div>`).join("");
+
+  html += `
+    <div class="exec-ai-summary" id="exec-ai-summary">
+      <div class="exec-ai-summary-hdr">📋 Result Summary</div>
+      <div class="exec-ai-summary-body">
+        <div class="exec-ai-item exec-ai-verdict">
+          <span class="exec-ai-verdict-line kw-${vCls}">${esc(vWord)}: ${vDesc}.</span>
+          <div id="exec-ai-interpretation" class="exec-ai-conclusion">
+            <span class="exec-ai-loading">Generating conclusion…</span>
+          </div>
+        </div>
+        <details class="exec-ai-details">
+          <summary>Technical Details</summary>
+          ${techDetails}
+        </details>
+      </div>
+    </div>`;
+
+  // ── Follow-up Hypotheses (user-triggered, LLM-generated, validated) ─────
+  html += `
+    <div class="exec-recommend" id="exec-recommend">
+      <div class="exec-recommend-hdr">
+        <span>🔍 Follow-up Hypotheses</span>
+        <button class="exec-recommend-refresh" id="exec-recommend-refresh" style="display:none"
+                onclick="fetchRecommendations()" title="Regenerate hypotheses">
+          <span class="refresh-icon">↻</span><span>Refresh</span>
+        </button>
+      </div>
+      <div class="exec-recommend-body" id="exec-recommend-body">
+        <button class="exec-btn" id="exec-recommend-btn" onclick="fetchRecommendations()">
+          <span id="exec-recommend-btn-text">▶  Generate Follow-up Hypotheses</span>
+          <span class="spinner" id="exec-recommend-spinner"></span>
+        </button>
+      </div>
+    </div>`;
+
+  resEl.innerHTML = html;
+
+  // ── fetch the LLM conclusion (fire-and-forget) ────────────────────────
+  fetch("/api/summarize", {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({ report }),
+  }).then(r => r.json()).then(d => {
+    const el = document.getElementById("exec-ai-interpretation");
+    if (!el) return;
+    if (d.summary) {
+      el.innerHTML = escMD(d.summary);
+    } else {
+      el.innerHTML = `<span class="exec-ai-error">${esc(d.error || "Conclusion unavailable.")}</span>`;
+    }
+  }).catch(err => {
+    const el = document.getElementById("exec-ai-interpretation");
+    if (el) el.innerHTML = `<span class="exec-ai-error">Conclusion request failed: ${esc(err.message)}</span>`;
+  });
+}
+
+// ── fetch validated follow-up hypotheses (user-triggered) ──────────────────
+let _recommendations = [];
+let _lastReport = null;
+function fetchRecommendations() {
+  const body = document.getElementById("exec-recommend-body");
+  const btn  = document.getElementById("exec-recommend-btn");
+  const btnText = document.getElementById("exec-recommend-btn-text");
+  const ref = document.getElementById("exec-recommend-refresh");
+  if (!body) return;
+
+  // running state: disable button, swap text, show spinner (mirrors .exec-btn.running)
+  if (btn) { btn.disabled = true; btn.classList.add("running"); }
+  if (btnText) btnText.textContent = "Generating…";
+  // keep the button visible (with spinner) instead of replacing it with a loading string
+  // so the colored gradient block stays as the visual anchor during generation.
+  // Remove any previously rendered chips / message line.
+  [...body.querySelectorAll(".exec-recommend-chip, .exec-recommend-msg")].forEach(el => el.remove());
+  // spinning state for the refresh button (if visible)
+  if (ref) { ref.classList.add("spinning"); ref.style.opacity = ".6"; }
+
+  _recommendations = [];
+  fetch("/api/recommend", {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({ parsed_pattern: _patternData, report: _lastReport }),
+  }).then(r => r.json()).then(d => {
+    const sec = document.getElementById("exec-recommend");
+    if (!body || !sec) return;
+    if (ref) { ref.classList.remove("spinning"); ref.style.opacity = ""; }
+    if (btn) { btn.disabled = false; btn.classList.remove("running"); }
+    if (btnText) btnText.textContent = "▶  Generate Follow-up Hypotheses";
+    if (d.error || !d.recommendations || d.recommendations.length === 0) {
+      // No valid recommendations — keep the section visible with a friendly
+      // message and a retry affordance (refresh button). NB: the generate
+      // button lives INSIDE #exec-recommend-body, so never replace
+      // body.innerHTML here — that would destroy it and leave no way to
+      // retry. Append the message instead.
+      if (ref) ref.style.display = "inline-flex";   // retry via refresh
+      if (btn) btn.style.display = "none";          // hide generate (if present)
+      [...body.querySelectorAll(".exec-recommend-chip, .exec-recommend-msg")].forEach(el => el.remove());
+      const msg = d.error
+        ? `No recommendations — ${esc(d.error)}`
+        : "No suitable follow-up hypotheses found. Try again?";
+      body.insertAdjacentHTML("beforeend",
+        `<span class="exec-ai-loading exec-recommend-msg" style="display:block;width:100%">${msg}</span>`);
+      return;
+    }
+    _recommendations = d.recommendations;
+    if (ref) ref.style.display = "inline-flex";
+    // hide the generate button once results are rendered; refresh button takes over
+    if (btn) btn.style.display = "none";
+    body.innerHTML = d.recommendations.map((rec, i) =>
+      `<div class="exec-recommend-chip" onclick="loadRecommendation(${i})" title="${esc(rec.ghtql)}">
+        <span class="chip-icon">🔍</span>
+        <span class="chip-text">${esc(rec.description)}</span>
+      </div>`
+    ).join("");
+  }).catch(() => {
+    const sec = document.getElementById("exec-recommend");
+    if (!sec) return;
+    const body = document.getElementById("exec-recommend-body");
+    const btn  = document.getElementById("exec-recommend-btn");
+    const btnText = document.getElementById("exec-recommend-btn-text");
+    const ref = document.getElementById("exec-recommend-refresh");
+    if (ref) { ref.classList.remove("spinning"); ref.style.opacity = ""; }
+    if (btn) { btn.disabled = false; btn.classList.remove("running"); }
+    if (btnText) btnText.textContent = "▶  Generate Follow-up Hypotheses";
+    if (ref) ref.style.display = "inline-flex";   // retry via refresh
+    if (btn) btn.style.display = "none";          // hide generate (if present)
+    if (body) {
+      [...body.querySelectorAll(".exec-recommend-chip, .exec-recommend-msg")].forEach(el => el.remove());
+      body.insertAdjacentHTML("beforeend",
+        `<span class="exec-ai-loading exec-recommend-msg" style="display:block;width:100%">Request failed. Try again?</span>`);
+    }
+  });
+}
+
+// ── recommendation click handler ─────────────────────────────────────────
+// Loads a recommended parsed pattern onto the Visual Builder canvas.
+function loadRecommendation(idx) {
+  const rec = _recommendations[idx];
+  if (!rec || !rec.parsed_pattern) return;
+  vbLoadParsedPattern(rec.parsed_pattern, rec.description);
+  // scroll to the canvas so the user sees the loaded pattern
+  const wrap = document.getElementById("vb-canvas-wrap");
+  if (wrap) wrap.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Copy helpers
+// ─────────────────────────────────────────────────────────────────────────────
+function copyPattern(btnId) {
+  if (_patternData) {
+    navigator.clipboard.writeText(JSON.stringify(_patternData, null, 2))
+      .then(() => flashCopy(btnId));
+  }
+}
+function flashCopy(btnId) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.textContent = "✓ copied";
+  btn.classList.add("copied");
+  setTimeout(() => { btn.textContent = "copy"; btn.classList.remove("copied"); }, 1800);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Status chip
+// ─────────────────────────────────────────────────────────────────────────────
+function setChip(msg, cls) {
+  const chip = document.getElementById("status-chip");
+  chip.textContent = msg;
+  chip.className   = "status-chip " + (cls || "");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Visual Builder — draw a pattern to build a hypothesis
+// ═══════════════════════════════════════════════════════════════════════════
+const VB = {
+  nodes: [],          // { id, label, attribute:{k:v}, x, y }
+  edges: [],          // { from, to }
+  selection: null,    // { type:"node", id } | { type:"edge", index }
+  edgeModeOn: false,
+  edgeFrom: null,      // node id chosen as edge source while in edge mode
+  drag: null,          // { id, dx, dy }
+  nextIdx: 0,          // for auto-generated variable names n0, n1, ...
+  resize: null,        // { startY, startH } while dragging the resizer
+};
+
+const VB_SVG_NS = "http://www.w3.org/2000/svg";
+const VB_NODE_R = 22;
+
+// ── schema helpers ───────────────────────────────────────────────────────────
+function vbNodeTypeNames() {
+  if (!_schemaData || !_schemaData.node_types) return [];
+  return Object.keys(_schemaData.node_types);
+}
+// All attribute names for a node label — used by the Inspector property-filter
+// dropdown (users can filter by ANY attribute: genre, gender, title, ...).
+function vbAllAttrNamesForLabel(label) {
+  if (!_schemaData || !_schemaData.node_types || !_schemaData.node_types[label]) return [];
+  const info = _schemaData.node_types[label];
+  const names = Object.keys(info.attributes || {});
+  const flags = (info.binary_flags_sample || []).map(f => typeof f === "object" ? f.name : f);
+  return [...names, ...flags];
+}
+// Numeric-comparable attribute names for a node label — used by the TEST target
+// picker (t-tests need numbers). Binary flags (bool) are always numeric;
+// regular attributes are filtered via vbIsNumericAttr so string-stored numerics
+// like year="1990" stay while categorical strings (gender, occupation, "90's")
+// are dropped.
+function vbAttrNamesForLabel(label) {
+  if (!_schemaData || !_schemaData.node_types || !_schemaData.node_types[label]) return [];
+  const info = _schemaData.node_types[label];
+  const names = Object.keys(info.attributes || {}).filter(a => vbIsNumericAttr(label, a));
+  const flags = (info.binary_flags_sample || []).map(f => typeof f === "object" ? f.name : f);
+  return [...names, ...flags];
+}
+// True if attr is numerically comparable (eligible for a t-test TEST target).
+// int/float/bool dtype → yes; str/mixed → yes only if every top_value parses
+// as a number (covers year-as-"1990"); str/mixed with non-numeric or empty
+// top_values → no (gender, occupation, "90's", "Long", ...).
+// Special case: movie.genre is an integer code for categories (1=Action, ...,
+// 5=Comedy), not a measurement — its mean is meaningless, so exclude it.
+function vbIsNumericAttr(label, attr) {
+  if (label === "movie" && attr === "genre") return false;
+  const dt = vbAttrDtype(label, attr);
+  if (dt === "int" || dt === "float" || dt === "bool") return true;
+  if (dt !== "str" && dt !== "mixed") return false;
+  const tv = vbAttrTopValues(label, attr) || [];
+  if (tv.length === 0) return false;                 // no evidence → exclude
+  return tv.every(v => {
+    if (v === null || v === undefined) return false;
+    const s = String(v).trim();
+    return s !== "" && !isNaN(Number(s));
+  });
+}
+function vbAttrDtype(label, attr) {
+  if (!_schemaData || !_schemaData.node_types || !_schemaData.node_types[label]) return null;
+  const info = _schemaData.node_types[label];
+  if (info.attributes && info.attributes[attr]) return info.attributes[attr].dtype;
+  const isFlag = (info.binary_flags_sample || []).some(f => (typeof f === "object" ? f.name : f) === attr);
+  return isFlag ? "bool" : null;
+}
+
+// Return [{from, to, attr}] for every directed edge on the canvas whose
+// underlying schema edge type has at least one attribute. Used to populate
+// the "edge attribute" TEST target picker.
+function vbEdgeTargetOptions() {
+  if (!_schemaData || !_schemaData.edge_types || !_schemaData.connectivity) return [];
+  // Build a bidirectional lookup — for undirected graphs the connectivity
+  // entry's src/dst ordering is arbitrary (NetworkX internal hash order),
+  // so we store both directions.
+  const connByKey = {};
+  _schemaData.connectivity.forEach(c => {
+    connByKey[`${c.src}->${c.dst}`] = c.edge;
+    connByKey[`${c.dst}->${c.src}`] = c.edge;
+  });
+  const out = [];
+  VB.edges.forEach(e => {
+    const fromNode = VB.nodes.find(n => n.id === e.from);
+    const toNode   = VB.nodes.find(n => n.id === e.to);
+    if (!fromNode || !toNode) return;
+    const etype = connByKey[`${fromNode.label}->${toNode.label}`];
+    if (!etype) return;
+    const einfo = _schemaData.edge_types[etype] || {};
+    const attrs = Object.keys(einfo.attributes || {});
+    if (attrs.length === 0) return;
+    out.push({ from: e.from, to: e.to, edge: etype, attrs });
+  });
+  return out;
+}
+// top-N most frequent values for a node type's attribute, pre-computed by
+// dataprep/value_stats_extractor.py — used as <datalist> autocomplete candidates
+function vbAttrTopValues(label, attr) {
+  if (!_schemaData || !_schemaData.node_types || !_schemaData.node_types[label]) return [];
+  const info = _schemaData.node_types[label];
+  if (info.attributes && info.attributes[attr] && info.attributes[attr].top_values) {
+    return info.attributes[attr].top_values;
+  }
+  const isFlag = (info.binary_flags_sample || []).some(f => (typeof f === "object" ? f.name : f) === attr);
+  return isFlag ? [1, 0] : [];
+}
+
+// called whenever the schema for the current dataset (re)loads
+function vbOnSchemaLoaded() {
+  vbBuildAddNodeMenu();
+  vbRenderTestBuilder();
+}
+
+// ── Add-node menu ────────────────────────────────────────────────────────────
+function vbBuildAddNodeMenu() {
+  const menu = document.getElementById("vb-add-node-menu");
+  const types = vbNodeTypeNames();
+  if (types.length === 0) {
+    menu.innerHTML = `<span style="font-size:.7rem;color:var(--text-dim)">Loading schema…</span>`;
+    return;
+  }
+  menu.innerHTML = types.map(t =>
+    `<button class="vb-tbtn" onclick="vbAddNode('${esc(t)}')">${esc(t)}</button>`
+  ).join("");
+}
+function vbToggleAddNodeMenu() {
+  const menu = document.getElementById("vb-add-node-menu");
+  const willShow = menu.style.display === "none";
+  menu.style.display = willShow ? "flex" : "none";
+  if (willShow) vbBuildAddNodeMenu();
+}
+
+// wipe the canvas — used when the dataset changes, since node types/attributes
+// are dataset-specific and a pattern built for another schema is no longer valid
+function vbResetCanvas() {
+  VB.nodes = [];
+  VB.edges = [];
+  VB.selection = null;
+  VB.edgeModeOn = false;
+  VB.edgeFrom = null;
+  VB.drag = null;
+  VB.nextIdx = 0;
+  const menu = document.getElementById("vb-add-node-menu");
+  if (menu) menu.style.display = "none";
+  const edgeBtn = document.getElementById("vb-edge-btn");
+  if (edgeBtn) edgeBtn.classList.remove("active");
+  const wrap = document.getElementById("vb-canvas-wrap");
+  if (wrap) wrap.classList.remove("edge-mode");
+  const errEl = document.getElementById("vb-error-text");
+  if (errEl) errEl.textContent = "";
+  vbRenderCanvas();
+  vbRenderInspector();
+  vbRenderTestBuilder();
+  vbUpdatePreview();
+}
+
+// ── Schema → canvas drag-and-drop ────────────────────────────────────────────
+// Started from a .schema-node-card-hdr (draggable). We stash the node-type
+// label in the dataTransfer; the canvas drop handler reads it and calls
+// vbAddNode at the cursor position.
+function vbSchemaDragStart(ev, label) {
+  ev.dataTransfer.setData("text/x-vb-node-label", label);
+  ev.dataTransfer.effectAllowed = "copy";
+  // Suppress the parent onclick toggle so a drag doesn't also fold the card
+  ev.stopPropagation();
+}
+
+function vbAddNode(label, dropX, dropY) {
+  const id = "n" + VB.nextIdx++;
+  // place new node at drop position, or a pseudo-random free-ish spot
+  const wrap = document.getElementById("vb-canvas-wrap");
+  const w = wrap.clientWidth  || 360;
+  const h = wrap.clientHeight || 260;
+  const x = (dropX != null)
+    ? Math.max(VB_NODE_R, Math.min(w - VB_NODE_R, Math.round(dropX)))
+    : Math.round(60 + Math.random() * Math.max(40, w - 120));
+  const y = (dropY != null)
+    ? Math.max(VB_NODE_R, Math.min(h - VB_NODE_R, Math.round(dropY)))
+    : Math.round(50 + Math.random() * Math.max(40, h - 100));
+  VB.nodes.push({ id, label, attribute: {}, x, y });
+  document.getElementById("vb-add-node-menu").style.display = "none";
+  vbSelect("node", id);
+  vbRenderCanvas();
+  vbRenderTestBuilder();   // keep the TEST clause node/attribute pickers in sync
+  vbUpdatePreview();
+}
+
+// ── Connect (edge) mode ──────────────────────────────────────────────────────
+function vbToggleEdgeMode() {
+  VB.edgeModeOn = !VB.edgeModeOn;
+  VB.edgeFrom = null;
+  document.getElementById("vb-edge-btn").classList.toggle("active", VB.edgeModeOn);
+  document.getElementById("vb-canvas-wrap").classList.toggle("edge-mode", VB.edgeModeOn);
+  document.getElementById("vb-hint").textContent = VB.edgeModeOn
+    ? "Click the source node, then the target node to draw a directed edge. Click ‘Connect’ again to exit."
+    : "Drag nodes to move them. Click \"Connect\", then click a source node followed by a target node to draw a directed edge.";
+}
+
+function vbNodeClicked(id) {
+  if (VB.edgeModeOn) {
+    if (VB.edgeFrom == null) {
+      VB.edgeFrom = id;
+    } else if (VB.edgeFrom !== id) {
+      VB.edges.push({ from: VB.edgeFrom, to: id });
+      VB.edgeFrom = null;
+      vbUpdatePreview();
+    } else {
+      VB.edgeFrom = null;   // clicked same node again — cancel
+    }
+    vbRenderCanvas();
+    return;
+  }
+  vbSelect("node", id);
+}
+
+function vbEdgeClicked(index) {
+  if (VB.edgeModeOn) return;
+  vbSelect("edge", index);
+}
+
+// ── Selection & deletion ─────────────────────────────────────────────────────
+function vbSelect(type, idOrIndex) {
+  VB.selection = { type, id: type === "node" ? idOrIndex : undefined, index: type === "edge" ? idOrIndex : undefined };
+  vbRenderCanvas();
+  vbRenderInspector();
+}
+
+function vbDeleteSelected() {
+  if (!VB.selection) return;
+  if (VB.selection.type === "node") {
+    const id = VB.selection.id;
+    VB.nodes = VB.nodes.filter(n => n.id !== id);
+    VB.edges = VB.edges.filter(e => e.from !== id && e.to !== id);
+  } else if (VB.selection.type === "edge") {
+    VB.edges.splice(VB.selection.index, 1);
+  }
+  VB.selection = null;
+  vbRenderCanvas();
+  vbRenderInspector();
+  vbRenderTestBuilder();   // keep the TEST clause node/attribute pickers in sync
+  vbUpdatePreview();
+}
+
+// keyboard delete while canvas has a selection
+document.addEventListener("keydown", e => {
+  if ((e.key === "Delete" || e.key === "Backspace") && VB.selection &&
+      document.getElementById("pane-mode-vb").classList.contains("active") &&
+      document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "SELECT") {
+    vbDeleteSelected();
+  }
+});
+
+// ── Canvas rendering ─────────────────────────────────────────────────────────
+function vbRenderCanvas() {
+  const svg = document.getElementById("vb-canvas");
+  const emptyHint = document.getElementById("vb-empty-hint");
+  emptyHint.style.display = VB.nodes.length === 0 ? "flex" : "none";
+  svg.innerHTML = "";
+
+  // arrow marker
+  const defs = document.createElementNS(VB_SVG_NS, "defs");
+  const marker = document.createElementNS(VB_SVG_NS, "marker");
+  marker.setAttribute("id", "vb-arrow");
+  marker.setAttribute("markerWidth", "8");
+  marker.setAttribute("markerHeight", "6");
+  marker.setAttribute("refX", "7");
+  marker.setAttribute("refY", "3");
+  marker.setAttribute("orient", "auto");
+  const poly = document.createElementNS(VB_SVG_NS, "polygon");
+  poly.setAttribute("points", "0 0, 8 3, 0 6");
+  poly.setAttribute("fill", "#6b7280");
+  marker.appendChild(poly);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+
+  const posOf = id => VB.nodes.find(n => n.id === id);
+
+  // edges
+  VB.edges.forEach((e, idx) => {
+    const a = posOf(e.from), b = posOf(e.to);
+    if (!a || !b) return;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const sx = a.x + dx / dist * VB_NODE_R;
+    const sy = a.y + dy / dist * VB_NODE_R;
+    const ex = b.x - dx / dist * VB_NODE_R;
+    const ey = b.y - dy / dist * VB_NODE_R;
+    const isSel = VB.selection && VB.selection.type === "edge" && VB.selection.index === idx;
+
+    // invisible wide hit-area for easy clicking
+    const hit = document.createElementNS(VB_SVG_NS, "line");
+    hit.setAttribute("x1", sx); hit.setAttribute("y1", sy);
+    hit.setAttribute("x2", ex); hit.setAttribute("y2", ey);
+    hit.setAttribute("stroke", "transparent");
+    hit.setAttribute("stroke-width", "12");
+    hit.style.cursor = "pointer";
+    hit.addEventListener("click", ev => { ev.stopPropagation(); vbEdgeClicked(idx); });
+    svg.appendChild(hit);
+
+    const line = document.createElementNS(VB_SVG_NS, "line");
+    line.setAttribute("x1", sx.toFixed(1)); line.setAttribute("y1", sy.toFixed(1));
+    line.setAttribute("x2", ex.toFixed(1)); line.setAttribute("y2", ey.toFixed(1));
+    line.setAttribute("stroke", isSel ? "#3b82f6" : "#6b7280");
+    line.setAttribute("stroke-width", isSel ? "2.5" : "1.6");
+    line.style.pointerEvents = "none";
+    svg.appendChild(line);
+  });
+
+  // pending edge preview (from node to cursor is overkill; just highlight source)
+  if (VB.edgeModeOn && VB.edgeFrom != null) {
+    const a = posOf(VB.edgeFrom);
+    if (a) {
+      const ring = document.createElementNS(VB_SVG_NS, "circle");
+      ring.setAttribute("cx", a.x); ring.setAttribute("cy", a.y);
+      ring.setAttribute("r", VB_NODE_R + 6);
+      ring.setAttribute("fill", "none");
+      ring.setAttribute("stroke", "#3b82f6");
+      ring.setAttribute("stroke-width", "2");
+      ring.setAttribute("stroke-dasharray", "4 3");
+      svg.appendChild(ring);
+    }
+  }
+
+  // ── Target nodes (for glow rings) — mirrors renderPatternGraph ───────────
+  const target = vbCollectTarget();
+  const test   = vbCollectTest();
+  const targetNodeIds = new Set();
+  if (target) {
+    if (target.node)      targetNodeIds.add(target.node.id);
+    if (target.edge)      { targetNodeIds.add(target.edge.from); targetNodeIds.add(target.edge.to); }
+    if (target.node_diff) target.node_diff.nodes.forEach(id => targetNodeIds.add(id));
+    if (target.edge_diff) target.edge_diff.edges.forEach(([f, t]) => { targetNodeIds.add(f); targetNodeIds.add(t); });
+  }
+  if (test && typeof test.rhs === "object" && test.rhs && test.rhs.node)
+    targetNodeIds.add(test.rhs.node.id);
+
+  // ── TEST badge (top, centered) ──────────────────────────────────────────
+  if (target && test && test.agg) {
+    let tgtExpr = "?";
+    if (target.node)      tgtExpr = `${target.node.id}.${target.node.attribute}`;
+    if (target.edge)      tgtExpr = `${target.edge.from}->${target.edge.to}.${target.edge.attribute}`;
+    if (target.node_diff) {
+      const d = target.node_diff;
+      tgtExpr = `|${d.nodes[0]}.${d.attribute} − ${d.nodes[1]}.${d.attribute}|`;
+    }
+    if (target.edge_diff) {
+      const d = target.edge_diff;
+      const [[f1, t1], [f2, t2]] = d.edges;
+      tgtExpr = `${f1}->${t1}.${d.attribute} − ${f2}->${t2}.${d.attribute}`;
+    }
+    const rhs = test.rhs === "mu" ? "μ"
+      : (typeof test.rhs === "object" && test.rhs && test.rhs.node)
+          ? `mean(${test.rhs.node.id}.${test.rhs.node.attribute})`
+          : String(test.rhs ?? "");
+    const testStr = `TEST  mean(${tgtExpr}) ${test.op} ${rhs}`;
+
+    const wrapEl = document.getElementById("vb-canvas-wrap");
+    const wrapW  = wrapEl ? (wrapEl.clientWidth || 400) : 400;
+    const testBw = testStr.length * 6.5 + 16;
+    const testX  = Math.max(8, (wrapW - testBw) / 2);
+
+    const testRect = document.createElementNS(VB_SVG_NS, "rect");
+    testRect.setAttribute("x", testX.toFixed(1));
+    testRect.setAttribute("y", "8");
+    testRect.setAttribute("width", testBw.toFixed(1));
+    testRect.setAttribute("height", "18");
+    testRect.setAttribute("rx", "4");
+    testRect.setAttribute("fill", "rgba(59,130,246,.1)");
+    testRect.setAttribute("stroke", "#3b82f6");
+    testRect.setAttribute("stroke-width", "1");
+    testRect.style.pointerEvents = "none";
+    svg.appendChild(testRect);
+
+    const testTxt = document.createElementNS(VB_SVG_NS, "text");
+    testTxt.setAttribute("x", (testX + 8).toFixed(1));
+    testTxt.setAttribute("y", "21");
+    testTxt.setAttribute("font-size", "10");
+    testTxt.setAttribute("font-family", "monospace");
+    testTxt.setAttribute("fill", "#3b82f6");
+    testTxt.setAttribute("text-anchor", "start");
+    testTxt.setAttribute("dominant-baseline", "auto");
+    testTxt.style.pointerEvents = "none";
+    testTxt.textContent = testStr;
+    svg.appendChild(testTxt);
+  }
+
+  // nodes
+  const LABEL_LINESEP  = 15;
+  const LABEL_GAP       = 7;
+  const LABEL_MAX_CHARS = 30;
+  VB.nodes.forEach((n, i) => {
+    const ci       = i % _PGN_STROKE.length;
+    const isSel    = VB.selection && VB.selection.type === "node" && VB.selection.id === n.id;
+    const isTarget = targetNodeIds.has(n.id);
+    const attrs    = Object.entries(n.attribute || {});
+
+    const g = document.createElementNS(VB_SVG_NS, "g");
+    g.style.cursor = VB.edgeModeOn ? "crosshair" : "grab";
+
+    // glow ring for every node mentioned in the TEST clause
+    if (isTarget) {
+      const glow = document.createElementNS(VB_SVG_NS, "circle");
+      glow.setAttribute("cx", n.x); glow.setAttribute("cy", n.y);
+      glow.setAttribute("r", VB_NODE_R + 5);
+      glow.setAttribute("fill", "none");
+      glow.setAttribute("stroke", _PGN_STROKE[ci]);
+      glow.setAttribute("stroke-width", "2");
+      glow.setAttribute("opacity", "0.45");
+      glow.style.pointerEvents = "none";
+      g.appendChild(glow);
+    }
+
+    const circ = document.createElementNS(VB_SVG_NS, "circle");
+    circ.setAttribute("cx", n.x); circ.setAttribute("cy", n.y);
+    circ.setAttribute("r", VB_NODE_R);
+    circ.setAttribute("fill", _PGN_FILL[ci]);
+    circ.setAttribute("stroke", isSel ? "#3b82f6" : _PGN_STROKE[ci]);
+    circ.setAttribute("stroke-width", isSel ? "3" : "1.5");
+    g.appendChild(circ);
+
+    const idTxt = document.createElementNS(VB_SVG_NS, "text");
+    idTxt.setAttribute("x", n.x); idTxt.setAttribute("y", n.y);
+    idTxt.setAttribute("text-anchor", "middle");
+    idTxt.setAttribute("dominant-baseline", "central");
+    idTxt.setAttribute("font-size", "12");
+    idTxt.setAttribute("font-weight", "700");
+    idTxt.setAttribute("font-family", "monospace");
+    idTxt.setAttribute("fill", _PGN_STROKE[ci]);
+    idTxt.style.pointerEvents = "none";
+    idTxt.textContent = n.id;
+    g.appendChild(idTxt);
+
+    // typed label (bold, coloured) + attribute rows below the circle
+    let ty = n.y + VB_NODE_R + LABEL_GAP + LABEL_LINESEP;
+    const mkTxt = (content, fontSize, color, bold) => {
+      const t = document.createElementNS(VB_SVG_NS, "text");
+      t.setAttribute("x", n.x); t.setAttribute("y", ty);
+      t.setAttribute("text-anchor", "middle");
+      t.setAttribute("dominant-baseline", "auto");
+      t.setAttribute("font-size", fontSize);
+      if (bold) t.setAttribute("font-weight", "600");
+      t.setAttribute("fill", color);
+      t.style.pointerEvents = "none";
+      t.textContent = content;
+      g.appendChild(t);
+      ty += LABEL_LINESEP;
+      return t;
+    };
+
+    mkTxt(n.label, "12", _PGN_STROKE[ci], true);
+
+    attrs.forEach(([k, v]) => {
+      const full    = `${k}:${JSON.stringify(v)}`;
+      const clipped = _pgnClipText(full, LABEL_MAX_CHARS);
+      const t = mkTxt(clipped, "10", "#9ca3af", false);
+      if (clipped !== full) {
+        const title = document.createElementNS(VB_SVG_NS, "title");
+        title.textContent = full;
+        t.appendChild(title);
+      }
+    });
+
+    g.addEventListener("mousedown", ev => {
+      ev.stopPropagation();
+      if (VB.edgeModeOn) { vbNodeClicked(n.id); return; }
+      vbSelect("node", n.id);
+      const wrapRect = document.getElementById("vb-canvas-wrap").getBoundingClientRect();
+      VB.drag = { id: n.id, offX: ev.clientX - wrapRect.left - n.x, offY: ev.clientY - wrapRect.top - n.y };
+    });
+    // NOTE: edge-mode clicks are handled by the mousedown listener above; do not
+    // call vbNodeClicked here too, or the second invocation sees edgeFrom===id
+    // and cancels the pending connection.
+    g.addEventListener("click", ev => ev.stopPropagation());
+
+    svg.appendChild(g);
+  });
+}
+
+// dragging nodes
+document.addEventListener("mousemove", ev => {
+  if (VB.resize) {
+    // ── resize handle drag ─────────────────────────────────────────────────
+    const wrap = document.getElementById("vb-canvas-wrap");
+    const dy = ev.clientY - VB.resize.startY;
+    const h = Math.max(200, Math.min(VB.resize.startH + dy, window.innerHeight * 0.8));
+    wrap.style.height = h + "px";
+    vbRenderCanvas();
+    return;
+  }
+  if (!VB.drag) return;
+  const wrap = document.getElementById("vb-canvas-wrap");
+  const rect = wrap.getBoundingClientRect();
+  const n = VB.nodes.find(x => x.id === VB.drag.id);
+  if (!n) return;
+  n.x = Math.max(VB_NODE_R, Math.min(rect.width  - VB_NODE_R, ev.clientX - rect.left - VB.drag.offX));
+  // Reserve space below the circle for the typed label + attribute rows so
+  // they never get clipped by the canvas's overflow:hidden.
+  const _labelH = 7 + 15 * (1 + Object.keys(n.attribute || {}).length) + 5;
+  let _maxY = Math.max(VB_NODE_R, rect.height - VB_NODE_R - _labelH);
+
+  // ── Auto-expand: when a node is dragged near the bottom edge, grow the
+  //    canvas so the node (and its label) stays visible instead of clamping.
+  const desiredY = ev.clientY - rect.top - VB.drag.offY;
+  if (desiredY > _maxY) {
+    const maxH = Math.floor(window.innerHeight * 0.8);
+    if (rect.height < maxH) {
+      const newH = Math.min(maxH, Math.round(rect.height + (desiredY - _maxY) + 12));
+      wrap.style.height = newH + "px";
+      _maxY = newH - VB_NODE_R - _labelH;
+    }
+  }
+  n.y = Math.max(VB_NODE_R, Math.min(_maxY, desiredY));
+  vbRenderCanvas();
+});
+document.addEventListener("mouseup", () => { VB.drag = null; VB.resize = null; });
+
+// ── canvas resize handle ─────────────────────────────────────────────────────
+(function () {
+  const resizer = document.getElementById("vb-canvas-resizer");
+  if (!resizer) return;
+  resizer.addEventListener("mousedown", ev => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    const wrap = document.getElementById("vb-canvas-wrap");
+    VB.resize = { startY: ev.clientY, startH: wrap.getBoundingClientRect().height };
+    resizer.classList.add("dragging");
+  });
+  document.addEventListener("mouseup", () => resizer.classList.remove("dragging"));
+})();
+
+// clicking empty canvas clears selection (and hides the floating inspector)
+document.getElementById("vb-canvas-wrap").addEventListener("mousedown", ev => {
+  if (ev.target.id === "vb-canvas" || ev.target.id === "vb-canvas-wrap") {
+    vbCloseInspector();
+  }
+});
+
+// ── Schema → canvas drop target ──────────────────────────────────────────────
+// Accept a node-type label dragged from the Schema section and place a new
+// node at the drop position.
+(function () {
+  const wrap = document.getElementById("vb-canvas-wrap");
+  if (!wrap) return;
+  wrap.addEventListener("dragover", ev => {
+    if (!ev.dataTransfer || !ev.dataTransfer.types.includes("text/x-vb-node-label")) return;
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "copy";
+    wrap.classList.add("drag-over");
+  });
+  wrap.addEventListener("dragleave", ev => {
+    // Only clear when leaving the wrap entirely (relatedTarget is outside)
+    if (!wrap.contains(ev.relatedTarget)) wrap.classList.remove("drag-over");
+  });
+  wrap.addEventListener("drop", ev => {
+    ev.preventDefault();
+    wrap.classList.remove("drag-over");
+    const label = ev.dataTransfer && ev.dataTransfer.getData("text/x-vb-node-label");
+    if (!label) return;
+    const rect = wrap.getBoundingClientRect();
+    vbAddNode(label, ev.clientX - rect.left, ev.clientY - rect.top);
+  });
+})();
+
+// ── Inspector (node / edge property editor) ──────────────────────────────────
+function vbRenderInspector() {
+  const popover = document.getElementById("vb-inspector-popover");
+  const body = document.getElementById("vb-inspector-body");
+  if (!VB.selection) {
+    popover.classList.remove("show");
+    body.innerHTML = "";
+    return;
+  }
+
+  if (VB.selection.type === "node") {
+    const n = VB.nodes.find(x => x.id === VB.selection.id);
+    if (!n) { VB.selection = null; popover.classList.remove("show"); body.innerHTML = ""; return; }
+    const typeOptions = vbNodeTypeNames().map(t =>
+      `<option value="${esc(t)}" ${t === n.label ? "selected" : ""}>${esc(t)}</option>`).join("");
+    const attrEntries = Object.entries(n.attribute);
+    const attrRows = attrEntries.map(([k, v], idx) => vbAttrRowHtml(n.label, k, v, idx)).join("");
+
+    popover.classList.add("show");
+    body.innerHTML = `
+      <div class="vb-row"><label>Var</label><input type="text" value="${esc(n.id)}" disabled style="opacity:.6"></div>
+      <div class="vb-row"><label>Type</label><select onchange="vbChangeNodeLabel('${esc(n.id)}', this.value)">${typeOptions}</select></div>
+      <div class="vb-attr-list" id="vb-attr-list">${attrRows}</div>
+      <button class="vb-add-attr-btn" onclick="vbAddAttrRow('${esc(n.id)}')">+ add property filter</button>
+    `;
+  } else if (VB.selection.type === "edge") {
+    const e = VB.edges[VB.selection.index];
+    if (!e) { VB.selection = null; popover.classList.remove("show"); body.innerHTML = ""; return; }
+    popover.classList.add("show");
+    body.innerHTML = `
+      <div class="vb-row"><label>From</label><input type="text" value="${esc(e.from)}" disabled style="opacity:.6"></div>
+      <div class="vb-row"><label>To</label><input type="text" value="${esc(e.to)}" disabled style="opacity:.6"></div>
+      <button class="vb-tbtn danger" onclick="vbFlipEdge()">⇄ Reverse direction</button>
+    `;
+  }
+}
+
+function vbCloseInspector() {
+  VB.selection = null;
+  vbRenderCanvas();
+  vbRenderInspector();
+}
+
+function vbAttrRowHtml(label, key, value, idx) {
+  const attrNames = vbAllAttrNamesForLabel(label);
+  const opts = attrNames.map(a =>
+    `<option value="${esc(a)}" ${a === key ? "selected" : ""}>${esc(a)}</option>`).join("");
+
+  // autocomplete candidates: top-N most frequent values for this attribute,
+  // pre-computed offline by dataprep/value_stats_extractor.py
+  const listId = `vb-attr-vlist-${idx}`;
+  const topValues = key ? vbAttrTopValues(label, key) : [];
+  const valueOpts = topValues.map(v => `<option value="${esc(String(v))}"></option>`).join("");
+  const datalistHtml = topValues.length ? `<datalist id="${listId}">${valueOpts}</datalist>` : "";
+
+  return `
+    <div class="vb-attr-item" data-idx="${idx}">
+      <select style="flex:1" onchange="vbUpdateAttrKey(${idx}, this.value)">
+        <option value="">(property)</option>
+        ${opts}
+      </select>
+      <input type="text" style="flex:1" value="${esc(String(value))}" placeholder="value"
+        ${topValues.length ? `list="${listId}"` : ""}
+        onchange="vbUpdateAttrValue(${idx}, this.value)">
+      ${datalistHtml}
+      <button class="vb-icon-btn" onclick="vbRemoveAttrRow(${idx})">✕</button>
+    </div>`;
+}
+
+function vbCurrentNode() {
+  if (!VB.selection || VB.selection.type !== "node") return null;
+  return VB.nodes.find(n => n.id === VB.selection.id) || null;
+}
+
+function vbChangeNodeLabel(id, label) {
+  const n = VB.nodes.find(x => x.id === id);
+  if (!n) return;
+  n.label = label;
+  n.attribute = {};   // reset filters — attribute set differs per node type
+  vbRenderCanvas();
+  vbRenderInspector();
+  vbRenderTestBuilder();
+  vbUpdatePreview();
+}
+
+function vbAddAttrRow(id) {
+  const n = VB.nodes.find(x => x.id === id);
+  if (!n) return;
+  const attrNames = vbAllAttrNamesForLabel(n.label);
+  const unused = attrNames.find(a => !(a in n.attribute)) || "";
+  if (unused) n.attribute[unused] = "";
+  else n.attribute[""] = "";   // fallback placeholder key
+  vbRenderInspector();
+  vbUpdatePreview();
+}
+function vbRemoveAttrRow(idx) {
+  const n = vbCurrentNode();
+  if (!n) return;
+  const keys = Object.keys(n.attribute);
+  const k = keys[idx];
+  delete n.attribute[k];
+  vbRenderInspector();
+  vbRenderCanvas();
+  vbUpdatePreview();
+}
+function vbUpdateAttrKey(idx, newKey) {
+  const n = vbCurrentNode();
+  if (!n) return;
+  const keys = Object.keys(n.attribute);
+  const oldKey = keys[idx];
+  const val = n.attribute[oldKey];
+  delete n.attribute[oldKey];
+  n.attribute[newKey] = val;
+  vbRenderInspector();
+  vbRenderCanvas();
+  vbUpdatePreview();
+}
+function vbUpdateAttrValue(idx, newVal) {
+  const n = vbCurrentNode();
+  if (!n) return;
+  const keys = Object.keys(n.attribute);
+  const k = keys[idx];
+  // try to coerce to number if it looks numeric
+  const num = Number(newVal);
+  n.attribute[k] = (newVal.trim() !== "" && !isNaN(num)) ? num : newVal;
+  vbRenderCanvas();
+  vbUpdatePreview();
+}
+function vbFlipEdge() {
+  if (!VB.selection || VB.selection.type !== "edge") return;
+  const e = VB.edges[VB.selection.index];
+  const tmp = e.from; e.from = e.to; e.to = tmp;
+  vbRenderCanvas();
+  vbRenderInspector();
+  vbUpdatePreview();
+}
+
+// ── TEST clause builder ──────────────────────────────────────────────────────
+function vbNodeOptionsHtml(selectedId) {
+  return VB.nodes.map(n =>
+    `<option value="${esc(n.id)}" ${n.id === selectedId ? "selected" : ""}>${esc(n.id)} (${esc(n.label)})</option>`
+  ).join("");
+}
+function vbAttrOptionsHtml(label, selectedAttr) {
+  const attrs = vbAttrNamesForLabel(label);
+  return attrs.map(a =>
+    `<option value="${esc(a)}" ${a === selectedAttr ? "selected" : ""}>${esc(a)}</option>`
+  ).join("");
+}
+
+// keep a previously chosen node id if it still exists on the canvas, else fall back
+function vbPickNodeId(prevId, fallback) {
+  if (prevId && VB.nodes.some(n => n.id === prevId)) return prevId;
+  return fallback;
+}
+// keep a previously chosen attribute if it's still valid for the (possibly new) label
+function vbPickAttr(label, prevAttr) {
+  const attrs = vbAttrNamesForLabel(label);
+  if (prevAttr && attrs.includes(prevAttr)) return prevAttr;
+  return null;
+}
+
+function vbRenderTestBuilder() {
+  const mode = document.getElementById("vb-test-mode").value;
+  const targetBody = document.getElementById("vb-test-target-body");
+
+  // remember current selections (if any) so re-renders triggered by
+  // adding/removing nodes don't reset the user's choices unnecessarily
+  const prevNode   = (document.getElementById("vb-test-node")      || {}).value;
+  const prevAttr   = (document.getElementById("vb-test-attr")      || {}).value;
+  const prevNodeA  = (document.getElementById("vb-test-node-a")    || {}).value;
+  const prevNodeB  = (document.getElementById("vb-test-node-b")    || {}).value;
+  const prevDiffAt = (document.getElementById("vb-test-diff-attr") || {}).value;
+  const prevEdge   = (document.getElementById("vb-test-edge")      || {}).value;
+  const prevEdgeAt = (document.getElementById("vb-test-edge-attr") || {}).value;
+  const prevEdge2  = (document.getElementById("vb-test-edge-b")    || {}).value;
+
+  if (VB.nodes.length === 0) {
+    targetBody.innerHTML = `<div class="vb-inspector-empty" style="padding:4px 0">Add nodes first.</div>`;
+  } else if (mode === "edge_diff") {
+    // Two-edge comparison: signed difference of the same attribute on two
+    // positional edges of a path pattern (paired comparison).
+    const edgeOpts = vbEdgeTargetOptions();
+    if (edgeOpts.length < 2) {
+      targetBody.innerHTML = `<div class="vb-inspector-empty" style="padding:4px 0">Draw at least two edges whose relationships have attributes.</div>`;
+    } else {
+      const key = o => `${o.from}->${o.to}`;
+      const selA = (prevEdge && edgeOpts.some(o => key(o) === prevEdge))
+        ? edgeOpts.find(o => key(o) === prevEdge) : edgeOpts[0];
+      const selB = (prevEdge2 && edgeOpts.some(o => key(o) === prevEdge2) && prevEdge2 !== key(selA))
+        ? edgeOpts.find(o => key(o) === prevEdge2)
+        : (edgeOpts.find(o => key(o) !== key(selA)) || edgeOpts[0]);
+      const attr = (prevEdgeAt && selA.attrs.includes(prevEdgeAt)) ? prevEdgeAt : selA.attrs[0];
+      const optHtml = sel => edgeOpts.map(o =>
+        `<option value="${esc(key(o))}" ${key(o) === key(sel) ? "selected" : ""}>${esc(o.from)} → ${esc(o.to)} (${esc(o.edge)})</option>`
+      ).join("");
+      targetBody.innerHTML = `
+        <div class="vb-row">
+          <label>Edge A</label>
+          <select id="vb-test-edge" onchange="vbOnTestEdgeDiffChange()">${optHtml(selA)}</select>
+        </div>
+        <div class="vb-row">
+          <label>Edge B</label>
+          <select id="vb-test-edge-b" onchange="vbUpdatePreview()">${optHtml(selB)}</select>
+        </div>
+        <div class="vb-row">
+          <label>Attribute</label>
+          <select id="vb-test-edge-attr" onchange="vbUpdatePreview()">${selA.attrs.map(a =>
+            `<option value="${esc(a)}" ${a === attr ? "selected" : ""}>${esc(a)}</option>`).join("")}</select>
+        </div>`;
+    }
+  } else if (mode === "edge") {
+    // Edge-attribute target: pick from canvas edges that have schema attributes
+    const edgeOpts = vbEdgeTargetOptions();
+    if (edgeOpts.length === 0) {
+      targetBody.innerHTML = `<div class="vb-inspector-empty" style="padding:4px 0">Draw an edge between two node types whose relationship has attributes.</div>`;
+    } else {
+      const selKey = (prevEdge && edgeOpts.some(o => o.from + "->" + o.to === prevEdge))
+        ? prevEdge : `${edgeOpts[0].from}->${edgeOpts[0].to}`;
+      const sel = edgeOpts.find(o => `${o.from}->${o.to}` === selKey) || edgeOpts[0];
+      const attr = (prevEdgeAt && sel.attrs.includes(prevEdgeAt)) ? prevEdgeAt : sel.attrs[0];
+      const edgeOptHtml = edgeOpts.map(o => {
+        const k = `${o.from}->${o.to}`;
+        return `<option value="${esc(k)}" ${k === selKey ? "selected" : ""}>${esc(o.from)} → ${esc(o.to)} (${esc(o.edge)})</option>`;
+      }).join("");
+      const attrOptHtml = sel.attrs.map(a =>
+        `<option value="${esc(a)}" ${a === attr ? "selected" : ""}>${esc(a)}</option>`
+      ).join("");
+      targetBody.innerHTML = `
+        <div class="vb-row">
+          <label>Edge</label>
+          <select id="vb-test-edge" onchange="vbOnTestEdgeChange()">${edgeOptHtml}</select>
+        </div>
+        <div class="vb-row">
+          <label>Attribute</label>
+          <select id="vb-test-edge-attr" onchange="vbUpdatePreview()">${attrOptHtml}</select>
+        </div>`;
+    }
+  } else if (mode === "node") {
+    const nodeId = vbPickNodeId(prevNode, VB.nodes[0].id);
+    const node   = VB.nodes.find(n => n.id === nodeId) || VB.nodes[0];
+    const attr   = vbPickAttr(node.label, prevAttr);
+    targetBody.innerHTML = `
+      <div class="vb-row">
+        <label>Node</label>
+        <select id="vb-test-node" onchange="vbOnTestNodeChange()">${vbNodeOptionsHtml(node.id)}</select>
+      </div>
+      <div class="vb-row">
+        <label>Attribute</label>
+        <select id="vb-test-attr" onchange="vbUpdatePreview()">${vbAttrOptionsHtml(node.label, attr)}</select>
+      </div>`;
+  } else {
+    const idA = vbPickNodeId(prevNodeA, VB.nodes[0].id);
+    const nodeA = VB.nodes.find(n => n.id === idA) || VB.nodes[0];
+    const fallbackB = VB.nodes.find(n => n.id !== nodeA.id) || VB.nodes[0];
+    const idB = vbPickNodeId(prevNodeB, fallbackB.id);
+    const nodeB = VB.nodes.find(n => n.id === idB) || fallbackB;
+    const diffAttr = vbPickAttr(nodeA.label, prevDiffAt);
+    targetBody.innerHTML = `
+      <div class="vb-row">
+        <label>Node A</label>
+        <select id="vb-test-node-a" onchange="vbOnTestDiffNodeChange()">${vbNodeOptionsHtml(nodeA.id)}</select>
+      </div>
+      <div class="vb-row">
+        <label>Node B</label>
+        <select id="vb-test-node-b" onchange="vbUpdatePreview()">${vbNodeOptionsHtml(nodeB.id)}</select>
+      </div>
+      <div class="vb-row">
+        <label>Attribute</label>
+        <select id="vb-test-diff-attr" onchange="vbUpdatePreview()">${vbAttrOptionsHtml(nodeA.label, diffAttr)}</select>
+      </div>`;
+  }
+
+  // edge_diff / node_diff compare two positional elements of the same
+  // matched instance — the population mean μ is not a meaningful reference
+  // there, so restrict the RHS to a scalar.
+  const rhsModeSel = document.getElementById("vb-test-rhs-mode");
+  const muOpt = rhsModeSel.querySelector('option[value="mu"]');
+  if (muOpt) muOpt.disabled = (mode === "edge_diff" || mode === "node_diff");
+  if ((mode === "edge_diff" || mode === "node_diff") && rhsModeSel.value === "mu") {
+    rhsModeSel.value = "scalar";
+  }
+
+  vbRenderTestRhs();
+  vbUpdatePreview();
+}
+
+function vbOnTestNodeChange() {
+  const sel = document.getElementById("vb-test-node");
+  const node = VB.nodes.find(n => n.id === sel.value);
+  const attrSel = document.getElementById("vb-test-attr");
+  if (node) attrSel.innerHTML = vbAttrOptionsHtml(node.label, null);
+  vbUpdatePreview();
+}
+
+// When Node A changes in node_diff mode, refresh the attribute picker to
+// match the new node's label — otherwise stale options from the previous
+// label persist.
+function vbOnTestDiffNodeChange() {
+  const sel = document.getElementById("vb-test-node-a");
+  const node = VB.nodes.find(n => n.id === sel.value);
+  const attrSel = document.getElementById("vb-test-diff-attr");
+  if (node) attrSel.innerHTML = vbAttrOptionsHtml(node.label, null);
+  vbUpdatePreview();
+}
+
+function vbOnTestEdgeChange() {
+  // when the selected edge changes, refresh the attribute picker to match
+  const sel = document.getElementById("vb-test-edge");
+  if (!sel) return;
+  const [from, to] = sel.value.split("->");
+  const opt = vbEdgeTargetOptions().find(o => o.from === from && o.to === to);
+  const attrSel = document.getElementById("vb-test-edge-attr");
+  if (opt && attrSel) {
+    attrSel.innerHTML = opt.attrs.map(a => `<option value="${esc(a)}">${esc(a)}</option>`).join("");
+  }
+  vbUpdatePreview();
+}
+
+// When Edge A changes in edge_diff mode, refresh the attribute picker to the
+// new edge's attributes (Edge B must share the attribute).
+function vbOnTestEdgeDiffChange() {
+  const sel = document.getElementById("vb-test-edge");
+  if (!sel) return;
+  const [from, to] = sel.value.split("->");
+  const opt = vbEdgeTargetOptions().find(o => o.from === from && o.to === to);
+  const attrSel = document.getElementById("vb-test-edge-attr");
+  if (opt && attrSel) {
+    attrSel.innerHTML = opt.attrs.map(a => `<option value="${esc(a)}">${esc(a)}</option>`).join("");
+  }
+  // if Edge B now equals Edge A, nudge it to a different edge
+  const selB = document.getElementById("vb-test-edge-b");
+  if (selB && selB.value === sel.value) {
+    const alt = vbEdgeTargetOptions().find(o => `${o.from}->${o.to}` !== sel.value);
+    if (alt) selB.value = `${alt.from}->${alt.to}`;
+  }
+  vbUpdatePreview();
+}
+
+function vbRenderTestRhs() {
+  const rhsMode = document.getElementById("vb-test-rhs-mode").value;
+  const body = document.getElementById("vb-test-rhs-body");
+  if (rhsMode === "scalar") {
+    const prevScalar = (document.getElementById("vb-test-rhs-scalar") || {}).value || "";
+    body.innerHTML = `<div class="vb-row"><label>Value</label><input type="text" id="vb-test-rhs-scalar" placeholder="e.g. 25" value="${esc(prevScalar)}" onchange="vbUpdatePreview()" oninput="vbUpdatePreview()"></div>`;
+  } else {
+    body.innerHTML = "";
+  }
+}
+
+// ── Build target/test dict from current UI state ────────────────────────────
+function vbCollectTarget() {
+  const mode = document.getElementById("vb-test-mode").value;
+  if (mode === "node") {
+    const nodeSel = document.getElementById("vb-test-node");
+    const attrSel = document.getElementById("vb-test-attr");
+    if (!nodeSel || !attrSel || !nodeSel.value || !attrSel.value) return null;
+    return { node: { id: nodeSel.value, attribute: attrSel.value } };
+  } else if (mode === "edge") {
+    const edgeSel = document.getElementById("vb-test-edge");
+    const attrSel = document.getElementById("vb-test-edge-attr");
+    if (!edgeSel || !attrSel || !edgeSel.value || !attrSel.value) return null;
+    const [from, to] = edgeSel.value.split("->");
+    return { edge: { from, to, attribute: attrSel.value } };
+  } else if (mode === "edge_diff") {
+    const edgeSelA = document.getElementById("vb-test-edge");
+    const edgeSelB = document.getElementById("vb-test-edge-b");
+    const attrSel  = document.getElementById("vb-test-edge-attr");
+    if (!edgeSelA || !edgeSelB || !attrSel || !edgeSelA.value || !edgeSelB.value || !attrSel.value) return null;
+    if (edgeSelA.value === edgeSelB.value) return null;
+    const [f1, t1] = edgeSelA.value.split("->");
+    const [f2, t2] = edgeSelB.value.split("->");
+    return { edge_diff: { edges: [[f1, t1], [f2, t2]], attribute: attrSel.value } };
+  } else {
+    const aSel = document.getElementById("vb-test-node-a");
+    const bSel = document.getElementById("vb-test-node-b");
+    const attrSel = document.getElementById("vb-test-diff-attr");
+    if (!aSel || !bSel || !attrSel || !aSel.value || !bSel.value || !attrSel.value) return null;
+    return { node_diff: { nodes: [aSel.value, bSel.value], attribute: attrSel.value } };
+  }
+}
+
+function vbCollectTest() {
+  const op = document.getElementById("vb-test-op").value;
+  const rhsMode = document.getElementById("vb-test-rhs-mode").value;
+  let rhs;
+  if (rhsMode === "mu") {
+    rhs = "mu";
+  } else if (rhsMode === "scalar") {
+    const raw = (document.getElementById("vb-test-rhs-scalar") || {}).value;
+    if (raw === undefined || raw === "") return null;
+    const num = Number(raw);
+    rhs = isNaN(num) ? raw : num;
+  } else {
+    return null;
+  }
+  return { agg: "mean", op, rhs };
+}
+
+// ── JS port of ghtql/unparser.py — builds GHT-QL source from canvas state ───
+function vbFmtValue(v) {
+  return (typeof v === "string") ? `"${v}"` : String(v);
+}
+function vbFmtProps(attribute) {
+  const entries = Object.entries(attribute || {}).filter(([k]) => k !== "");
+  if (entries.length === 0) return "";
+  return " {" + entries.map(([k, v]) => `${k}:${vbFmtValue(v)}`).join(", ") + "}";
+}
+function vbFmtNode(node) {
+  return `(${node.id}:${node.label}${vbFmtProps(node.attribute)})`;
+}
+function vbBuildMatchClauses(nodes, edges) {
+  const nodeById = {};
+  nodes.forEach(n => { nodeById[n.id] = n; });
+  const remaining = edges.map(e => ({ ...e }));
+  const declared = new Set();
+  const clauses = [];
+
+  const popEdge = (frm, to) => {
+    const i = remaining.findIndex(e => e.from === frm && e.to === to);
+    if (i >= 0) { remaining.splice(i, 1); return true; }
+    return false;
+  };
+  const renderNode = id => {
+    if (declared.has(id)) return `(${id})`;
+    declared.add(id);
+    return vbFmtNode(nodeById[id]);
+  };
+  const buildChainFrom = start => {
+    let outEdges = remaining.filter(e => e.from === start);
+    if (outEdges.length === 0) return null;
+    let e = outEdges[0];
+    popEdge(e.from, e.to);
+    const parts = [renderNode(start), "->", renderNode(e.to)];
+    let cur = e.to;
+    while (true) {
+      const nextEdges = remaining.filter(ex => ex.from === cur);
+      if (nextEdges.length === 0) break;
+      const nxt = nextEdges[0];
+      popEdge(nxt.from, nxt.to);
+      parts.push("->", renderNode(nxt.to));
+      cur = nxt.to;
+    }
+    return parts.join("");
+  };
+
+  const fromCounts = {};
+  edges.forEach(e => { fromCounts[e.from] = (fromCounts[e.from] || 0) + 1; });
+  const startOrder = Object.keys(fromCounts).sort((a, b) => fromCounts[b] - fromCounts[a]);
+
+  startOrder.forEach(start => {
+    while (true) {
+      const chain = buildChainFrom(start);
+      if (chain === null) break;
+      clauses.push(chain);
+    }
+  });
+
+  [...remaining].forEach(e => {
+    popEdge(e.from, e.to);
+    clauses.push(renderNode(e.from) + "->" + renderNode(e.to));
+  });
+
+  nodes.forEach(n => {
+    if (!declared.has(n.id)) clauses.push(renderNode(n.id));
+  });
+
+  return clauses.join(",\n      ");
+}
+function vbFmtAggExpr(target, agg) {
+  if (target.node) return `${agg}(${target.node.id}.${target.node.attribute})`;
+  if (target.edge) return `${agg}(${target.edge.from}->${target.edge.to}.${target.edge.attribute})`;
+  if (target.node_diff) {
+    const [n1, n2] = target.node_diff.nodes;
+    return `${agg}(|${n1}.${target.node_diff.attribute} - ${n2}.${target.node_diff.attribute}|)`;
+  }
+  if (target.edge_diff) {
+    const [[f1, t1], [f2, t2]] = target.edge_diff.edges;
+    return `${agg}(${f1}->${t1}.${target.edge_diff.attribute} - ${f2}->${t2}.${target.edge_diff.attribute})`;
+  }
+  return "?";
+}
+function vbFmtTest(target, test) {
+  const lhs = vbFmtAggExpr(target, test.agg);
+  if (test.rhs === "mu") return `${lhs} ${test.op} mu`;
+  if (typeof test.rhs === "number") return `${lhs} ${test.op} ${test.rhs}`;
+  if (typeof test.rhs === "string") return `${lhs} ${test.op} "${test.rhs}"`;
+  if (typeof test.rhs === "object" && test.rhs !== null) return `${lhs} ${test.op} ${vbFmtAggExpr(test.rhs, test.agg)}`;
+  return `${lhs} ${test.op} ?`;
+}
+function vbUnparse(pid, dataset, nodes, edges, target, test) {
+  const matchBody = vbBuildMatchClauses(nodes, edges);
+  const testExpr  = vbFmtTest(target, test);
+  return `-- ${pid}\nMATCH ${matchBody}\nON ${dataset}\nTEST ${testExpr}`;
+}
+
+// ── Live preview (TEST clause expression only) ──────────────────────────────
+function vbUpdatePreview() {
+  const errEl      = document.getElementById("vb-error-text");
+  const testPrevEl = document.getElementById("vb-test-preview");
+  errEl.textContent = "";
+
+  if (VB.nodes.length === 0) {
+    testPrevEl.textContent = "TEST …";
+    vbRenderCanvas();
+    return;
+  }
+
+  const target = vbCollectTarget();
+  const test   = vbCollectTest();
+
+  if (target) testPrevEl.textContent = "TEST " + vbFmtTest(target, test || { agg: "mean", op: ">", rhs: "mu" });
+  else        testPrevEl.textContent = "TEST … (select a target node/attribute)";
+  // Re-render the canvas so the TEST badge + target glow rings stay in sync
+  // with the current TEST clause state.
+  vbRenderCanvas();
+}
+
+// ── Run (bypass the LLM agent entirely) ─────────────────────────────────────
+function vbSetRunning(on) {
+  const btn = document.getElementById("vb-run-btn");
+  document.getElementById("vb-spinner").style.display = on ? "block" : "none";
+  document.getElementById("vb-btn-text").textContent  = on ? "Parsing…" : "▶  Parse Pattern";
+  btn.disabled = on;
+}
+
+// Briefly flash the Parse button green/red to signal parse outcome.
+function vbFlashButton(ok) {
+  const btn = document.getElementById("vb-run-btn");
+  const txt = document.getElementById("vb-btn-text");
+  const cls = ok ? "flash-ok" : "flash-bad";
+  const label = ok ? "✓  Parsed" : "✗  Invalid";
+  btn.classList.add(cls);
+  txt.textContent = label;
+  setTimeout(() => {
+    btn.classList.remove(cls);
+    if (!btn.disabled) txt.textContent = "▶  Parse Pattern";
+  }, 1200);
+}
+
+function runVisualBuilder() {
+  const errEl = document.getElementById("vb-error-text");
+  errEl.textContent = "";
+  errEl.classList.remove("ok");
+
+  if (VB.nodes.length === 0) { errEl.textContent = "Add at least one node to the canvas."; return; }
+  const target = vbCollectTarget();
+  const test   = vbCollectTest();
+  if (!target)      { errEl.textContent = "Select a TEST target node and attribute.";        return; }
+  if (!test)        { errEl.textContent = "Complete the TEST clause (operator + right-hand side)."; return; }
+
+  const dataset = document.getElementById("dataset-select").value;
+  const payload = {
+    dataset,
+    pattern_id: "visual-pattern",
+    pattern: {
+      nodes: VB.nodes.map(n => ({ id: n.id, label: n.label, attribute: n.attribute })),
+      edges: VB.edges.map(e => ({ from: e.from, to: e.to })),
+    },
+    target,
+    test,
+  };
+
+  vbSetRunning(true);
+
+  fetch("/api/build_run", {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify(payload),
+  })
+    .then(r => r.json())
+    .then(data => {
+      vbSetRunning(false);
+      if (data.success) {
+        vbFlashButton(true);
+      } else {
+        vbFlashButton(false);
+      }
+      renderResult(data);
+    })
+    .catch(exc => {
+      vbSetRunning(false);
+      vbFlashButton(false);
+      errEl.textContent = "Request failed: " + exc.message;
+    });
+}
+
+// initial render (in case dataset/schema already cached on load)
+vbRenderCanvas();
+</script>
+</body>
+</html>

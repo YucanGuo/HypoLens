@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HypoLens — Interactive Graph Hypothesis Testing</title>
+  <style>
+/* ── reset ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── dark theme ──────────────────────────────────────────────────────────── */
+:root {
+  --bg:         #0d0f18;
+  --surface:    #141720;
+  --surface2:   #1c2030;
+  --surface3:   #242840;
+  --border:     #2a2f4a;
+  --border-hi:  #3d4470;
+  --accent:     #6c8fff;
+  --accent2:    #a78bfa;
+  --green:      #4ade80;
+  --green-dim:  #1a3d2a;
+  --red:        #f87171;
+  --yellow:     #facc15;
+  --muted:      #7880a0;
+  --text:       #c8d0f0;
+  --text-dim:   #5a6080;
+  --radius:     12px;
+  --radius-sm:  8px;
+  --font-mono:  "JetBrains Mono","Fira Code","Cascadia Code",monospace;
+}
+
+/* ── light theme ─────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:         #f0f2f8;
+  --surface:    #ffffff;
+  --surface2:   #f5f7fd;
+  --surface3:   #eaedf6;
+  --border:     #d4d9ee;
+  --border-hi:  #b0b8d8;
+  --accent:     #3b6ff5;
+  --accent2:    #7c5af0;
+  --green:      #16a34a;
+  --green-dim:  #dcfce7;
+  --red:        #dc2626;
+  --yellow:     #ca8a04;
+  --muted:      #8090b0;
+  --text:       #1e2240;
+  --text-dim:   #8090b0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── topbar ──────────────────────────────────────────────────────────────── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 10px;
+  z-index: 100;
+}
+.topbar-logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  font-variant: small-caps;
+  background: linear-gradient(120deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+.topbar-spacer { flex: 1; }
+.topbar-subtitle {
+  color: var(--muted);
+  font-size: .8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-theme {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: .75rem;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.topbar-theme:hover { border-color: var(--accent); color: var(--accent); }
+.topbar-try {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: .8rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.topbar-try:hover { opacity: .85; }
+
+/* ── layout ──────────────────────────────────────────────────────────────── */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+}
+
+/* ── hero ────────────────────────────────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 40px 0 60px;
+}
+.hero-badge {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(108,143,255,.12);
+  border: 1px solid rgba(108,143,255,.3);
+  border-radius: 20px;
+  padding: 4px 14px;
+  margin-bottom: 22px;
+}
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.03em;
+  margin-bottom: 18px;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(120deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero h1 .hero-name {
+  font-variant: small-caps;
+  font-feature-settings: "smcp" 1;
+  letter-spacing: -.5px;
+  background: linear-gradient(120deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 600px;
+  margin: 0 auto 36px;
+  line-height: 1.75;
+}
+.hero-try {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 40px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: opacity .15s, transform .15s;
+  box-shadow: 0 4px 24px rgba(108,143,255,.3);
+}
+.hero-try:hover { opacity: .9; transform: translateY(-2px); }
+
+/* ── section header ──────────────────────────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.section-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.section-icon.blue   { background: rgba(108,143,255,.15); }
+.section-icon.purple { background: rgba(167,139,250,.15); }
+.section-icon.green  { background: rgba(74,222,128,.15);  }
+.section-icon.yellow { background: rgba(250,204,21,.15);  }
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+}
+section { margin-bottom: 52px; }
+
+/* ── prose ───────────────────────────────────────────────────────────────── */
+.prose {
+  color: var(--text);
+  font-size: .95rem;
+  line-height: 1.8;
+}
+.prose p { margin-bottom: 14px; }
+.prose strong { color: var(--text); font-weight: 600; }
+.prose code {
+  font-family: var(--font-mono);
+  font-size: .82em;
+  background: var(--surface3);
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* ── lead question box ───────────────────────────────────────────────────── */
+.ght-lead {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  margin-bottom: 28px;
+}
+.ght-lead-q {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.ght-lead-hint {
+  font-size: .86rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.ght-lead-hint em { font-style: normal; color: var(--accent); }
+.ght-lead-persona {
+  font-size: .86rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+.ght-lead-persona strong { color: var(--text); }
+
+/* ── story loop illustration inside the lead box ─────────────────────────── */
+.story-loop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+}
+.story-flow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+.story-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 78px;
+  max-width: 110px;
+}
+.story-icon { font-size: 1.6rem; line-height: 1.2; }
+.story-label { font-size: .68rem; color: var(--text); font-weight: 700; text-align: center; }
+.story-sub { font-size: .62rem; color: var(--text-dim); text-align: center; line-height: 1.4; }
+.story-arrow {
+  color: var(--border-hi);
+  font-size: 1rem;
+  margin-top: 10px;
+}
+.story-hypothesis-mini {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+.story-hypothesis-mini .mini-arrow {
+  font-size: .7rem;
+  color: var(--border-hi);
+  margin: 0 1px;
+}
+.story-return {
+  font-size: .72rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.story-return-arrow { color: var(--accent); font-style: normal; }
+
+/* ── pipeline steps ──────────────────────────────────────────────────────── */
+/* ── pipeline / timeline ─────────────────────────────────────────────────── */
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 40px;
+  border-left: 2px solid var(--border-hi);
+  margin-top: 8px;
+  position: relative;
+}
+.pipe-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  position: relative;
+  margin-left: 34px;
+  margin-bottom: 0;
+}
+/* dot centered on the vertical axis (border center = 1px) */
+.pipe-step::before {
+  content: '';
+  position: absolute;
+  left: -81px;          /* card@76, dot center@1 → 1-76=-75, left=-75-6=-81 */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--accent);
+  z-index: 2;
+}
+/* horizontal connector from axis to card's left edge */
+.pipe-step::after {
+  content: '';
+  position: absolute;
+  left: -75px;          /* axis center@1, card@76 → span 75px from card */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 75px;
+  height: 2px;
+  background: var(--border-hi);
+  z-index: 1;
+}
+/* spacer between cards */
+.pipe-step + .pipe-step {
+  margin-top: 24px;
+}
+.pipe-arrow { display: none; }
+.pipe-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0;
+}
+.pipe-title {
+  font-size: .92rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.pipe-desc {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+/* ── story narrative embedded in pipeline steps ─────────────────────────── */
+.pipe-narrative {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding: 5px 10px;
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: .76rem;
+  color: var(--text);
+}
+.pipe-narr-icon { font-size: 1.05rem; line-height: 1; flex-shrink: 0; }
+.pipe-narr-icon-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 1.05rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.pipe-narr-icon-mini .mini-arrow {
+  font-size: .7rem;
+  color: var(--border-hi);
+  margin: 0 1px;
+}
+.pipe-narr-quote { font-style: italic; color: var(--text-dim); }
+/* loop closure on the final step */
+.pipe-loop {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  font-size: .76rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.pipe-loop-arrow { color: var(--accent); font-style: normal; font-weight: 700; }
+.pipe-final-icon { font-size: 1rem; font-style: normal; }
+.pipe-step-last { border-color: var(--accent); }
+@media (max-width: 640px) {
+  .pipeline { padding-left: 24px; }
+  .pipe-step { margin-left: 20px; }
+  .pipe-step::before { left: -51px; }  /* card@46, dot center@1 → 1-46=-45, left=-45-6=-51 */
+  .pipe-step::after  { left: -45px; width: 45px; }
+}
+
+/* ── concept cards ───────────────────────────────────────────────────────── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 4px;
+}
+.card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+}
+.card-icon { font-size: 1.4rem; margin-bottom: 10px; }
+.card h3 {
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.card p {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.card code {
+  font-family: var(--font-mono);
+  font-size: .78em;
+  color: var(--accent);
+  background: var(--surface3);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+/* ── query examples ──────────────────────────────────────────────────────── */
+.examples { display: flex; flex-direction: column; gap: 14px; }
+.example {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  cursor: default;
+  transition: border-color .15s;
+}
+.example:hover { border-color: var(--border-hi); }
+.ex-tag {
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.ex-tag.citation  { background: rgba(108,143,255,.15); color: var(--accent);  }
+.ex-tag.movielens { background: rgba(167,139,250,.15); color: var(--accent2); }
+.ex-tag.yelp      { background: rgba(74,222,128,.15);  color: var(--green);   }
+.ex-q {
+  font-size: .9rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+.ex-hint {
+  font-size: .78rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── Clause legend ──────────────────────────────────────────────────────── */
+.clause-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.cl-item {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: .88rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.cl-kw {
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(108,143,255,.1);
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 52px;
+  text-align: center;
+}
+.cl-desc code {
+  font-family: var(--font-mono);
+  font-size: .8em;
+  color: var(--accent2);
+  background: var(--surface3);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+/* ── Syntax examples grid ───────────────────────────────────────────────── */
+.syntax-examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+.syn-ex {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.syn-label {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── GHT-QL syntax block ─────────────────────────────────────────────────── */
+.syntax-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  line-height: 1.9;
+  color: var(--muted);
+  white-space: pre-wrap;      /* preserve indentation but allow wrapping */
+  word-break: break-word;
+  overflow-x: auto;
+}
+.syntax-block .kw   { color: var(--accent);  font-weight: 600; }
+.syntax-block .meta { color: var(--accent2); }
+.syntax-block .val  { color: var(--green);   }
+.syntax-block .cmt  { color: var(--text-dim); font-style: italic; }
+
+/* ── Example sandbox card ───────────────────────────────────────────────── */
+.sandbox-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.sandbox-header {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 12px 20px 4px;
+  background: var(--surface3);
+}
+.sandbox-selector {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface3);
+}
+.sandbox-btn {
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.sandbox-btn:hover {
+  background: var(--surface2);
+  border-color: var(--border-hi);
+  color: var(--text);
+}
+.sandbox-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+/* sandbox-display: NL row (full width) + bottom row (QL | Graph) */
+.sandbox-display {
+  display: flex;
+  flex-direction: column;
+}
+.sandbox-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 620px) {
+  .sandbox-row { grid-template-columns: 1fr; }
+}
+.panel-box {
+  padding: 20px;
+  border-right: 1px solid var(--border);
+}
+.panel-box.panel-graph {
+  border-right: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;   /* title + badge always left-aligned */
+}
+.panel-box.panel-graph > svg.panel-graph-svg-wrap {
+  display: block;
+  width: 100%;               /* only the graph svg fills the column */
+  align-self: stretch;       /* keep graph centered without affecting title icon */
+}
+.panel-box.panel-nl-full {
+  border-right: none;
+  border-bottom: 1px solid var(--border);
+}
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+.panel-title svg {
+  flex-shrink: 0;
+}
+.panel-title-text {
+  white-space: nowrap;
+}
+.panel-nl {
+  font-size: .92rem;
+  color: var(--text);
+  line-height: 1.7;
+  font-style: italic;
+}
+.panel-ql .syntax-block {
+  margin: 0;
+  background: var(--surface);
+}
+.panel-graph-svg-wrap { width: 100%; }
+.pg-test-badge {
+  display: inline-block;   /* shrinks to text width, left-aligned inside flex col */
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: .67rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #3b82f6;
+  background: rgba(59,130,246,.1);
+  border: 1px solid rgba(59,130,246,.4);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+/* hide inactive panels */
+.sandbox-display > .panel-box { display: none; }
+/* hide inactive rows */
+.sandbox-display > .sandbox-row { display: none; }
+.sandbox-display.show-0 > .sandbox-row[data-row="0"],
+.sandbox-display.show-1 > .sandbox-row[data-row="1"],
+.sandbox-display.show-2 > .sandbox-row[data-row="2"],
+.sandbox-display.show-3 > .sandbox-row[data-row="3"] { display: grid; }
+/* NL full-width rows: shown as block, not grid */
+.sandbox-display.show-0 > .sandbox-row.nl-row[data-row="0"],
+.sandbox-display.show-1 > .sandbox-row.nl-row[data-row="1"],
+.sandbox-display.show-2 > .sandbox-row.nl-row[data-row="2"],
+.sandbox-display.show-3 > .sandbox-row.nl-row[data-row="3"] { display: block; }
+
+/* ── NL question list (below syntax examples) ────────────────────────────── */
+.nl-examples {
+  margin-top: 22px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+}
+.nl-ex-header {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+.nl-ex-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.nl-ex-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: .88rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+.nl-ex-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(108,143,255,.15);
+  color: var(--accent);
+  font-size: .68rem;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── datasets table ──────────────────────────────────────────────────────── */
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.ds-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  text-align: center;
+}
+.ds-card h4 {
+  font-size: .95rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.ds-card h4.blue   { color: var(--accent);  }
+.ds-card h4.purple { color: var(--accent2); }
+.ds-card h4.green  { color: var(--green);   }
+.ds-stat {
+  font-size: .8rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.ds-stat strong { color: var(--text); font-weight: 600; display: block; }
+
+/* ── example pattern grid ────────────────────────────────────────────────── */
+.ex-pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 4px;
+}
+.ex-pattern-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+}
+.ex-pattern-tag {
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+}
+.ex-pattern-tag.citation  { background: rgba(108,143,255,.15); color: var(--accent);  }
+.ex-pattern-tag.movielens { background: rgba(167,139,250,.15); color: var(--accent2); }
+.ex-pattern-tag.yelp      { background: rgba(74,222,128,.15);  color: var(--green);   }
+.ex-pattern-desc {
+  font-size: .86rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.ex-pattern-card .panel-box.panel-graph {
+  border: none;
+  padding: 0;
+  margin-top: auto;
+}
+
+/* ── CTA section ─────────────────────────────────────────────────────────── */
+.cta {
+  text-align: center;
+  padding: 52px 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 20px;
+}
+.cta h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.cta p {
+  color: var(--muted);
+  font-size: .95rem;
+  margin-bottom: 30px;
+}
+.cta-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 15px 48px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: opacity .15s, transform .15s;
+  box-shadow: 0 4px 28px rgba(108,143,255,.35);
+}
+.cta-btn:hover { opacity: .88; transform: translateY(-2px); }
+.cta-note {
+  font-size: .78rem;
+  color: var(--text-dim);
+  margin-top: 14px;
+}
+
+/* ── divider ─────────────────────────────────────────────────────────────── */
+hr.div { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+/* ── small-caps for system name in prose ────────────────────────────────── */
+.small-caps { font-variant: small-caps; font-feature-settings: "smcp" 1; font-weight: 700; letter-spacing: -.5px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Topbar ─────────────────────────────────────────────────────────────── -->
+<header class="topbar">
+  <span class="topbar-logo">HypoLens</span>
+  <span class="topbar-subtitle">Interactive Graph Hypothesis Testing</span>
+  <div class="topbar-spacer"></div>
+  <button class="topbar-theme" onclick="toggleTheme()">🌙 Dark</button>
+  <a class="topbar-try" href="/app">Try Now →</a>
+</header>
+
+<!-- ── Main content ───────────────────────────────────────────────────────── -->
+<main>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1><span class="hero-name">HypoLens</span><br><em>Interactive Graph Hypothesis Testing</em></h1>
+    <p class="hero-sub">
+      Formulate statistical hypotheses over large-scale attributed graphs — draw your pattern, set the test, run the engine, and explore follow-up hypotheses in one construct–test–explore workflow.
+    </p>
+    <a class="hero-try" href="/app">Try It Now →</a>
+  </section>
+
+  <hr class="div" />
+
+  <!-- What is GHT? -->
+  <section style="margin-top:52px">
+    <div class="section-header">
+      <div class="section-icon blue">🔬</div>
+      <span class="section-title">What is Graph Hypothesis Testing?</span>
+    </div>
+
+    <!-- Lead question -->
+    <div class="ght-lead">
+      <div class="ght-lead-persona">🧑‍💼 <strong>The decision:</strong> A streaming platform analyst needs to identify which audience to recommend Sci-Fi movies to.</div>
+      <div class="ght-lead-q">“Do students rate Sci-Fi movies more favorably than educators?”</div>
+      <div class="ght-lead-hint">The analyst turns the decision into a testable hypothesis — one involving a <em>graph structure</em> (user–movie viewship), <em>attribute filters</em> (occupation, genre), and a <em>statistical test</em> (a student's rating vs. an educator's rating on the same movie). <span class="small-caps">HypoLens</span> lets you express all of these visually on a pattern canvas, then runs the statistics for you. The loop below traces a single analyst from question to decision.</div>
+    </div>
+
+    <!-- Pipeline steps (timeline) — the analyst's story lives inline -->
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-num">1</div>
+        <div class="pipe-body">
+          <div class="pipe-narrative"><span class="pipe-narr-icon">🧑‍💼</span><span class="pipe-narr-quote">“Which audience should receive Sci-Fi recommendations?”</span></div>
+          <div class="pipe-title">Frame the Decision</div>
+          <div class="pipe-desc">A domain question that depends on graph structure and attributes — not a flat table filter. The analyst needs evidence, not intuition.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">2</div>
+        <div class="pipe-body">
+          <div class="pipe-narrative"><span class="pipe-narr-icon-mini">🧑‍🎓<span class="mini-arrow">→</span>🎬</span><span class="pipe-narr-quote">“Students who watched Sci-Fi — draw the pattern.”</span></div>
+          <div class="pipe-title">Build the Pattern</div>
+          <div class="pipe-desc">Draw typed nodes, directed edges, and attribute filters on the visual canvas to describe the subgraph you care about.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">3</div>
+        <div class="pipe-body">
+          <div class="pipe-narrative"><span class="pipe-narr-icon">📋</span><span class="pipe-narr-quote">TEST mean(⭐ rating₍student₎ − ⭐ rating₍educator₎) &gt; 0</span></div>
+          <div class="pipe-title">Define the Hypothesis</div>
+          <div class="pipe-desc">Pick the target attribute and set the statistical TEST — a node attribute, an edge attribute, or a difference between two nodes or two edges, compared against the population mean or a threshold.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">4</div>
+        <div class="pipe-body">
+          <div class="pipe-narrative"><span class="pipe-narr-icon">🎲</span><span class="pipe-narr-quote">Sample subgraphs → significance test</span></div>
+          <div class="pipe-title">Run Testing</div>
+          <div class="pipe-desc">The engine samples the graph, extracts the subgraphs that match your pattern, and applies rigorous significance testing.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">5</div>
+        <div class="pipe-body">
+          <div class="pipe-narrative"><span class="pipe-narr-icon">✓</span><span class="pipe-narr-quote">“Accepted — students do rate Sci-Fi higher.”</span></div>
+          <div class="pipe-title">Read the Results</div>
+          <div class="pipe-desc">An LLM-explained summary highlights the testing decision and evidence strength, with technical details folded underneath.</div>
+        </div>
+      </div>
+      <div class="pipe-step pipe-step-last">
+        <div class="pipe-num">6</div>
+        <div class="pipe-body">
+          <div class="pipe-narrative"><span class="pipe-narr-icon">🔄</span><span class="pipe-narr-quote">“What about 1990s Sci-Fi? Female students?”</span></div>
+          <div class="pipe-title">Explore Follow-up Hypotheses</div>
+          <div class="pipe-desc">The system recommends validated follow-up hypotheses based on your current result — each loads directly into the canvas.</div>
+          <div class="pipe-loop"><span class="pipe-loop-arrow">↩</span> refines the hypothesis, closing the loop &nbsp;→&nbsp; <span class="pipe-final-icon">📊</span> <em>“Recommend Sci-Fi to students.”</em></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Example Patterns -->
+  <section>
+    <div class="section-header">
+      <div class="section-icon green">🕸️</div>
+      <span class="section-title">Example Patterns</span>
+    </div>
+
+    <div class="ex-pattern-grid">
+      <div class="ex-pattern-card">
+        <div class="ex-pattern-tag movielens">MovieLens · paired edges</div>
+        <div class="ex-pattern-desc">Do students rate Sci-Fi movies more favorably than educators?</div>
+        <div class="panel-box panel-graph" id="pg-0"></div>
+      </div>
+      <div class="ex-pattern-card">
+        <div class="ex-pattern-tag citation">DBLP · single node attribute</div>
+        <div class="ex-pattern-desc">Do papers from Hong Kong University in Data mining get more citations than average?</div>
+        <div class="panel-box panel-graph" id="pg-1"></div>
+      </div>
+      <div class="ex-pattern-card">
+        <div class="ex-pattern-tag movielens">MovieLens · single node attribute</div>
+        <div class="ex-pattern-desc">Are users who watched both a sci-fi film and a documentary older than 25?</div>
+        <div class="panel-box panel-graph" id="pg-2"></div>
+      </div>
+      <div class="ex-pattern-card">
+        <div class="ex-pattern-tag yelp">Yelp · absolute difference (2 nodes)</div>
+        <div class="ex-pattern-desc">Do popular users rate businesses in Louisiana and Illinois within 0.5 stars of each other?</div>
+        <div class="panel-box panel-graph" id="pg-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Datasets -->
+  <section>
+    <div class="section-header">
+      <div class="section-icon blue">🗄️</div>
+      <span class="section-title">Supported Datasets</span>
+    </div>
+    <div class="ds-grid">
+      <div class="ds-card">
+        <h4 class="purple">MovieLens</h4>
+        <div class="ds-stat">Movie rating &amp; user preference graph</div>
+      </div>
+      <div class="ds-card">
+        <h4 class="blue">DBLP</h4>
+        <div class="ds-stat">Academic paper &amp; author network</div>
+      </div>
+      <div class="ds-card">
+        <h4 class="green">Yelp</h4>
+        <div class="ds-stat">Business review &amp; social graph</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h2>Ready to validate your hypothesis?</h2>
+    <p>Draw your pattern, set the hypothesis, and run the testing</p>
+    <a class="cta-btn" href="/app">Try Now →</a>
+    <p class="cta-note">Currently supporting MovieLens, DBLP, and Yelp environments</p>
+  </div>
+
+</main>
+
+<script>
+/* ── Static pattern data for the four homepage examples ──────────────────── */
+const _EX_PATTERNS = [
+  // 0: movielens-student-scifi-rating-vs-academics (main example, paired edges)
+  { p0: {
+    pattern: {
+      nodes: [
+        { id: "n0", label: "user",  attribute: { occupation: "college-grad student" } },
+        { id: "n1", label: "movie", attribute: { "Sci-Fi": 1 } },
+        { id: "n2", label: "user",  attribute: { occupation: "academic-educator" } }
+      ],
+      edges: [{ from: "n0", to: "n1" }, { from: "n2", to: "n1" }]
+    },
+    test:   { agg: "mean", op: ">", rhs: 0 },
+    target: { edge_diff: { edges: [["n0", "n1"], ["n2", "n1"]], attribute: "rating" } }
+  }},
+  // 1: dblp-hku-datamining-citation-vs-mu
+  { p0: {
+    pattern: {
+      nodes: [
+        { id: "n0", label: "author", attribute: { author_org: "Hong Kong University" } },
+        { id: "n1", label: "paper",  attribute: {} },
+        { id: "n2", label: "fos",    attribute: { fos_name: "Data mining" } }
+      ],
+      edges: [{ from: "n0", to: "n1" }, { from: "n1", to: "n2" }]
+    },
+    test:   { agg: "mean", op: ">", rhs: "mu" },
+    target: { node: { id: "n1", attribute: "n_citation" } }
+  }},
+  // 2: movielens-user-scifi-docu-age-gt-25
+  { p0: {
+    pattern: {
+      nodes: [
+        { id: "n1", label: "user",  attribute: {} },
+        { id: "n0", label: "movie", attribute: { "Sci-Fi": 1 } },
+        { id: "n2", label: "movie", attribute: { "Documentary": 1 } }
+      ],
+      edges: [{ from: "n1", to: "n0" }, { from: "n1", to: "n2" }]
+    },
+    test:   { agg: "mean", op: ">", rhs: 25 },
+    target: { node: { id: "n1", attribute: "age" } }
+  }},
+  // 3: yelp-popular-user-la-vs-il-stars-similar
+  { p0: {
+    pattern: {
+      nodes: [
+        { id: "n1", label: "user",     attribute: { popularity: "high" } },
+        { id: "n0", label: "business", attribute: { state: "LA" } },
+        { id: "n2", label: "business", attribute: { state: "IL" } }
+      ],
+      edges: [{ from: "n1", to: "n0" }, { from: "n1", to: "n2" }]
+    },
+    test:   { agg: "mean", op: "<=", rhs: 0.5 },
+    target: { node_diff: { nodes: ["n0", "n2"], attribute: "stars" } }
+  }}
+];
+
+/* ── Minimal pattern-graph renderer (adapted from index.html) ────────────── */
+const _PGN_FILL   = ["rgba(59,130,246,.12)","rgba(168,85,247,.12)","rgba(34,197,94,.12)","rgba(234,179,8,.12)","rgba(239,68,68,.12)"];
+const _PGN_STROKE = ["#3b82f6","#a855f7","#22c55e","#eab308","#ef4444"];
+
+function renderExPatternGraph(parsedPattern, container, exIdx) {
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  for (const [pid, entry] of Object.entries(parsedPattern)) {
+    const pat    = entry.pattern  || {};
+    const nodes  = pat.nodes      || [];
+    const edges  = pat.edges      || [];
+    const test   = entry.test     || {};
+    const target = entry.target   || {};
+
+    if (nodes.length === 0) continue;
+
+    // Collect target node ids
+    const targetNodeIds = new Set();
+    if (target.node)      targetNodeIds.add(target.node.id);
+    if (target.edge)    { targetNodeIds.add(target.edge.from); targetNodeIds.add(target.edge.to); }
+    if (target.node_diff) target.node_diff.nodes.forEach(id => targetNodeIds.add(id));
+    if (target.edge_diff) target.edge_diff.edges.forEach(([f, t]) => { targetNodeIds.add(f); targetNodeIds.add(t); });
+    if (typeof test.rhs === "object" && test.rhs?.node) targetNodeIds.add(test.rhs.node.id);
+
+    // Layout
+    const CR   = 18;
+    const W    = 240;
+    const PADX = 28, PADY = 10;  // tighter padding
+    const n    = nodes.length;
+    const R    = n <= 1 ? 0 : Math.min(76, Math.max(52, n * 24));
+    const cx   = W / 2;
+
+    const hasBadge  = targetNodeIds.size > 0 && test.agg;
+    // No HEADER_H — badge is in HTML panel-title, not inside SVG
+    const cy        = PADY + CR + R;
+
+    const LABEL_LINESEP = 15;
+    const LABEL_GAP     = 5;
+    const maxTextRows   = Math.max(...nodes.map(nd => 1 + Object.keys(nd.attribute || {}).length));
+    const H = cy + R + CR + LABEL_GAP + maxTextRows * LABEL_LINESEP + PADY;
+
+    // Node positions
+    const posMap = {};
+    nodes.forEach((nd, i) => {
+      let x, y;
+      if (n === 1) {
+        x = cx; y = cy;
+      } else if (n === 2) {
+        x = PADX + (W - 2 * PADX) * i; y = cy;
+      } else {
+        const angle = (2 * Math.PI * i / n) - Math.PI / 2;
+        x = cx + R * Math.cos(angle);
+        y = cy + R * Math.sin(angle);
+      }
+      posMap[nd.id] = { x, y };
+    });
+
+    // TEST badge — block element appended directly to container, below panel-title
+    if (hasBadge) {
+      let tgtExpr = "?";
+      if (target.node)      tgtExpr = `${target.node.id}.${target.node.attribute}`;
+      if (target.edge)      tgtExpr = `${target.edge.attribute}`;
+      if (target.node_diff) {
+        const d = target.node_diff;
+        tgtExpr = `|${d.nodes[0]}.${d.attribute}\u2212${d.nodes[1]}.${d.attribute}|`;
+      }
+      if (target.edge_diff) {
+        const d = target.edge_diff;
+        const [[f1, t1], [f2, t2]] = d.edges;
+        tgtExpr = `${d.attribute}(${f1})\u2212${d.attribute}(${f2})`;
+      }
+      const rhs = test.rhs === "mu" ? "\u03bc"
+        : (typeof test.rhs === "object" && test.rhs?.node)
+            ? `mean(${test.rhs.node.id}.${test.rhs.node.attribute})`
+            : String(test.rhs ?? "");
+      const testStr = `TEST mean(${tgtExpr}) ${test.op} ${rhs}`;
+      const badge = document.createElement("div");
+      badge.className = "pg-test-badge";
+      badge.textContent = testStr;
+      container.appendChild(badge);
+    }
+
+    // SVG — nodes + edges only, centered via xMidYMin
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "panel-graph-svg-wrap");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("width",  "100%");
+    svg.setAttribute("height", H);
+    svg.setAttribute("preserveAspectRatio", "xMidYMin meet");
+
+    // Arrowhead marker
+    const defs = document.createElementNS(svgNS, "defs");
+    const marker = document.createElementNS(svgNS, "marker");
+    // Use globally unique marker id (exIdx) to avoid cross-SVG id collisions
+    const markerId = `arr-ex-${exIdx}`;
+    marker.setAttribute("id",          markerId);
+    marker.setAttribute("markerWidth",  "8");
+    marker.setAttribute("markerHeight", "6");
+    marker.setAttribute("refX",         "7");
+    marker.setAttribute("refY",         "3");
+    marker.setAttribute("orient",       "auto");
+    const poly = document.createElementNS(svgNS, "polygon");
+    poly.setAttribute("points", "0 0, 8 3, 0 6");
+    poly.setAttribute("fill",   "#6b7280");
+    marker.appendChild(poly);
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+
+    // Edges
+    edges.forEach(e => {
+      const ps = posMap[e.from], pd = posMap[e.to];
+      if (!ps || !pd) return;
+      const dx = pd.x - ps.x, dy = pd.y - ps.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const sx = ps.x + dx / dist * CR;
+      const sy = ps.y + dy / dist * CR;
+      const ex = pd.x - dx / dist * CR;
+      const ey = pd.y - dy / dist * CR;
+      const line = document.createElementNS(svgNS, "line");
+      line.setAttribute("x1", sx.toFixed(1)); line.setAttribute("y1", sy.toFixed(1));
+      line.setAttribute("x2", ex.toFixed(1)); line.setAttribute("y2", ey.toFixed(1));
+      line.setAttribute("stroke",       "#4b5563");
+      line.setAttribute("stroke-width", "1.5");
+      svg.appendChild(line);
+    });
+
+    // Nodes
+    nodes.forEach((nd, i) => {
+      const pos      = posMap[nd.id];
+      const ci       = i % _PGN_STROKE.length;
+      const isTarget = targetNodeIds.has(nd.id);
+      const attrs    = Object.entries(nd.attribute || {});
+
+      if (isTarget) {
+        const glow = document.createElementNS(svgNS, "circle");
+        glow.setAttribute("cx", pos.x); glow.setAttribute("cy", pos.y);
+        glow.setAttribute("r",  CR + 4);
+        glow.setAttribute("fill",         "none");
+        glow.setAttribute("stroke",       _PGN_STROKE[ci]);
+        glow.setAttribute("stroke-width", "2");
+        glow.setAttribute("opacity",      "0.45");
+        svg.appendChild(glow);
+      }
+
+      const circ = document.createElementNS(svgNS, "circle");
+      circ.setAttribute("cx", pos.x); circ.setAttribute("cy", pos.y);
+      circ.setAttribute("r",  CR);
+      circ.setAttribute("fill",         _PGN_FILL[ci]);
+      circ.setAttribute("stroke",       _PGN_STROKE[ci]);
+      circ.setAttribute("stroke-width", "1.5");
+      svg.appendChild(circ);
+
+      const idTxt = document.createElementNS(svgNS, "text");
+      idTxt.setAttribute("x", pos.x); idTxt.setAttribute("y", pos.y);
+      idTxt.setAttribute("text-anchor",       "middle");
+      idTxt.setAttribute("dominant-baseline", "central");
+      idTxt.setAttribute("font-size",   "13");
+      idTxt.setAttribute("font-weight", "700");
+      idTxt.setAttribute("font-family", "monospace");
+      idTxt.setAttribute("fill",        _PGN_STROKE[ci]);
+      idTxt.textContent = nd.id;
+      svg.appendChild(idTxt);
+
+      let ty = pos.y + CR + LABEL_GAP + LABEL_LINESEP;
+      const mkTxt = (content, fontSize, color, bold) => {
+        const t = document.createElementNS(svgNS, "text");
+        t.setAttribute("x", pos.x); t.setAttribute("y", ty);
+        t.setAttribute("text-anchor",       "middle");
+        t.setAttribute("dominant-baseline", "auto");
+        t.setAttribute("font-size",   fontSize);
+        if (bold) t.setAttribute("font-weight", "600");
+        t.setAttribute("fill", color);
+        t.textContent = content;
+        svg.appendChild(t);
+        ty += LABEL_LINESEP;
+      };
+      mkTxt(nd.label, "13", _PGN_STROKE[ci], true);
+      attrs.forEach(([k, v]) => mkTxt(`${k}:${JSON.stringify(v)}`, "11", "#9ca3af", false));
+    });
+
+    container.appendChild(svg);
+  }
+}
+
+/* ── Render all four graphs on page load ──────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+  _EX_PATTERNS.forEach((pat, i) => {
+    const el = document.getElementById("pg-" + i);
+    if (el) renderExPatternGraph(pat, el, i);  // pass index for unique marker ids
+  });
+});
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute("data-theme") === "light";
+  html.setAttribute("data-theme", isLight ? "" : "light");
+  document.querySelector(".topbar-theme").textContent = isLight ? "☀ Light" : "🌙 Dark";
+}
+</script>
+</body>
+</html>

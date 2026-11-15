@@ -1,0 +1,191 @@
+{
+  "dataset": "citation",
+  "graph_type": "undirected",
+  "node_count": 1623013,
+  "edge_count": 11040170,
+  "node_types": {
+    "author": {
+      "count": 853466,
+      "attributes": {
+        "author_name": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "Makoto Satoh",
+            "Ryo Muramatsu",
+            "Mizue Kayama",
+            "Kazunori Itoh",
+            "Masami Hashimoto"
+          ]
+        },
+        "author_org": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "Shinshu University",
+            "Nagano Prefectural College",
+            "Takushoku University, Hokkaido Junior College",
+            "Archaeological Computing Research Group, University of Southampton, UK",
+            "Department of Statistics , Rajshahi University , Rajshahi , Bangladesh"
+          ]
+        }
+      }
+    },
+    "fos": {
+      "count": 73482,
+      "attributes": {
+        "fos_name": {
+          "dtype": "mixed",
+          "coverage": 1.0,
+          "samples": [
+            "Telecommunications network",
+            "Computer science",
+            "Mind map",
+            "Human–computer interaction",
+            "Multimedia"
+          ]
+        }
+      }
+    },
+    "paper": {
+      "count": 691184,
+      "attributes": {
+        "doc_type": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "Conference",
+            "Journal",
+            "Repository",
+            "Patent",
+            "Book"
+          ]
+        },
+        "id": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "paper1091",
+            "paper1674",
+            "paper1688",
+            "paper6522",
+            "paper8373"
+          ]
+        },
+        "n_citation": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            1,
+            6,
+            0,
+            13,
+            2
+          ]
+        },
+        "title": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "Preliminary Design of a Network Protocol Learning Tool Based on the Comprehension of High School Students: Design by an Empirical Study Using a Simple Mind Map",
+            "A methodology for the physically accurate visualisation of roman polychrome statuary",
+            "Comparison of GARCH, Neural Network and Support Vector Machine in Financial Time Series Prediction",
+            "Improved Secret Image Sharing Method By Encoding Shared Values With Authentication Bits",
+            "Formal agent-oriented ubiquitous computing: a computational intelligence support for information and services integration"
+          ]
+        },
+        "year": {
+          "dtype": "int",
+          "coverage": 1.0,
+          "samples": [
+            2013,
+            2011,
+            2009,
+            2012,
+            2014
+          ]
+        }
+      }
+    },
+    "venue": {
+      "count": 4881,
+      "attributes": {
+        "venue_name": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "International Conference on Human-Computer Interaction",
+            "International Conference on Virtual Reality",
+            "Pattern Recognition and Machine Intelligence",
+            "International Symposium on Computer and Information Sciences",
+            "Asian Conference on Intelligent Information and Database Systems"
+          ]
+        },
+        "venue_type": {
+          "dtype": "str",
+          "coverage": 1.0,
+          "samples": [
+            "C",
+            "J"
+          ]
+        }
+      }
+    }
+  },
+  "edge_types": {
+    "belong_to": {
+      "count": 6830340,
+      "attributes": {
+        "fos_w": {
+          "dtype": "float",
+          "coverage": 1.0,
+          "samples": [
+            0.45139,
+            0.45245,
+            0.5347,
+            0.47011,
+            0.46629
+          ]
+        }
+      }
+    },
+    "cite": {
+      "count": 1485063,
+      "attributes": {}
+    },
+    "publish_in": {
+      "count": 690779,
+      "attributes": {}
+    },
+    "write_by": {
+      "count": 2033988,
+      "attributes": {}
+    }
+  },
+  "connectivity": [
+    {
+      "src": "paper",
+      "edge": "belong_to",
+      "dst": "fos",
+      "count": 6830340
+    },
+    {
+      "src": "paper",
+      "edge": "write_by",
+      "dst": "author",
+      "count": 2033988
+    },
+    {
+      "src": "paper",
+      "edge": "cite",
+      "dst": "paper",
+      "count": 1485063
+    },
+    {
+      "src": "paper",
+      "edge": "publish_in",
+      "dst": "venue",
+      "count": 690779
+    }
+  ]
+}
