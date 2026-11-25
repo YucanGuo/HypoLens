@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -2032,10 +2032,10 @@ function toggleTheme() {
   applyTheme(current === "light" ? "dark" : "light");
 }
 
-// restore saved preference
+// restore saved preference (light by default, matching the welcome page)
 (function () {
-  const saved = localStorage.getItem("theme") || "dark";
-  if (saved === "light") applyTheme("light");
+  const saved = localStorage.getItem("theme") || "light";
+  applyTheme(saved === "dark" ? "dark" : "light");
 })();
 
 // ── Visual Builder preset examples (one node / one edge / one path per dataset) ─
