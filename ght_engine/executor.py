@@ -595,13 +595,25 @@ class GHTExecutor:
                 # but kept here so the table can show "—" for failed repeats).
                 n_repeats = num_samples
                 repeats: list[dict[str, Any]] = []
+                repeat_times: list[float] = []
+                samp_times = time_used_list["sampling"]
+                extr_times = time_used_list["sample_graph_by_condition"]
                 for i in range(n_repeats):
                     sm_i  = args.sample_means[i] if i < len(args.sample_means) else None
                     vm_i  = args.valid_edges[i]  if i < len(args.valid_edges)  else None
                     pl_i  = args.CI["lower"][i]  if i < len(args.CI["lower"])  else None
                     pu_i  = args.CI["upper"][i]  if i < len(args.CI["upper"])  else None
                     pv_i  = args.p_value[i]      if i < len(args.p_value)      else None
-                    t_i   = time_used_list["sampling"][i] if i < len(time_used_list["sampling"]) else None
+                    # One repeat = sampler + extraction/hypothesis test.  The
+                    # raw time_used_list["sampling"] only covers the sampler,
+                    # so add the per-repeat extraction time to get the full
+                    # cost that is comparable to the full-graph exact pass.
+                    t_i = None
+                    if i < len(samp_times):
+                        t_i = float(samp_times[i])
+                        if i < len(extr_times):
+                            t_i += float(extr_times[i])
+                        repeat_times.append(t_i)
                     vb_i  = sample_bools[i] if i < len(sample_bools) else None
                     repeats.append({
                         "index":          i + 1,
@@ -619,7 +631,7 @@ class GHTExecutor:
                 ci_lower  = round(sum(args.CI["lower"]) / len(args.CI["lower"]), 4) if args.CI["lower"] else None
                 ci_upper  = round(sum(args.CI["upper"]) / len(args.CI["upper"]), 4) if args.CI["upper"] else None
                 p_value   = round(sum(args.p_value) / len(args.p_value), 4) if args.p_value else None
-                avg_sampling_time = round(sum(time_used_list["sampling"]) / len(time_used_list["sampling"]), 2)
+                avg_sampling_time = round(sum(repeat_times) / len(repeat_times), 2) if repeat_times else 0.0
 
                 ratio_reports.append({
                     "sampling_percent":    pct,

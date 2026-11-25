@@ -9,8 +9,8 @@ HypoLens is an interactive system for end-to-end hypothesis testing on large pro
 ## ✨ Highlights
 
 - **Visual Graph Hypothesis Builder:** A schema-aware interface for selecting nodes, edges, and attribute constraints, configuring the test objective, and validating the hypothesis before execution.
-- **Graph Hypothesis Testing:** Sampling-based analysis with PHASE and PHASEopt, alongside full-graph evaluation and comparison modes. The result dashboard presents statistical evidence, including p-values, confidence intervals, and agreement across repeated sampling runs. An LLM explains the computed results while statistical decisions remain grounded in the testing engine.
-- **Follow-up Hypothesis Recommendation:** Context-aware generation and rule-based validation of follow-up hypotheses. Selecting a recommendation loads it into the visual builder for further analysis.
+- **Graph Hypothesis Testing:** Sampling-based analysis with $\mathrm{PHASE}$ and $\mathrm{PHASE}_{\mathrm{opt}}$, alongside full-graph evaluation and comparison modes. The result dashboard presents statistical evidence, including p-values, confidence intervals, and agreement across repeated sampling runs. An LLM explains the computed results while statistical decisions remain grounded in the testing engine.
+- **Follow-up Hypothesis Recommendation:** Two recommendation strategies (LLM-based and rule-based) produce validated follow-up hypotheses. Selecting a recommendation loads it into the visual builder immediately for further analysis.
 
 HypoLens supports hypothesis testing on the MovieLens, DBLP, and Yelp property graphs.
 
@@ -41,7 +41,7 @@ datasets/
 
 ## ⚙️ 3. LLM Configuration
 
-HypoLens supports LLM services that provide an OpenAI-compatible Chat Completions API. We use `deepseek-chat` for result interpretation and follow-up hypothesis recommendations.
+HypoLens supports LLM services that provide an OpenAI-compatible Chat Completions API. We use `deepseek-chat` for result interpretation and the LLM-based recommendation strategy.
 
 Set the base URL, model name, and API key for your service before starting HypoLens:
 
@@ -51,7 +51,7 @@ export LLM_MODEL="your-model-name"
 export LLM_API_KEY="your-api-key"
 ```
 
-Replace the example values with your service settings. Run these commands in the same shell that you will use to start HypoLens.
+Replace the example values with your service settings. Run these commands in the same shell that you will use to start HypoLens. The rule-based recommendation strategy is available without an LLM service; result interpretation and the LLM-based strategy require this configuration.
 
 ## 🚀 4. Running HypoLens
 
@@ -65,10 +65,10 @@ python -m hypolens.web --host 127.0.0.1 --port 8000 --dataset MovieLens
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to explore the HypoLens system.
 
 1. **Construct a hypothesis.** Select valid node types from the schema panel, add nodes and edges to the pattern canvas, set attribute constraints, and configure the test target. Click *Parse Pattern* to validate the hypothesis. Suggested hypotheses provide starting points for each dataset.
-2. **Run the test.** Choose sampling-based approximation, full-graph analysis, or comparison mode. In sampling mode, select PHASE or PHASEopt and optionally adjust the sampling ratio and number of sampled subgraphs. Comparison mode reports the fraction of sampled decisions matching the full-graph decision, alongside sampling times and confidence intervals. Inspect the result summary and expand the technical details to examine the statistical evidence.
-3. **Explore follow-up hypotheses.** With an LLM service configured, request follow-up hypotheses, select a validated recommendation, and continue the analysis from the loaded pattern and test settings.
+2. **Run the test.** Choose sampling-based approximation, full-graph analysis, or comparison mode. In sampling mode, select $\mathrm{PHASE}$ or $\mathrm{PHASE}_{\mathrm{opt}}$ and optionally adjust the sampling ratio and number of sampled subgraphs. Comparison mode reports the fraction of sampled decisions matching the full-graph decision. Inspect the result summary and expand the technical details to examine the statistical evidence.
+3. **Explore follow-up hypotheses.** Choose the LLM-based or rule-based recommendation strategy. For the rule-based strategy, select the refinement rules and choose single-rule mode (one rule per suggestion) or mixed-rule mode (two rules per suggestion). Click *Refresh* for another set of suggestions, or select a recommendation to load its pattern and test settings into the builder. Without an LLM service, HypoLens uses the rule-based strategy.
 
-HypoLens supports hypotheses defined by a single node, an edge, or a linear path. PHASEopt is the default sampler, providing faster execution with a modest accuracy trade-off compared with PHASE.
+HypoLens supports hypotheses defined by a single node, an edge, or a linear path. $\mathrm{PHASE}_{\mathrm{opt}}$ is the default sampler, providing faster execution with a modest accuracy trade-off compared with $\mathrm{PHASE}$.
 
 HypoLens treats the user's claim as the null hypothesis. A higher p-value indicates weaker evidence against the claim. Thus, HypoLens reports the claim as supported when `p >= 0.05` and rejected otherwise.
 
@@ -82,7 +82,7 @@ HypoLens/
 |-- ght_engine/              # Sampling and statistical testing
 |   |-- executor.py          # Hypothesis execution
 |   |-- PHASE.py             # PHASE sampler
-|   |-- Opt_PHASE.py         # PHASEopt sampler
+|   |-- Opt_PHASE.py         # Optimized PHASE sampler
 |   |-- sampling.py          # Sampling methods
 |   |-- extraction.py        # Test target extraction
 |   |-- utils.py             # Data loading and statistical tests
@@ -91,7 +91,11 @@ HypoLens/
 |   `-- schema/              # Dataset schemas and attribute summaries
 |-- hypolens/                # Application and LLM integration
 |   |-- llm.py               # LLM service client
-|   |-- tools/               # Hypothesis validation
+|   |-- tools/               # Hypothesis validation and recommendation algorithms
+|   |   |-- llm_recommender.py   # LLM-based recommendation strategy
+|   |   |-- rule_recommender.py  # Rule-based recommendation strategy
+|   |   |-- report_summary.py    # Shared statistical context for LLM tools
+|   |   `-- validator.py         # Pattern validation
 |   `-- web/                 # Web server and interface
 |       |-- app.py           # Flask application
 |       `-- templates/       # Interface pages

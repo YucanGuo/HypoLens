@@ -1313,6 +1313,49 @@ pre code {
 .exec-field input:focus, .exec-field select:focus {
   border-color: var(--accent);
 }
+/* DOM-based dropdown: the native <select> popup is a separate browser
+   widget that screen recorders do not capture, so the Mode menu is rendered
+   in the page with a hidden <select> as the source of truth. */
+.cdd { position: relative; }
+.cdd > select { display: none; }
+.cdd-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: .82rem;
+  padding: 7px 10px;
+  cursor: pointer;
+  text-align: left;
+}
+.cdd-btn:hover { border-color: var(--border-hi); }
+.cdd.cdd-open .cdd-btn { border-color: var(--accent); }
+.cdd-caret { color: var(--muted); font-size: .68rem; margin-left: 8px; }
+.cdd-menu {
+  display: none;
+  position: absolute;
+  left: 0; right: 0; top: calc(100% + 4px);
+  z-index: 80;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  box-shadow: 0 10px 26px rgba(20, 28, 60, .16);
+  overflow: hidden;
+}
+.cdd.cdd-open .cdd-menu { display: block; }
+.cdd-option {
+  padding: 8px 10px;
+  font-size: .82rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.cdd-option:hover { background: var(--surface2); }
+.cdd-option.cdd-selected { color: var(--accent); font-weight: 600; }
 /* Advanced parameters fold (Sampling %, Samples) — hidden by default,
    takes full width inside .exec-params so it sits on its own row. */
 .exec-advanced {
@@ -1508,6 +1551,18 @@ pre code {
 .exec-ai-item .kw-num {
   color: var(--accent); font-weight: 600;
 }
+/* speed-up badge — distinct purple pill for the efficiency comparison */
+.exec-ai-item .kw-speed {
+  color: var(--accent2); background: var(--purple-dim);
+  padding: 1px 7px; border-radius: 4px; font-weight: 600;
+}
+/* "vs" separator between the two execution times */
+.exec-vs {
+  margin: 0 5px;
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: .95em;
+}
 .exec-ai-loading {
   color: var(--text-dim);
   font-style: italic;
@@ -1594,11 +1649,111 @@ pre code {
 .exec-recommend-refresh .refresh-icon { font-size: .9rem; line-height: 1; }
 .exec-recommend-refresh.spinning .refresh-icon { animation: rc-spin .6s linear infinite; }
 @keyframes rc-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+/* LLM / rule-based selector row (shown only when an LLM key is configured) */
+.exec-reco-mode {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px 0;
+}
+.reco-mode-btn {
+  padding: 4px 11px;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.reco-mode-btn:hover { color: var(--text); border-color: var(--border-hi); }
+.reco-mode-btn.active {
+  color: var(--accent2);
+  background: var(--purple-dim);
+  border-color: var(--accent2);
+}
+/* rule-based options: refinement mode + rule checkboxes */
+.exec-reco-options {
+  display: none;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px 14px 0;
+}
+.exec-reco-sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.reco-sub-label {
+  font-size: .64rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-right: 2px;
+}
+.reco-refine-btn { padding: 3px 10px; font-size: .7rem; }
+.exec-reco-hint {
+  font-size: .68rem;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+.exec-reco-rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 14px;
+}
+.reco-rule {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .71rem;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.reco-rule:hover { color: var(--text); }
+.reco-rule input {
+  margin: 0;
+  accent-color: var(--accent2);
+  cursor: pointer;
+}
+/* chip with optional title line (rule-based recommendations) */
+.chip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.chip-title {
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--accent2);
+}
+.exec-recommend-chip { align-items: flex-start; }
+.exec-recommend-chip .chip-text {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.45;
+}
 .exec-recommend-body {
   padding: 10px 14px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+/* keep a rule's chips adjacent; different rules may share a row. Groups are
+   sized by content (never forced full-width), so a single-candidate rule sits
+   beside another rule instead of claiming the whole line. */
+.reco-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 100%;
 }
 .exec-recommend-chip {
   display: inline-flex;
@@ -1620,7 +1775,6 @@ pre code {
 }
 .exec-recommend-chip:active { transform: scale(.97); }
 .exec-recommend-chip .chip-icon { font-size: .9em; opacity: .8; }
-.exec-recommend-chip .chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .exec-recommend-btn {
   padding: 7px 16px;
   font-size: .82rem;
@@ -1841,6 +1995,10 @@ pre code {
 // ─────────────────────────────────────────────────────────────────────────────
 let _patternData = null;
 let _schemaData  = null;   // cached /api/schema/<dataset> response, used by the Visual Builder
+
+// True when the server has an LLM API key configured. When false, follow-up
+// hypotheses always come from the rule-based generator (no selector shown).
+const LLM_CONFIGURED = {{ 'true' if llm_configured else 'false' }};
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Theme toggle
@@ -2937,11 +3095,18 @@ function renderExecPanelHtml() {
       <div class="exec-params">
         <div class="exec-field">
           <label>Mode</label>
-          <select id="exec-mode" onchange="onExecModeChange()">
-            <option value="sample" selected>Sampling approximation</option>
-            <option value="full">Full-graph exact</option>
-            <option value="compare">Compare (both)</option>
-          </select>
+          <div class="cdd" id="exec-mode-cdd">
+            <select id="exec-mode" onchange="onExecModeChange()">
+              <option value="sample" selected>Sampling approximation</option>
+              <option value="full">Full-graph exact</option>
+              <option value="compare">Compare (both)</option>
+            </select>
+            <button type="button" class="cdd-btn" onclick="cddToggle('exec-mode-cdd')">
+              <span class="cdd-label">Sampling approximation</span>
+              <span class="cdd-caret">▾</span>
+            </button>
+            <div class="cdd-menu"></div>
+          </div>
         </div>
         <div class="exec-field exec-field-sample">
           <label>Sampler</label>
@@ -2981,6 +3146,50 @@ function _execSetRunning(on) {
   document.getElementById("exec-btn-text").textContent =
     on ? "Running…" : "▶  Run Hypothesis Test";
 }
+
+// ── DOM-based dropdown (Mode) ───────────────────────────────────────────────
+// The native <select> popup is painted by the browser outside the page, so it
+// never shows up in screen recordings; this renders the menu in the DOM while
+// a hidden <select> stays the single source of truth.
+function cddSync(id) {
+  const cdd = document.getElementById(id);
+  if (!cdd) return;
+  const sel = cdd.querySelector("select");
+  cdd.querySelector(".cdd-label").textContent =
+    sel.options[sel.selectedIndex].textContent;
+  cdd.querySelector(".cdd-menu").innerHTML = [...sel.options].map(o =>
+    `<div class="cdd-option${o.value === sel.value ? " cdd-selected" : ""}" ` +
+    `data-value="${o.value}" onclick="cddPick('${id}','${o.value}')">` +
+    `${o.textContent}</div>`).join("");
+}
+
+function cddToggle(id) {
+  const cdd = document.getElementById(id);
+  if (!cdd) return;
+  const wasOpen = cdd.classList.contains("cdd-open");
+  document.querySelectorAll(".cdd.cdd-open").forEach(el =>
+    el.classList.remove("cdd-open"));
+  if (!wasOpen) {
+    cddSync(id);
+    cdd.classList.add("cdd-open");
+  }
+}
+
+function cddPick(id, value) {
+  const cdd = document.getElementById(id);
+  if (!cdd) return;
+  const sel = cdd.querySelector("select");
+  sel.value = value;
+  sel.dispatchEvent(new Event("change"));
+  cdd.classList.remove("cdd-open");
+  cddSync(id);
+}
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".cdd"))
+    document.querySelectorAll(".cdd.cdd-open").forEach(el =>
+      el.classList.remove("cdd-open"));
+});
 
 // Show/hide sampling-related fields based on the selected mode.
 // "full" mode skips sampling entirely, so Sampling %, Samples, and Sampler
@@ -3081,6 +3290,7 @@ function runGHTExecution() {
 
 function renderGHTExecutionResult(report) {
   _lastReport = report;
+  _recoSeen = new Set();   // new execution → forget previously shown suggestions
   const resEl = document.getElementById("exec-results");
   resEl.classList.add("show");
 
@@ -3242,11 +3452,53 @@ function renderGHTExecutionResult(report) {
     b5 = `⚖️ <strong>Sampling vs. Ground Truth:</strong> Full-graph result: ${_kw(fgVerdictWord, fgVerdictCls)}${gtPart}; sampling result ${_kw(consWord, consCls)}${accPart}.`;
   }
 
+  // 6. Execution Time (full / compare mode ONLY) — exposes the full-graph
+  //    exact cost and, in compare mode, the sampling cost alongside it so the
+  //    efficiency of exact vs. sampled execution can be compared directly.
+  let b6 = "";
+  const _fgTime    = (_gt2 && _gt2.compute_time_seconds != null) ? _gt2.compute_time_seconds : null;
+  const _sampTotal = _sr2.elapsed_seconds;
+  const _sampPct   = _sr2.sampling_percent;
+  const _sampRuns  = _sr2.num_samples;
+  // Per-run sampling cost = the whole repeat (sampler + extraction + test).
+  // avg_sampling_time_seconds is now exactly that (the average of the
+  // per-repeat "Time (s)" values shown in the per-sample table), so this line
+  // and the table agree.  Fall back to elapsed/runs if it is missing.
+  const _sampPerRun = (_sr2.avg_sampling_time_seconds != null)
+    ? _sr2.avg_sampling_time_seconds
+    : ((_sampTotal != null && _sampRuns)
+        ? Math.round((_sampTotal / _sampRuns) * 100) / 100
+        : null);
+  const _pill = (txt, cls, title) =>
+    `<span class="${cls}"${title ? ` title="${esc(title)}"` : ""}>${txt}</span>`;
+  if (report.mode === "full" && _fgTime != null) {
+    b6 = `⏱ <strong>Execution Time:</strong> Full-graph exact ${_pill(_fgTime + " s", "kw-warn")}.`;
+  } else if (report.mode === "compare" && _fgTime != null) {
+    const exact = _pill(_fgTime + " s", "kw-warn");
+    if (_sampPerRun != null) {
+      const pctTxt  = _sampPct != null ? `${_sampPct}%` : "sampled";
+      const runsTxt = _sampRuns ? `${_sampRuns} runs` : "";
+      const sampLbl = runsTxt ? `Sampling (${pctTxt}, ${runsTxt})` : `Sampling (${pctTxt})`;
+      const totalTip = _sampTotal != null
+        ? [runsTxt, `${_sampTotal} s total`].filter(Boolean).join(", ")
+        : "";
+      const samp = _pill(_sampPerRun + " s/run", "kw-pos", totalTip);
+      let speed = "";
+      const k = _sampPerRun > 0 ? _fgTime / _sampPerRun : NaN;
+      if (isFinite(k) && k > 1) speed = ` ${_pill(k.toFixed(1) + "× faster", "kw-speed")}`;
+      // no trailing period when the line ends in a badge (avoids "faster .")
+      b6 = `⏱ <strong>Execution Time:</strong> Full-graph exact ${exact} <span class="exec-vs">vs</span> ${sampLbl} ${samp}${speed}${speed ? "" : "."}`;
+    } else {
+      b6 = `⏱ <strong>Execution Time:</strong> Full-graph exact ${exact}.`;
+    }
+  }
+
   // Visible: Hypothesis Result + LLM Conclusion strung together as one
   // explicit output for non-experts. Collapsed: Statistical Significance,
-  // Observed Evidence, Sampling Consensus, Sampling vs. Ground Truth.
+  // Observed Evidence, Sampling Consensus, Sampling vs. Ground Truth,
+  // Execution Time.
   // Deleted: Ground-Truth Reference, Execution Profile.
-  const techDetails = [b2, b3, b4, b5].filter(Boolean)
+  const techDetails = [b2, b3, b4, b5, b6].filter(Boolean)
     .map(b => `<div class="exec-ai-item">${b}</div>`).join("");
 
   html += `
@@ -3266,7 +3518,11 @@ function renderGHTExecutionResult(report) {
       </div>
     </div>`;
 
-  // ── Follow-up Hypotheses (user-triggered, LLM-generated, validated) ─────
+  // ── Follow-up Hypotheses (user-triggered; LLM or rule-based, validated) ──
+  const _ruleChecks = RECO_RULES.map(([id, label]) =>
+    `<label class="reco-rule"><input type="checkbox" data-rule="${id}" `
+    + `onchange="toggleRecoRule(this)"> ${label}</label>`
+  ).join("");
   html += `
     <div class="exec-recommend" id="exec-recommend">
       <div class="exec-recommend-hdr">
@@ -3275,6 +3531,22 @@ function renderGHTExecutionResult(report) {
                 onclick="fetchRecommendations()" title="Regenerate hypotheses">
           <span class="refresh-icon">↻</span><span>Refresh</span>
         </button>
+      </div>
+      ${LLM_CONFIGURED ? `
+      <div class="exec-reco-mode" id="exec-reco-mode">
+        <button class="reco-mode-btn" data-mode="llm" onclick="setRecoMode('llm')">🤖 LLM-based</button>
+        <button class="reco-mode-btn" data-mode="rules" onclick="setRecoMode('rules')">⚙️ Rule-based</button>
+      </div>` : ``}
+      <div class="exec-reco-options" id="exec-reco-options">
+        <div class="exec-reco-sub">
+          <span class="reco-sub-label">Mode</span>
+          <button class="reco-mode-btn reco-refine-btn" data-refine="single"
+                  onclick="setRecoRefinement('single')">Single-rule</button>
+          <button class="reco-mode-btn reco-refine-btn" data-refine="mixed"
+                  onclick="setRecoRefinement('mixed')">Mixed-rule</button>
+        </div>
+        <div class="exec-reco-hint">Single-rule: one rule per suggestion. Mixed-rule: two different rules per suggestion.</div>
+        <div class="exec-reco-rules" id="exec-reco-rules">${_ruleChecks}</div>
       </div>
       <div class="exec-recommend-body" id="exec-recommend-body">
         <button class="exec-btn" id="exec-recommend-btn" onclick="fetchRecommendations()">
@@ -3285,6 +3557,7 @@ function renderGHTExecutionResult(report) {
     </div>`;
 
   resEl.innerHTML = html;
+  _syncRecoModeUI();
 
   // ── fetch the LLM conclusion (fire-and-forget) ────────────────────────
   fetch("/api/summarize", {
@@ -3308,6 +3581,73 @@ function renderGHTExecutionResult(report) {
 // ── fetch validated follow-up hypotheses (user-triggered) ──────────────────
 let _recommendations = [];
 let _lastReport = null;
+let _recoSeen = new Set();   // opaque ids already shown (Refresh prefers new ones)
+
+// Rule ids must match the backend's rule_recommender.py
+const RECO_RULES = [
+  ["attribute_substitution",       "Attribute Substitution"],
+  ["attribute_value_substitution", "Attribute Value Substitution"],
+  ["constraint_addition",          "Constraint Addition"],
+  ["constraint_relaxation",        "Constraint Relaxation"],
+  ["test_target_modification",     "Test Target Modification"],
+];
+
+// Provider choice for follow-up hypotheses. Without an LLM key the server
+// always uses rule-based; with a key the user can pick either.
+function _getRecoMode() {
+  if (!LLM_CONFIGURED) return "rules";
+  const saved = localStorage.getItem("hypolens_reco_mode");
+  return (saved === "llm" || saved === "rules") ? saved : "llm";
+}
+function setRecoMode(mode) {
+  localStorage.setItem("hypolens_reco_mode", mode);
+  _syncRecoModeUI();
+}
+function _getRecoRefinement() {
+  return localStorage.getItem("hypolens_reco_refine") === "mixed" ? "mixed" : "single";
+}
+function setRecoRefinement(mode) {
+  localStorage.setItem("hypolens_reco_refine", mode === "mixed" ? "mixed" : "single");
+  _syncRecoOptionsUI();
+}
+function _getEnabledRules() {
+  try {
+    const raw = JSON.parse(localStorage.getItem("hypolens_reco_rules") || "null");
+    if (Array.isArray(raw))
+      return raw.filter(r => RECO_RULES.some(([id]) => id === r));
+  } catch (e) { /* ignore */ }
+  return RECO_RULES.map(([id]) => id);
+}
+function toggleRecoRule(input) {
+  const enabled = new Set(_getEnabledRules());
+  if (input.checked) enabled.add(input.dataset.rule);
+  else enabled.delete(input.dataset.rule);
+  const list = RECO_RULES.map(([id]) => id).filter(id => enabled.has(id));
+  localStorage.setItem("hypolens_reco_rules", JSON.stringify(list));
+  // Mixed-rule needs at least two rules.
+  if (list.length < 2 && _getRecoRefinement() === "mixed")
+    localStorage.setItem("hypolens_reco_refine", "single");
+  _syncRecoOptionsUI();
+}
+function _syncRecoModeUI() {
+  const mode = _getRecoMode();
+  document.querySelectorAll("#exec-reco-mode .reco-mode-btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.mode === mode));
+  _syncRecoOptionsUI();
+}
+function _syncRecoOptionsUI() {
+  const mode = _getRecoMode();
+  const opts = document.getElementById("exec-reco-options");
+  if (opts) opts.style.display = (mode === "rules") ? "flex" : "none";
+  const refine = _getRecoRefinement();
+  document.querySelectorAll("#exec-reco-options .reco-refine-btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.refine === refine));
+  const enabled = new Set(_getEnabledRules());
+  document.querySelectorAll("#exec-reco-rules input[data-rule]").forEach(cb => {
+    cb.checked = enabled.has(cb.dataset.rule);
+  });
+}
+
 function fetchRecommendations() {
   const body = document.getElementById("exec-recommend-body");
   const btn  = document.getElementById("exec-recommend-btn");
@@ -3325,11 +3665,33 @@ function fetchRecommendations() {
   // spinning state for the refresh button (if visible)
   if (ref) { ref.classList.add("spinning"); ref.style.opacity = ".6"; }
 
+  const mode = _getRecoMode();
+  const payload = {
+    parsed_pattern: _patternData,
+    report:         _lastReport,
+    provider:       mode,
+  };
+  if (mode === "rules") {
+    const enabledRules = _getEnabledRules();
+    if (enabledRules.length === 0) {
+      if (btn) { btn.disabled = false; btn.classList.remove("running"); }
+      if (btnText) btnText.textContent = "▶  Generate Follow-up Hypotheses";
+      if (ref) { ref.classList.remove("spinning"); ref.style.opacity = ""; }
+      body.insertAdjacentHTML("beforeend",
+        `<span class="exec-ai-loading exec-recommend-msg" style="display:block;width:100%">`
+        + `Select at least one rule to generate suggestions.</span>`);
+      return;
+    }
+    payload.refinement_mode = _getRecoRefinement();
+    payload.rules           = enabledRules;
+    payload.exclude         = [..._recoSeen];
+  }
+
   _recommendations = [];
   fetch("/api/recommend", {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify({ parsed_pattern: _patternData, report: _lastReport }),
+    body:    JSON.stringify(payload),
   }).then(r => r.json()).then(d => {
     const sec = document.getElementById("exec-recommend");
     if (!body || !sec) return;
@@ -3347,21 +3709,42 @@ function fetchRecommendations() {
       [...body.querySelectorAll(".exec-recommend-chip, .exec-recommend-msg")].forEach(el => el.remove());
       const msg = d.error
         ? `No recommendations — ${esc(d.error)}`
-        : "No suitable follow-up hypotheses found. Try again?";
+        : "No applicable recommendations for the selected rules.";
       body.insertAdjacentHTML("beforeend",
         `<span class="exec-ai-loading exec-recommend-msg" style="display:block;width:100%">${msg}</span>`);
       return;
     }
     _recommendations = d.recommendations;
+    d.recommendations.forEach(rec => { if (rec.id) _recoSeen.add(rec.id); });
     if (ref) ref.style.display = "inline-flex";
     // hide the generate button once results are rendered; refresh button takes over
     if (btn) btn.style.display = "none";
-    body.innerHTML = d.recommendations.map((rec, i) =>
-      `<div class="exec-recommend-chip" onclick="loadRecommendation(${i})" title="${esc(rec.ghtql)}">
-        <span class="chip-icon">🔍</span>
-        <span class="chip-text">${esc(rec.description)}</span>
-      </div>`
-    ).join("");
+    // Group chips by rule (rule-based) so each rule's suggestions sit on their
+    // own row(s) instead of interleaving round-robin. LLM recs have no title
+    // and fall into a single group.
+    const _recoGroups = [];
+    const _groupByKey = new Map();
+    d.recommendations.forEach((rec, i) => {
+      const key = (rec.rules && rec.rules.length) ? rec.rules.join("+") : "__all__";
+      if (!_groupByKey.has(key)) {
+        _groupByKey.set(key, { title: rec.title || "", items: [] });
+        _recoGroups.push(_groupByKey.get(key));
+      }
+      _groupByKey.get(key).items.push({ rec, i });
+    });
+    body.innerHTML = _recoGroups.map(g =>
+      `<div class="reco-group">` + g.items.map(({ rec, i }) =>
+        `<div class="exec-recommend-chip" onclick="loadRecommendation(${i})">
+          <span class="chip-icon">🔍</span>
+          <span class="chip-body">
+            ${rec.title ? `<span class="chip-title">${esc(rec.title)}</span>` : ``}
+            <span class="chip-text">${esc(rec.description)}</span>
+          </span>
+        </div>`
+      ).join("") + `</div>`
+    ).join("") + (d.note
+      ? `<span class="exec-recommend-msg" style="display:block;width:100%;font-size:.72rem;color:var(--text-dim)">${esc(d.note)}</span>`
+      : "");
   }).catch(() => {
     const sec = document.getElementById("exec-recommend");
     if (!sec) return;
